@@ -1,0 +1,4 @@
+export const TESTERS = [
+  '0x87464A7b755A0CB506FeD19a289d6e47B1D88d99',
+  '0x06b0a2c6beea3fd215d47324dd49e1ee3a4a9f25'
+]
