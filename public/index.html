@@ -27,10 +27,41 @@
     -->
 
     <title>Pawthereum</title>
+    <style>
+      /* Loading Animation CSS */
+      @-webkit-keyframes pulse {
+        0% { -webkit-transform: scale(0.9); opacity: 0.5; }
+        50% { -webkit-transform: scale(1); opacity: 1; }
+        100% { -webkit-transform: scale(0.9); opacity: 0.5; }
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(0.9); opacity: 0.5; }
+        50% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0.9); opacity: 0.5; }
+      }
+
+      .loading-wrapper {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-animation: pulse 3s infinite ease-in-out;
+        -o-animation: pulse 3s infinite ease-in-out;
+        -ms-animation: pulse 3s infinite ease-in-out; 
+        -moz-animation: pulse 3s infinite ease-in-out; 
+        animation: pulse 3s infinite ease-in-out;
+      }
+      /* End of Loading Animation CSS */
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div class="loading-wrapper">
+        <img src="https://github.com/pawthereum/MyPawthereum/raw/main/src/assets/images/myPawthLogo.png" height="200px" width="200px"/>
+      </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
