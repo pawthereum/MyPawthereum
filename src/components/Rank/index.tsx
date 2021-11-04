@@ -148,8 +148,6 @@ export default function Rank(props:Refresh) {
     const balanceRes = await balanceReq.json()
     const balance = parseFloat(balanceRes.result)
 
-    console.log('balance is', balance)
-
     return balance
   }
 
