@@ -7,7 +7,7 @@ import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 export const getTokenLogoURL = (address: string) => {
-  if (address === '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f') {
+  if (address.toLowerCase() === '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f') {
     return 'https://pawthereum.com/wp-content/uploads/shared-files/pawth-logo-white.png'
   }
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
