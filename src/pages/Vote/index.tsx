@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { ExternalLink, TYPE } from '../../theme'
 import { RowBetween, RowFixed } from '../../components/Row'
 import { Link } from 'react-router-dom'
-import { ProposalStatus } from './styled'
+import { ProposalStatus, SnapshotProposalStatus } from './styled'
 import { ButtonPrimary } from '../../components/Button'
 import { Button } from 'rebass/styled-components'
 import { darken } from 'polished'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import {
+  SnapshotProposalData,
   ProposalData,
   ProposalState,
+  SnapshotProposalState,
   useAllProposalData,
   useUserDelegatee,
   useUserVotes,
@@ -112,8 +114,12 @@ const EmptyProposals = styled.div`
 `
 
 export default function Vote() {
+  const [proposals, setProposals] = useState([])
+
   async function initSnapshot() {
-    const pawthSnapshotSpace = await snapshot.getProposals('pawthereum.eth')
+    const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
+    setProposals(pawthSnapshotProposals)
+    console.log('proposals', pawthSnapshotProposals)
   }
 
   const { account, chainId } = useActiveWeb3React()
@@ -244,9 +250,18 @@ export default function Vote() {
             </Proposal>
           )
         })}
+        {proposals?.map((p: SnapshotProposalData, i) => {
+          return (
+            <Proposal as={Link} to={'/vote/' + p.id} key={i}>
+              <ProposalNumber>{i + 1}</ProposalNumber>
+              <ProposalTitle>{p.title}</ProposalTitle>
+              <SnapshotProposalStatus status={p.state}>{p.state}</SnapshotProposalStatus>
+            </Proposal>
+          )
+        }).reverse()}
       </TopSection>
       <TYPE.subHeader color="text3">
-        A minimum threshhold of 1% of the total UNI supply is required to submit proposals
+        You must hold $PAWTH in order to participate in voting
       </TYPE.subHeader>
     </PageWrapper>
   )
