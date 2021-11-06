@@ -159,21 +159,14 @@ export default function Vote() {
           <CardSection>
             <AutoColumn gap="md">
               <RowBetween>
-                <TYPE.white fontWeight={600}>Uniswap Governance</TYPE.white>
+                <TYPE.white fontWeight={600}>Pawthereum Voting</TYPE.white>
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  UNI tokens represent voting shares in Uniswap governance. You can vote on each proposal yourself or
-                  delegate your votes to a third party.
+                  Pawthereum is a community-run project and as such, the community can raise proposals.
+                  If you hold $PAWTH, you are welcomed and encouraged to vote on these proposals so that your voice can help shape the future of Pawthereum.
                 </TYPE.white>
               </RowBetween>
-              <ExternalLink
-                style={{ color: 'white', textDecoration: 'underline' }}
-                href="https://uniswap.org/blog/uni"
-                target="_blank"
-              >
-                <TYPE.white fontSize={14}>Read more about Uniswap governance</TYPE.white>
-              </ExternalLink>
             </AutoColumn>
           </CardSection>
           <CardBGImage />
@@ -241,7 +234,7 @@ export default function Vote() {
             </TYPE.subHeader>
           </EmptyProposals>
         )}
-        {allProposals?.map((p: ProposalData, i) => {
+        {/* {allProposals?.map((p: ProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
               <ProposalNumber>{p.id}</ProposalNumber>
@@ -249,7 +242,7 @@ export default function Vote() {
               <ProposalStatus status={p.status}>{ProposalState[p.status]}</ProposalStatus>
             </Proposal>
           )
-        })}
+        })} */}
         {proposals?.map((p: SnapshotProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>

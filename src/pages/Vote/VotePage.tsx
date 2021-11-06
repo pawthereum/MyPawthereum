@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 
@@ -31,6 +31,9 @@ import { useTokenBalance } from '../../state/wallet/hooks'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import { BigNumber } from 'ethers'
 import { GreyCard } from '../../components/Card'
+import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
+const hubUrl: any = 'https://hub.snapshot.org';
+const snapshot = new Client(hubUrl);
 
 const PageWrapper = styled(AutoColumn)`
   width: 100%;
@@ -102,10 +105,6 @@ const WrapSmall = styled(RowBetween)`
   `};
 `
 
-const DetailText = styled.div`
-  word-break: break-all;
-`
-
 const ProposerAddressLink = styled(ExternalLink)`
   word-break: break-all;
 `
@@ -115,7 +114,21 @@ export default function VotePage({
     params: { id },
   },
 }: RouteComponentProps<{ id: string }>) {
+  const [snapshotProposalData, setSnapshotProposalData] = useState({
+    title: '',
+    body: '',
+    end: 0,
+    author: ''
+  })
+
   const { chainId, account } = useActiveWeb3React()
+
+  async function initPage () {
+    console.log('id', id)
+    const proposalData = await snapshot.getProposal(id)
+    setSnapshotProposalData(proposalData)
+    console.log('proposal Data', proposalData)
+  }
 
   // get data for this specific proposal
   const proposalData: ProposalData | undefined = useProposalData(id)
@@ -132,16 +145,7 @@ export default function VotePage({
   const toggleDelegateModal = useToggleDelegateModal()
 
   // get and format date from data
-  const currentTimestamp = useCurrentBlockTimestamp()
-  const currentBlock = useBlockNumber()
-  const endDate: DateTime | undefined =
-    proposalData && currentTimestamp && currentBlock
-      ? DateTime.fromSeconds(
-          currentTimestamp
-            .add(BigNumber.from(AVERAGE_BLOCK_TIME_IN_SECS).mul(BigNumber.from(proposalData.endBlock - currentBlock)))
-            .toNumber()
-        )
-      : undefined
+  const endDate: DateTime | undefined = DateTime.fromSeconds(snapshotProposalData.end)
   const now: DateTime = DateTime.local()
 
   // get total votes and format percentages for UI
@@ -179,6 +183,10 @@ export default function VotePage({
     return <span>{content}</span>
   }
 
+  useEffect(() => {
+    initPage()
+  }, [account])
+
   return (
     <PageWrapper gap="lg" justify="center">
       <VoteModal isOpen={showVoteModal} onDismiss={toggleVoteModal} proposalId={proposalData?.id} support={support} />
@@ -193,12 +201,12 @@ export default function VotePage({
           )}
         </RowBetween>
         <AutoColumn gap="10px" style={{ width: '100%' }}>
-          <TYPE.largeHeader style={{ marginBottom: '.5rem' }}>{proposalData?.title}</TYPE.largeHeader>
+          <TYPE.largeHeader style={{ marginBottom: '.5rem' }}>{snapshotProposalData?.title}</TYPE.largeHeader>
           <RowBetween>
             <TYPE.main>
               {endDate && endDate < now
                 ? 'Voting ended ' + (endDate && endDate.toLocaleString(DateTime.DATETIME_FULL))
-                : proposalData
+                : snapshotProposalData
                 ? 'Voting ends approximately ' + (endDate && endDate.toLocaleString(DateTime.DATETIME_FULL))
                 : ''}
             </TYPE.main>
@@ -277,36 +285,17 @@ export default function VotePage({
           </StyledDataCard>
         </CardWrapper>
         <AutoColumn gap="md">
-          <TYPE.mediumHeader fontWeight={600}>Details</TYPE.mediumHeader>
-          {proposalData?.details?.map((d, i) => {
-            return (
-              <DetailText key={i}>
-                {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
-                {d.callData.split(',').map((content, i) => {
-                  return (
-                    <span key={i}>
-                      {linkIfAddress(content)}
-                      {d.callData.split(',').length - 1 === i ? '' : ','}
-                    </span>
-                  )
-                })}
-                )
-              </DetailText>
-            )
-          })}
-        </AutoColumn>
-        <AutoColumn gap="md">
           <TYPE.mediumHeader fontWeight={600}>Description</TYPE.mediumHeader>
           <MarkDownWrapper>
-            <ReactMarkdown source={proposalData?.description} />
+            <ReactMarkdown source={snapshotProposalData?.body} />
           </MarkDownWrapper>
         </AutoColumn>
         <AutoColumn gap="md">
           <TYPE.mediumHeader fontWeight={600}>Proposer</TYPE.mediumHeader>
           <ProposerAddressLink
-            href={proposalData?.proposer && chainId ? getEtherscanLink(chainId, proposalData?.proposer, 'address') : ''}
+            href={snapshotProposalData?.author && chainId ? getEtherscanLink(chainId, snapshotProposalData?.author, 'address') : ''}
           >
-            <ReactMarkdown source={proposalData?.proposer} />
+            <ReactMarkdown source={snapshotProposalData?.author} />
           </ProposerAddressLink>
         </AutoColumn>
       </ProposalInfo>

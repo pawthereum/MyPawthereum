@@ -136,7 +136,6 @@ export default class Client {
   }
 
   async getProposals (space: string) {
-    console.log('space', space)
     return fetch('https://hub.snapshot.org/graphql', {
       method: 'POST',
       headers: {
@@ -177,6 +176,47 @@ export default class Client {
     .then((result) => {
       const proposals = result.data.proposals
       return proposals
+    })
+  }
+  
+  async getProposal (id: string) {
+    return fetch('https://hub.snapshot.org/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            proposal(id:"${id}") {
+              id
+              title
+              body
+              choices
+              start
+              end
+              snapshot
+              state
+              author
+              created
+              plugins
+              network
+              strategies {
+                name
+                params
+              }
+              space {
+                id
+                name
+              }
+            }
+          }    
+        `,
+      }),
+    })
+    .then((res) => res.json())
+    .then((result) => {
+      return result.data.proposal
     })
   }
 }
