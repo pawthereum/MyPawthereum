@@ -328,6 +328,9 @@ export default function Header() {
             <img width={'32px'} src={darkMode ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
+        <TYPE.label>
+          BETA
+        </TYPE.label>
       </HeaderRow>
       <HeaderLinks>
         <StyledNavLink 
@@ -359,9 +362,9 @@ export default function Header() {
         >
           {t('pool')}
         </StyledNavLink> */}
-        <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
+        {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           Vote
-        </StyledNavLink>
+        </StyledNavLink> */}
         {/* 
         <StyledExternalLink id={`stake-nav-link`} href={'https://info.uniswap.org'}>
           Charts <span style={{ fontSize: '11px', textDecoration: 'none !important' }}>↗</span>

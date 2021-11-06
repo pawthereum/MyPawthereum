@@ -166,8 +166,9 @@ export default function VotePage({
     setSnaspshotProposalProgressArray(proposalProgressArray)
 
     const pawthBalance = await getTokenBalance(account || '', '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9)
-    
-    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.status === SnapshotProposalState.active)
+    const hasVoted = proposalVotes.find((v: any) => v.voter === account) ? true : false
+
+    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.status === SnapshotProposalState.active && !hasVoted)
   }
 
   // get data for this specific proposal
@@ -196,14 +197,8 @@ export default function VotePage({
   const againstPercentage: string =
     proposalData && totalVotes ? ((proposalData.againstCount * 100) / totalVotes).toFixed(0) + '%' : '0%'
 
-  // only count available votes as of the proposal start block
-  const availableVotes: TokenAmount | undefined = useUserVotesAsOfBlock(proposalData?.startBlock ?? undefined)
-
-  // only show voting if user has > 0 votes at proposal start block and proposal is active,
-  const showVotingButtons =
-    canVoteOnProposal &&
-    snapshotProposalData &&
-    snapshotProposalData.state === "active"
+  // only show voting if user can vote on the proposal
+  const showVotingButtons = canVoteOnProposal
 
   const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? UNI[chainId] : undefined)
   const userDelegatee: string | undefined = useUserDelegatee()
@@ -288,7 +283,7 @@ export default function VotePage({
           {snapshotProposalProgressArray?.map((p: any, i) => {
             return (
               <AutoColumn key={i}>
-              {showVotingButtons || true ? (
+              {showVotingButtons ? (
                 <RowFixed style={{ width: '100%', paddingBottom: '12px' }}>
                   <ButtonPrimary
                     padding="8px"
