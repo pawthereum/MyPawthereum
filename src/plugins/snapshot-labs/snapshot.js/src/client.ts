@@ -42,6 +42,10 @@ export default class Client {
     return this.request('spaces');
   }
 
+  async getSpace (id: any) {
+    return this.request('spaces', id)
+  }
+
   async broadcast(
     web3: Web3Provider,
     account: string,
@@ -110,7 +114,7 @@ export default class Client {
       end: any,
       snapshot: any,
       type: 'single-choice',
-      metadata: {}
+      metadata: any
     }
   ) {
     return this.broadcast(web3, address, space, 'proposal', params);

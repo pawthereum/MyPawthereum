@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { ExternalLink, TYPE } from '../../theme'
@@ -27,6 +27,9 @@ import Loader from '../../components/Loader'
 import FormattedCurrencyAmount from '../../components/FormattedCurrencyAmount'
 import { useModalOpen, useToggleDelegateModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/actions'
+import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
+const hubUrl: any = 'https://hub.snapshot.org';
+const snapshot = new Client(hubUrl);
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -109,6 +112,59 @@ const EmptyProposals = styled.div`
 `
 
 export default function Vote() {
+  // const spaces = snapshot.getSpace({id: 'pawthereum.eth'}).then((spaces: any) => {
+  //   console.log('spaces', spaces)
+  // })
+  async function initSnapshot() {
+    const pawthSnapshotSpace = await getPawthSnapshotSpace()
+    console.log('pawthSnapshotSpace', pawthSnapshotSpace)
+  }
+  
+
+  async function getPawthSnapshotSpace () {
+    return fetch('https://hub.snapshot.org/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            proposals (
+              first: 20,
+              skip: 0,
+              where: {
+                space_in: ["pawthereum.eth"],
+                state: "closed"
+              },
+              orderBy: "created",
+              orderDirection: desc
+            ) {
+              id
+              title
+              body
+              choices
+              start
+              end
+              snapshot
+              state
+              author
+              space {
+                id
+                name
+              }
+            }
+          }      
+        `,
+      }),
+    })
+    .then((res) => res.json())
+    .then((result) => {
+      console.log('result', result)
+      return result
+    })
+  }
+
   const { account, chainId } = useActiveWeb3React()
 
   // toggle for showing delegation modal
@@ -127,6 +183,10 @@ export default function Vote() {
   const showUnlockVoting = Boolean(
     uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
+
+  useEffect(() => {
+    initSnapshot()
+  }, [account])
 
   return (
     <PageWrapper gap="lg" justify="center">
