@@ -46,6 +46,7 @@ const ProposalInfo = styled(AutoColumn)`
   position: relative;
   max-width: 640px;
   width: 100%;
+  background-color: ${({ theme }) => theme.bg1}
 `
 const ArrowWrapper = styled(StyledInternalLink)`
   display: flex;
@@ -75,6 +76,7 @@ const StyledDataCard = styled(DataCard)`
   background-color: ${({ theme }) => theme.bg1};
   height: fit-content;
   z-index: 2;
+  border: 1px solid ${({ theme }) => theme.bg4};
 `
 
 const ProgressWrapper = styled.div`
