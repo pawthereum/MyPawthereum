@@ -201,6 +201,7 @@ export default class Client {
               created
               plugins
               network
+              link
               strategies {
                 name
                 params
@@ -217,6 +218,43 @@ export default class Client {
     .then((res) => res.json())
     .then((result) => {
       return result.data.proposal
+    })
+  }
+
+  async getProposalVotes (proposal: string) {
+    return fetch('https://hub.snapshot.org/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query Votes {
+            votes (
+              first: 1000000
+              skip: 0
+              where: {
+                proposal: "${proposal}"
+              }
+              orderBy: "created",
+              orderDirection: desc
+            ) {
+              id
+              voter
+              created
+              choice
+              space {
+                id
+                name
+              }
+            }
+          }   
+        `,
+      }),
+    })
+    .then((res) => res.json())
+    .then((result) => {
+      return result.data.votes
     })
   }
 }

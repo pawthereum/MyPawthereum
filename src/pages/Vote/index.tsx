@@ -234,7 +234,7 @@ export default function Vote() {
             </TYPE.subHeader>
           </EmptyProposals>
         )}
-        {/* {allProposals?.map((p: ProposalData, i) => {
+        {allProposals?.map((p: ProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
               <ProposalNumber>{p.id}</ProposalNumber>
@@ -242,7 +242,7 @@ export default function Vote() {
               <ProposalStatus status={p.status}>{ProposalState[p.status]}</ProposalStatus>
             </Proposal>
           )
-        })} */}
+        })}
         {proposals?.map((p: SnapshotProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>

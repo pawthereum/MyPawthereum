@@ -120,6 +120,17 @@ export default function VotePage({
     end: 0,
     author: ''
   })
+  const [snapshotProposalVotes, setSnapshotProposalVotes] = useState([{
+    id: '',
+    voter: '',
+    proposal: { id: '' },
+    choice: 0,
+    space: { id: '' }
+  }])
+
+  const [snapshotProposalProgress, setSnaspshotProposalProgress] = useState({})
+  const [snapshotProposalProgressArray, setSnaspshotProposalProgressArray] = useState([{ choice: '', votes: 0 }])
+
 
   const { chainId, account } = useActiveWeb3React()
 
@@ -127,7 +138,33 @@ export default function VotePage({
     console.log('id', id)
     const proposalData = await snapshot.getProposal(id)
     setSnapshotProposalData(proposalData)
-    console.log('proposal Data', proposalData)
+    console.log('proposalData', proposalData)
+
+    const proposalVotes = await snapshot.getProposalVotes(id)
+    setSnapshotProposalVotes(proposalVotes)
+
+    const proposalProgress: Record<string, number> = { choice: 0 }
+    delete proposalProgress.choice
+    for (const choice in proposalData.choices) {
+      proposalProgress[proposalData.choices[choice]] = 0
+    }
+    console.log('proposal votes', proposalVotes)
+    for (const vote of proposalVotes) {
+      const choice = proposalData.choices[vote?.choice - 1]
+      proposalProgress[choice] += 1
+    }
+    let proposalProgressArray = []
+    for (const [choice, votes] of Object.entries(proposalProgress)) {
+      proposalProgressArray.push({ choice, votes })
+    }
+    proposalProgressArray = proposalProgressArray.map((p: any) => {
+      p.percentage = (p.votes / proposalVotes.length * 100).toFixed(2) + '%'
+      return p
+    })
+    console.log(proposalProgressArray)
+    setSnaspshotProposalProgress(proposalProgress)
+    setSnaspshotProposalProgressArray(proposalProgressArray)
+    console.log('proposalProgress', proposalProgress)
   }
 
   // get data for this specific proposal
@@ -145,7 +182,8 @@ export default function VotePage({
   const toggleDelegateModal = useToggleDelegateModal()
 
   // get and format date from data
-  const endDate: DateTime | undefined = DateTime.fromSeconds(snapshotProposalData.end)
+  // const endDate: DateTime | undefined = DateTime.fromSeconds(1646221701)
+  const endDate: DateTime | undefined = DateTime.fromSeconds(snapshotProposalData?.end)
   const now: DateTime = DateTime.local()
 
   // get total votes and format percentages for UI
@@ -225,64 +263,45 @@ export default function VotePage({
             </GreyCard>
           )}
         </AutoColumn>
-        {showVotingButtons ? (
-          <RowFixed style={{ width: '100%', gap: '12px' }}>
-            <ButtonPrimary
-              padding="8px"
-              borderRadius="8px"
-              onClick={() => {
-                setSupport(true)
-                toggleVoteModal()
-              }}
-            >
-              Vote For
-            </ButtonPrimary>
-            <ButtonPrimary
-              padding="8px"
-              borderRadius="8px"
-              onClick={() => {
-                setSupport(false)
-                toggleVoteModal()
-              }}
-            >
-              Vote Against
-            </ButtonPrimary>
-          </RowFixed>
-        ) : (
-          ''
-        )}
         <CardWrapper>
-          <StyledDataCard>
-            <CardSection>
-              <AutoColumn gap="md">
-                <WrapSmall>
-                  <TYPE.black fontWeight={600}>For</TYPE.black>
-                  <TYPE.black fontWeight={600}>
-                    {' '}
-                    {proposalData?.forCount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </TYPE.black>
-                </WrapSmall>
+          {snapshotProposalProgressArray?.map((p: any, i) => {
+            return (
+              <AutoColumn key={i}>
+              {showVotingButtons || true ? (
+                <RowFixed style={{ width: '100%', paddingBottom: '12px' }}>
+                  <ButtonPrimary
+                    padding="8px"
+                    borderRadius="8px"
+                    onClick={() => {
+                      setSupport(true)
+                      toggleVoteModal()
+                    }}
+                  >
+                    Vote {p.choice}
+                  </ButtonPrimary>
+                </RowFixed>
+              ) : (
+                ''
+              )}
+                <StyledDataCard>
+                  <CardSection>
+                    <AutoColumn gap="md">
+                      <WrapSmall>
+                        <TYPE.black fontWeight={600}>{p.choice}</TYPE.black>
+                        <TYPE.black fontWeight={600}>
+                          {' '}
+                          {p?.votes.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        </TYPE.black>
+                      </WrapSmall>
+                    </AutoColumn>
+                    <ProgressWrapper>
+                      <Progress status={'for'} percentageString={p.percentage} />
+                    </ProgressWrapper>
+                  </CardSection>
+                </StyledDataCard>
               </AutoColumn>
-              <ProgressWrapper>
-                <Progress status={'for'} percentageString={forPercentage} />
-              </ProgressWrapper>
-            </CardSection>
-          </StyledDataCard>
-          <StyledDataCard>
-            <CardSection>
-              <AutoColumn gap="md">
-                <WrapSmall>
-                  <TYPE.black fontWeight={600}>Against</TYPE.black>
-                  <TYPE.black fontWeight={600}>
-                    {proposalData?.againstCount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </TYPE.black>
-                </WrapSmall>
-              </AutoColumn>
-              <ProgressWrapper>
-                <Progress status={'against'} percentageString={againstPercentage} />
-              </ProgressWrapper>
-            </CardSection>
-          </StyledDataCard>
+            )
+          })}
         </CardWrapper>
         <AutoColumn gap="md">
           <TYPE.mediumHeader fontWeight={600}>Description</TYPE.mediumHeader>
