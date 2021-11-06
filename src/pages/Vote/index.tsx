@@ -119,7 +119,6 @@ export default function Vote() {
   async function initSnapshot() {
     const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
     setProposals(pawthSnapshotProposals)
-    console.log('proposals', pawthSnapshotProposals)
   }
 
   const { account, chainId } = useActiveWeb3React()
@@ -226,7 +225,7 @@ export default function Vote() {
             )}
           </RowBetween>
         )}
-        {allProposals?.length === 0 && (
+        {proposals?.length === 0 && (
           <EmptyProposals>
             <TYPE.body style={{ marginBottom: '8px' }}>No proposals found.</TYPE.body>
             <TYPE.subHeader>
@@ -234,7 +233,7 @@ export default function Vote() {
             </TYPE.subHeader>
           </EmptyProposals>
         )}
-        {allProposals?.map((p: ProposalData, i) => {
+        {/* {allProposals?.map((p: ProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
               <ProposalNumber>{p.id}</ProposalNumber>
@@ -242,7 +241,7 @@ export default function Vote() {
               <ProposalStatus status={p.status}>{ProposalState[p.status]}</ProposalStatus>
             </Proposal>
           )
-        })}
+        })} */}
         {proposals?.map((p: SnapshotProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>

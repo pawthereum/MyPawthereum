@@ -12,6 +12,7 @@ import { ProposalStatus } from './styled'
 import {
   ProposalData,
   ProposalState,
+  SnapshotProposalState,
   useProposalData,
   useUserDelegatee,
   useUserVotesAsOfBlock,
@@ -120,7 +121,8 @@ export default function VotePage({
     title: '',
     body: '',
     end: 0,
-    author: ''
+    author: '',
+    state: ''
   })
   const [snapshotProposalVotes, setSnapshotProposalVotes] = useState([{
     id: '',
@@ -132,15 +134,13 @@ export default function VotePage({
 
   const [snapshotProposalProgress, setSnaspshotProposalProgress] = useState({})
   const [snapshotProposalProgressArray, setSnaspshotProposalProgressArray] = useState([{ choice: '', votes: 0 }])
-
+  const [canVoteOnProposal, setCanVoteOnProposal] = useState(false)
 
   const { chainId, account } = useActiveWeb3React()
 
   async function initPage () {
-    console.log('id', id)
     const proposalData = await snapshot.getProposal(id)
     setSnapshotProposalData(proposalData)
-    console.log('proposalData', proposalData)
 
     const proposalVotes = await snapshot.getProposalVotes(id)
     setSnapshotProposalVotes(proposalVotes)
@@ -150,7 +150,6 @@ export default function VotePage({
     for (const choice in proposalData.choices) {
       proposalProgress[proposalData.choices[choice]] = 0
     }
-    console.log('proposal votes', proposalVotes)
     for (const vote of proposalVotes) {
       const choice = proposalData.choices[vote?.choice - 1]
       proposalProgress[choice] += 1
@@ -163,10 +162,12 @@ export default function VotePage({
       p.percentage = (p.votes / proposalVotes.length * 100).toFixed(2) + '%'
       return p
     })
-    console.log(proposalProgressArray)
     setSnaspshotProposalProgress(proposalProgress)
     setSnaspshotProposalProgressArray(proposalProgressArray)
-    console.log('proposalProgress', proposalProgress)
+
+    const pawthBalance = await getTokenBalance(account || '', '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9)
+    
+    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.status === SnapshotProposalState.active)
   }
 
   // get data for this specific proposal
@@ -200,10 +201,9 @@ export default function VotePage({
 
   // only show voting if user has > 0 votes at proposal start block and proposal is active,
   const showVotingButtons =
-    availableVotes &&
-    JSBI.greaterThan(availableVotes.raw, JSBI.BigInt(0)) &&
-    proposalData &&
-    proposalData.status === ProposalState.Active
+    canVoteOnProposal &&
+    snapshotProposalData &&
+    snapshotProposalData.state === "active"
 
   const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? UNI[chainId] : undefined)
   const userDelegatee: string | undefined = useUserDelegatee()
@@ -221,6 +221,25 @@ export default function VotePage({
       return <ExternalLink href={getEtherscanLink(chainId, content, 'address')}>{commonName}</ExternalLink>
     }
     return <span>{content}</span>
+  }
+
+  async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
+    const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
+    const balance_api = new URL('https://api.etherscan.io/api')
+
+    balance_api.searchParams.append('module', 'account')
+    balance_api.searchParams.append('action', 'tokenbalance')
+    balance_api.searchParams.append('contractaddress', tokenAddr)
+    balance_api.searchParams.append('address', account)
+    balance_api.searchParams.append('tag', 'latest')
+    balance_api.searchParams.append('apikey', ethescanApiKey)
+
+    const balanceReq = await fetch(balance_api.href)
+    const balanceRes = await balanceReq.json()
+    const balance = parseFloat(balanceRes.result)
+
+    const formattedBalance = balance / 10**tokenDecimals
+    return { balance, formattedBalance }
   }
 
   useEffect(() => {

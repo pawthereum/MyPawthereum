@@ -328,9 +328,6 @@ export default function Header() {
             <img width={'32px'} src={darkMode ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
-        <TYPE.label>
-          BETA
-        </TYPE.label>
       </HeaderRow>
       <HeaderLinks>
         <StyledNavLink 

@@ -32,7 +32,6 @@ export const ProposalStatus = styled.span<{ status: ProposalState }>`
 `
 
 const handleSnapshotColorType = (status: SnapshotProposalState, theme: DefaultTheme) => {
-  console.log('status', status)
   switch (status) {
     case SnapshotProposalState.active:
       return theme.blue1
