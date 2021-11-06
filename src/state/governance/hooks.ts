@@ -35,7 +35,7 @@ export interface SnapshotProposalData {
   title: string
   body: string
   author: string
-  state: SnapshotProposalState
+  state: string
   choices: Array<string>
   start: number
   end: number
@@ -44,6 +44,7 @@ export interface SnapshotProposalData {
 export enum SnapshotProposalState {
   undetermined = -1,
   active,
+  pending,
   closed,
 }
 

@@ -247,7 +247,7 @@ export default function Vote() {
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
               <ProposalNumber>{i + 1}</ProposalNumber>
               <ProposalTitle>{p.title}</ProposalTitle>
-              <SnapshotProposalStatus status={p.state}>{p.state}</SnapshotProposalStatus>
+              <SnapshotProposalStatus state={p.state}>{p.state}</SnapshotProposalStatus>
             </Proposal>
           )
         }).reverse()}

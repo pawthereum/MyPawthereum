@@ -145,11 +145,10 @@ export default class Client {
         query: `
           query {
             proposals (
-              first: 20,
+              first: 1000000,
               skip: 0,
               where: {
-                space_in: ["${space}"],
-                state: "closed"
+                space_in: ["${space}"]
               },
               orderBy: "created",
               orderDirection: desc
