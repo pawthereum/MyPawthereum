@@ -134,4 +134,49 @@ export default class Client {
   async settings(web3: Web3Provider, address: string, space: string, settings: any) {
     return this.broadcast(web3, address, space, 'settings', settings);
   }
+
+  async getProposals (space: string) {
+    console.log('space', space)
+    return fetch('https://hub.snapshot.org/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            proposals (
+              first: 20,
+              skip: 0,
+              where: {
+                space_in: ["${space}"],
+                state: "closed"
+              },
+              orderBy: "created",
+              orderDirection: desc
+            ) {
+              id
+              title
+              body
+              choices
+              start
+              end
+              snapshot
+              state
+              author
+              space {
+                id
+                name
+              }
+            }
+          }      
+        `,
+      }),
+    })
+    .then((res) => res.json())
+    .then((result) => {
+      const proposals = result.data.proposals
+      return proposals
+    })
+  }
 }

@@ -112,57 +112,8 @@ const EmptyProposals = styled.div`
 `
 
 export default function Vote() {
-  // const spaces = snapshot.getSpace({id: 'pawthereum.eth'}).then((spaces: any) => {
-  //   console.log('spaces', spaces)
-  // })
   async function initSnapshot() {
-    const pawthSnapshotSpace = await getPawthSnapshotSpace()
-    console.log('pawthSnapshotSpace', pawthSnapshotSpace)
-  }
-  
-
-  async function getPawthSnapshotSpace () {
-    return fetch('https://hub.snapshot.org/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
-          query {
-            proposals (
-              first: 20,
-              skip: 0,
-              where: {
-                space_in: ["pawthereum.eth"],
-                state: "closed"
-              },
-              orderBy: "created",
-              orderDirection: desc
-            ) {
-              id
-              title
-              body
-              choices
-              start
-              end
-              snapshot
-              state
-              author
-              space {
-                id
-                name
-              }
-            }
-          }      
-        `,
-      }),
-    })
-    .then((res) => res.json())
-    .then((result) => {
-      console.log('result', result)
-      return result
-    })
+    const pawthSnapshotSpace = await snapshot.getProposals('pawthereum.eth')
   }
 
   const { account, chainId } = useActiveWeb3React()
