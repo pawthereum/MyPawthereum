@@ -322,7 +322,7 @@ export default function VotePage({
                         <TYPE.black fontWeight={600}>{p.choice}</TYPE.black>
                         <TYPE.black fontWeight={600}>
                           {' '}
-                          {p?.percentage.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          {p?.percentage?.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TYPE.black>
                       </WrapSmall>
                     </AutoColumn>
