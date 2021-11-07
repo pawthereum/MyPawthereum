@@ -8,7 +8,7 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import { CardSection, DataCard } from '../../components/earn/styled'
 import { ArrowLeft } from 'react-feather'
 import { ButtonPrimary } from '../../components/Button'
-import { ProposalStatus } from './styled'
+import { SnapshotProposalStatus } from './styled'
 import {
   ProposalData,
   ProposalState,
@@ -269,8 +269,8 @@ export default function VotePage({
           <ArrowWrapper to="/vote">
             <ArrowLeft size={20} /> All Proposals
           </ArrowWrapper>
-          {proposalData && (
-            <ProposalStatus status={proposalData.status}>{ProposalState[proposalData.status]}</ProposalStatus>
+          {snapshotProposalData && (
+            <SnapshotProposalStatus state={snapshotProposalData.state}>{snapshotProposalData.state}</SnapshotProposalStatus>
           )}
         </RowBetween>
         <AutoColumn gap="10px" style={{ width: '100%' }}>
