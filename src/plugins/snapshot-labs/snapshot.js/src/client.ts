@@ -267,7 +267,6 @@ export default class Client {
     scoreApiUrl = 'https://score.snapshot.org/api/scores'
   ) {
     try {
-      console.log('space', space)
       const params = {
         space,
         strategies,
@@ -275,22 +274,13 @@ export default class Client {
         addresses,
         snapshot
       }
-      // const params = {
-      //   space,
-      //   network,
-      //   snapshot,
-      //   strategies,
-      //   addresses
-      // };
-      console.log('params', params)
       const res = await fetch(scoreApiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ params })
       });
       const obj = await res.json();
-      console.log('obj', obj)
-      return obj
+      return obj.result.scores[0]
     } catch (e) {
       return Promise.reject(e);
     }

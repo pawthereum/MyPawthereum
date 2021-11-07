@@ -141,20 +141,12 @@ export default function VotePage({
   async function initPage () {
     const proposalData = await snapshot.getProposal(id)
     setSnapshotProposalData(proposalData)
-    console.log(proposalData)
 
     const proposalVotes = await snapshot.getProposalVotes(id)
     setSnapshotProposalVotes(proposalVotes)
 
     const voterAddresses = proposalVotes.map((v: any) => v.voter)
 
-    console.log({
-      space: proposalData.space.id,
-      strategies: proposalData.strategies,
-      network: proposalData.network,
-      snapshot: parseInt(proposalData.snapshot),
-      addresses: voterAddresses,
-    })
     const proposalVoteScores = await snapshot.getProposalVoteScores(
       proposalData.space.id,
       proposalData.strategies,
@@ -162,7 +154,12 @@ export default function VotePage({
       voterAddresses,
       proposalData.snapshot,
     )
-    console.log('scores', proposalVoteScores)
+
+    // sum all of the vote scores (which is essentially balances at voting time)
+    let totalTokensInVote = 0
+    for (const balance in proposalVoteScores) {
+      totalTokensInVote += proposalVoteScores[balance]
+    }
 
     const proposalProgress: Record<string, number> = { choice: 0 }
     delete proposalProgress.choice
@@ -171,14 +168,14 @@ export default function VotePage({
     }
     for (const vote of proposalVotes) {
       const choice = proposalData.choices[vote?.choice - 1]
-      proposalProgress[choice] += 1
+      proposalProgress[choice] += proposalVoteScores[vote.voter]
     }
     let proposalProgressArray = []
     for (const [choice, votes] of Object.entries(proposalProgress)) {
       proposalProgressArray.push({ choice, votes })
     }
     proposalProgressArray = proposalProgressArray.map((p: any) => {
-      p.percentage = (p.votes / proposalVotes.length * 100).toFixed(2) + '%'
+      p.percentage = (p.votes / totalTokensInVote * 100).toFixed(2) + '%'
       return p
     })
     setSnaspshotProposalProgress(proposalProgress)
@@ -325,7 +322,7 @@ export default function VotePage({
                         <TYPE.black fontWeight={600}>{p.choice}</TYPE.black>
                         <TYPE.black fontWeight={600}>
                           {' '}
-                          {p?.votes.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          {p?.percentage.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TYPE.black>
                       </WrapSmall>
                     </AutoColumn>
