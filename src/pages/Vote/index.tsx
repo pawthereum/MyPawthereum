@@ -2,33 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { ExternalLink, TYPE } from '../../theme'
-import { RowBetween, RowFixed } from '../../components/Row'
+import { RowBetween } from '../../components/Row'
 import { Link } from 'react-router-dom'
-import { ProposalStatus, SnapshotProposalStatus } from './styled'
-import { ButtonPrimary } from '../../components/Button'
+import { SnapshotProposalStatus } from './styled'
 import { Button } from 'rebass/styled-components'
 import { darken } from 'polished'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import {
   SnapshotProposalData,
   ProposalData,
-  ProposalState,
-  SnapshotProposalState,
   useAllProposalData,
-  useUserDelegatee,
-  useUserVotes,
 } from '../../state/governance/hooks'
-import DelegateModal from '../../components/vote/DelegateModal'
-import { useTokenBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { UNI, ZERO_ADDRESS } from '../../constants'
-import { TokenAmount, ChainId } from '@uniswap/sdk-core'
-import { JSBI } from '@uniswap/v2-sdk'
-import { shortenAddress, getEtherscanLink } from '../../utils'
 import Loader from '../../components/Loader'
-import FormattedCurrencyAmount from '../../components/FormattedCurrencyAmount'
-import { useModalOpen, useToggleDelegateModal } from '../../state/application/hooks'
-import { ApplicationModal } from '../../state/application/actions'
 import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
 const hubUrl: any = 'https://hub.snapshot.org';
 const snapshot = new Client(hubUrl);
@@ -96,21 +82,8 @@ const DisclaimerText = styled.span`
   color: ${({ theme }) => theme.text2};
 `
 
-const AddressButton = styled.div`
-  border: 1px solid ${({ theme }) => theme.bg3};
-  padding: 2px 4px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  color: ${({ theme }) => theme.text1};
-`
-
 const EmptyProposals = styled.div`
-  border: 1px solid ${({ theme }) => theme.text4};
+  background-color: ${({ theme }) => theme.bg1};
   padding: 16px 12px;
   border-radius: 12px;
   display: flex;
@@ -127,24 +100,7 @@ export default function Vote() {
     setProposals(pawthSnapshotProposals)
   }
 
-  const { account, chainId } = useActiveWeb3React()
-
-  // toggle for showing delegation modal
-  const showDelegateModal = useModalOpen(ApplicationModal.DELEGATE)
-  const toggleDelegateModal = useToggleDelegateModal()
-
-  // get data to list all proposals
-  const allProposals: ProposalData[] = useAllProposalData()
-
-  // user data
-  const availableVotes: TokenAmount | undefined = useUserVotes()
-  const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? UNI[chainId] : undefined)
-  const userDelegatee: string | undefined = useUserDelegatee()
-
-  // show delegation option if they have have a balance, but have not delegated
-  const showUnlockVoting = Boolean(
-    uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
-  )
+  const { account } = useActiveWeb3React()
 
   useEffect(() => {
     initSnapshot()
@@ -152,11 +108,6 @@ export default function Vote() {
 
   return (
     <PageWrapper gap="lg" justify="center">
-      <DelegateModal
-        isOpen={showDelegateModal}
-        onDismiss={toggleDelegateModal}
-        title={showUnlockVoting ? 'Unlock Votes' : 'Update Delegation'}
-      />
       <TopSection gap="md">
         <VoteCard>
           <CardBGImage />
@@ -181,56 +132,8 @@ export default function Vote() {
       <TopSection gap="2px">
         <WrapSmall>
           <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Proposals</TYPE.mediumHeader>
-          {(!allProposals || allProposals.length === 0) && !availableVotes && <Loader />}
-          {showUnlockVoting ? (
-            <ButtonPrimary
-              style={{ width: 'fit-content' }}
-              padding="8px"
-              borderRadius="8px"
-              onClick={toggleDelegateModal}
-            >
-              Unlock Voting
-            </ButtonPrimary>
-          ) : availableVotes && JSBI.notEqual(JSBI.BigInt(0), availableVotes?.raw) ? (
-            <TYPE.body fontWeight={500} mr="6px">
-              <FormattedCurrencyAmount currencyAmount={availableVotes} /> Votes
-            </TYPE.body>
-          ) : uniBalance &&
-            userDelegatee &&
-            userDelegatee !== ZERO_ADDRESS &&
-            JSBI.notEqual(JSBI.BigInt(0), uniBalance?.raw) ? (
-            <TYPE.body fontWeight={500} mr="6px">
-              <FormattedCurrencyAmount currencyAmount={uniBalance} /> Votes
-            </TYPE.body>
-          ) : (
-            ''
-          )}
+          {(!proposals || proposals.length === 0) ? ( <Loader /> ) : ''}
         </WrapSmall>
-        {!showUnlockVoting && (
-          <RowBetween>
-            <div />
-            {userDelegatee && userDelegatee !== ZERO_ADDRESS ? (
-              <RowFixed>
-                <TYPE.body fontWeight={500} mr="4px">
-                  Delegated to:
-                </TYPE.body>
-                <AddressButton>
-                  <StyledExternalLink
-                    href={getEtherscanLink(ChainId.MAINNET, userDelegatee, 'address')}
-                    style={{ margin: '0 4px' }}
-                  >
-                    {userDelegatee === account ? 'Self' : shortenAddress(userDelegatee)}
-                  </StyledExternalLink>
-                  <TextButton onClick={toggleDelegateModal} style={{ marginLeft: '4px' }}>
-                    (edit)
-                  </TextButton>
-                </AddressButton>
-              </RowFixed>
-            ) : (
-              ''
-            )}
-          </RowBetween>
-        )}
         {proposals?.length === 0 && (
           <EmptyProposals>
             <TYPE.body style={{ marginBottom: '8px' }}>No proposals found.</TYPE.body>
@@ -239,15 +142,6 @@ export default function Vote() {
             </TYPE.subHeader>
           </EmptyProposals>
         )}
-        {/* {allProposals?.map((p: ProposalData, i) => {
-          return (
-            <Proposal as={Link} to={'/vote/' + p.id} key={i}>
-              <ProposalNumber>{p.id}</ProposalNumber>
-              <ProposalTitle>{p.title}</ProposalTitle>
-              <ProposalStatus status={p.status}>{ProposalState[p.status]}</ProposalStatus>
-            </Proposal>
-          )
-        })} */}
         {proposals?.map((p: SnapshotProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
