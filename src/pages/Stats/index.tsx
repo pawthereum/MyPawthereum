@@ -24,7 +24,7 @@ import tiger from '../../assets/images/tiger.png'
 import lion from '../../assets/images/lion.png'
 import crown from '../../assets/images/crown.png'
 import sadCat from '../../assets/images/sadCat.png'
-// Awards
+// Badges
 import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
 import diamondPaws from '../../assets/images/diamondPaws.png'
@@ -136,7 +136,7 @@ export default function Stats() {
   // for testing
   const [isTester, setIsTester] = useState(false)
 
-  // awards state vars
+  // badges state vars
   const [isOriginalSwapper, setIsOriginalSwapper] = useState(false)
   const [isDiamondHands, setIsDiamondHands] = useState(false)
   const [isVoter, setIsVoter] = useState(false)
@@ -607,7 +607,7 @@ export default function Stats() {
           <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
-                Your Rank and Awards
+                Your Rank and Badges
               </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
@@ -653,7 +653,7 @@ export default function Stats() {
                 
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
-                    <TYPE.mediumHeader textAlign="center">Your $PAWTH Awards</TYPE.mediumHeader>
+                    <TYPE.mediumHeader textAlign="center">Your $PAWTH Badges</TYPE.mediumHeader>
                   </PaddedAutoColumn>
                 </AutoRow>
 
@@ -779,7 +779,7 @@ export default function Stats() {
                   
                   <AutoRow justify="center">
                     <PaddedAutoColumn gap="sm">
-                      <TYPE.mediumHeader textAlign="center">Your $PAWTH Awards</TYPE.mediumHeader>
+                      <TYPE.mediumHeader textAlign="center">Your $PAWTH Badges</TYPE.mediumHeader>
                     </PaddedAutoColumn>
                   </AutoRow>
                 </AutoColumn>
