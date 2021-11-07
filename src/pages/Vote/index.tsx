@@ -60,6 +60,7 @@ const Proposal = styled(Button)`
   &:hover {
     background-color: ${({ theme }) => darken(0.05, theme.bg1)};
   }
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 `
 
 const ProposalNumber = styled.span`

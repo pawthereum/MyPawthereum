@@ -7,8 +7,7 @@ export const BodyWrapper = styled.div<{ margin?: string }>`
   max-width: 480px;
   width: 100%;
   background: ${({ theme }) => theme.bg0};
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 24px;
   margin-top: 1rem;
 `
