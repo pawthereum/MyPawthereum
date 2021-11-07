@@ -8,11 +8,7 @@ import { SnapshotProposalStatus } from './styled'
 import { Button } from 'rebass/styled-components'
 import { darken } from 'polished'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
-import {
-  SnapshotProposalData,
-  ProposalData,
-  useAllProposalData,
-} from '../../state/governance/hooks'
+import {  SnapshotProposalData } from '../../state/governance/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import Loader from '../../components/Loader'
 import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
@@ -68,14 +64,6 @@ const WrapSmall = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
   `};
-`
-
-const TextButton = styled(TYPE.main)`
-  color: ${({ theme }) => theme.primary1};
-  :hover {
-    cursor: pointer;
-    text-decoration: underline;
-  }
 `
 
 const DisclaimerText = styled.span`
