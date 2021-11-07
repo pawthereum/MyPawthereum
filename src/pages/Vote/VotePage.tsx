@@ -152,7 +152,7 @@ export default function VotePage({
       proposalData.strategies,
       proposalData.network,
       voterAddresses,
-      proposalData.snapshot,
+      parseInt(proposalData.snapshot),
     )
 
     // sum all of the vote scores (which is essentially balances at voting time)
@@ -174,8 +174,11 @@ export default function VotePage({
     for (const [choice, votes] of Object.entries(proposalProgress)) {
       proposalProgressArray.push({ choice, votes })
     }
+
+    const proposalStrategy = proposalData?.strategies[0]?.name
     proposalProgressArray = proposalProgressArray.map((p: any) => {
-      p.percentage = (p.votes / totalTokensInVote * 100).toFixed(2) + '%'
+      const votingPowerType = proposalStrategy === 'erc20-balance-of' ? totalTokensInVote : p.votes.length
+      p.percentage = (p.votes / votingPowerType * 100).toFixed(2) + '%'
       return p
     })
     setSnaspshotProposalProgress(proposalProgress)
@@ -322,7 +325,8 @@ export default function VotePage({
                         <TYPE.black fontWeight={600}>{p.choice}</TYPE.black>
                         <TYPE.black fontWeight={600}>
                           {' '}
-                          {p?.percentage?.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          {p?.percentage}
+                          {/* ?.toLocaleString(undefined, { maximumFractionDigits: 0 })} */}
                         </TYPE.black>
                       </WrapSmall>
                     </AutoColumn>
