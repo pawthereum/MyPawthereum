@@ -30,6 +30,24 @@ export interface ProposalData {
   details: ProposalDetail[]
 }
 
+export interface SnapshotProposalData {
+  id: string
+  title: string
+  body: string
+  author: string
+  state: string
+  choices: Array<string>
+  start: number
+  end: number
+}
+
+export enum SnapshotProposalState {
+  undetermined = -1,
+  active,
+  pending,
+  closed,
+}
+
 export enum ProposalState {
   Undetermined = -1,
   Pending,

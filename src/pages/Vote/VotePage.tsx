@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 
@@ -8,10 +8,11 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import { CardSection, DataCard } from '../../components/earn/styled'
 import { ArrowLeft } from 'react-feather'
 import { ButtonPrimary } from '../../components/Button'
-import { ProposalStatus } from './styled'
+import { SnapshotProposalStatus } from './styled'
 import {
   ProposalData,
   ProposalState,
+  SnapshotProposalState,
   useProposalData,
   useUserDelegatee,
   useUserVotesAsOfBlock,
@@ -31,18 +32,22 @@ import { useTokenBalance } from '../../state/wallet/hooks'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import { BigNumber } from 'ethers'
 import { GreyCard } from '../../components/Card'
+import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
+const hubUrl: any = 'https://hub.snapshot.org';
+const snapshot = new Client(hubUrl);
 
 const PageWrapper = styled(AutoColumn)`
   width: 100%;
 `
 
 const ProposalInfo = styled(AutoColumn)`
-  border: 1px solid ${({ theme }) => theme.bg4};
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   padding: 1.5rem;
   position: relative;
   max-width: 640px;
   width: 100%;
+  background-color: ${({ theme }) => theme.bg1}
 `
 const ArrowWrapper = styled(StyledInternalLink)`
   display: flex;
@@ -72,6 +77,7 @@ const StyledDataCard = styled(DataCard)`
   background-color: ${({ theme }) => theme.bg1};
   height: fit-content;
   z-index: 2;
+  border: 1px solid ${({ theme }) => theme.bg4};
 `
 
 const ProgressWrapper = styled.div`
@@ -102,10 +108,6 @@ const WrapSmall = styled(RowBetween)`
   `};
 `
 
-const DetailText = styled.div`
-  word-break: break-all;
-`
-
 const ProposerAddressLink = styled(ExternalLink)`
   word-break: break-all;
 `
@@ -115,7 +117,78 @@ export default function VotePage({
     params: { id },
   },
 }: RouteComponentProps<{ id: string }>) {
+  const [snapshotProposalData, setSnapshotProposalData] = useState({
+    title: '',
+    body: '',
+    end: 0,
+    author: '',
+    state: ''
+  })
+  const [snapshotProposalVotes, setSnapshotProposalVotes] = useState([{
+    id: '',
+    voter: '',
+    proposal: { id: '' },
+    choice: 0,
+    space: { id: '' }
+  }])
+
+  const [snapshotProposalProgress, setSnaspshotProposalProgress] = useState({})
+  const [snapshotProposalProgressArray, setSnaspshotProposalProgressArray] = useState([{ choice: '', votes: 0 }])
+  const [canVoteOnProposal, setCanVoteOnProposal] = useState(false)
+
   const { chainId, account } = useActiveWeb3React()
+
+  async function initPage () {
+    const proposalData = await snapshot.getProposal(id)
+    setSnapshotProposalData(proposalData)
+
+    const proposalVotes = await snapshot.getProposalVotes(id)
+    setSnapshotProposalVotes(proposalVotes)
+
+    const voterAddresses = proposalVotes.map((v: any) => v.voter)
+
+    const proposalVoteScores = await snapshot.getProposalVoteScores(
+      proposalData.space.id,
+      proposalData.strategies,
+      proposalData.network,
+      voterAddresses,
+      parseInt(proposalData.snapshot),
+    )
+
+    // sum all of the vote scores (which is essentially balances at voting time)
+    let totalTokensInVote = 0
+    for (const balance in proposalVoteScores) {
+      totalTokensInVote += proposalVoteScores[balance]
+    }
+
+    const proposalProgress: Record<string, number> = { choice: 0 }
+    delete proposalProgress.choice
+    for (const choice in proposalData.choices) {
+      proposalProgress[proposalData.choices[choice]] = 0
+    }
+    for (const vote of proposalVotes) {
+      const choice = proposalData.choices[vote?.choice - 1]
+      proposalProgress[choice] += proposalVoteScores[vote.voter]
+    }
+    let proposalProgressArray = []
+    for (const [choice, votes] of Object.entries(proposalProgress)) {
+      proposalProgressArray.push({ choice, votes })
+    }
+
+    const proposalStrategy = proposalData?.strategies[0]?.name
+    proposalProgressArray = proposalProgressArray.map((p: any) => {
+      const votingPowerType = proposalStrategy === 'erc20-balance-of' ? totalTokensInVote : p.votes.length
+      p.percentage = (p.votes / votingPowerType * 100).toFixed(2) + '%'
+      return p
+    })
+    setSnaspshotProposalProgress(proposalProgress)
+    setSnaspshotProposalProgressArray(proposalProgressArray)
+
+    const pawthBalance = await getTokenBalance(account || '', '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9)
+    const hasVoted = proposalVotes.find((v: any) => v.voter === account) ? true : false
+
+    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.status === SnapshotProposalState.active && !hasVoted)
+  }
 
   // get data for this specific proposal
   const proposalData: ProposalData | undefined = useProposalData(id)
@@ -132,16 +205,8 @@ export default function VotePage({
   const toggleDelegateModal = useToggleDelegateModal()
 
   // get and format date from data
-  const currentTimestamp = useCurrentBlockTimestamp()
-  const currentBlock = useBlockNumber()
-  const endDate: DateTime | undefined =
-    proposalData && currentTimestamp && currentBlock
-      ? DateTime.fromSeconds(
-          currentTimestamp
-            .add(BigNumber.from(AVERAGE_BLOCK_TIME_IN_SECS).mul(BigNumber.from(proposalData.endBlock - currentBlock)))
-            .toNumber()
-        )
-      : undefined
+  // const endDate: DateTime | undefined = DateTime.fromSeconds(1646221701)
+  const endDate: DateTime | undefined = DateTime.fromSeconds(snapshotProposalData?.end)
   const now: DateTime = DateTime.local()
 
   // get total votes and format percentages for UI
@@ -151,15 +216,8 @@ export default function VotePage({
   const againstPercentage: string =
     proposalData && totalVotes ? ((proposalData.againstCount * 100) / totalVotes).toFixed(0) + '%' : '0%'
 
-  // only count available votes as of the proposal start block
-  const availableVotes: TokenAmount | undefined = useUserVotesAsOfBlock(proposalData?.startBlock ?? undefined)
-
-  // only show voting if user has > 0 votes at proposal start block and proposal is active,
-  const showVotingButtons =
-    availableVotes &&
-    JSBI.greaterThan(availableVotes.raw, JSBI.BigInt(0)) &&
-    proposalData &&
-    proposalData.status === ProposalState.Active
+  // only show voting if user can vote on the proposal
+  const showVotingButtons = canVoteOnProposal
 
   const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? UNI[chainId] : undefined)
   const userDelegatee: string | undefined = useUserDelegatee()
@@ -179,6 +237,29 @@ export default function VotePage({
     return <span>{content}</span>
   }
 
+  async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
+    const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
+    const balance_api = new URL('https://api.etherscan.io/api')
+
+    balance_api.searchParams.append('module', 'account')
+    balance_api.searchParams.append('action', 'tokenbalance')
+    balance_api.searchParams.append('contractaddress', tokenAddr)
+    balance_api.searchParams.append('address', account)
+    balance_api.searchParams.append('tag', 'latest')
+    balance_api.searchParams.append('apikey', ethescanApiKey)
+
+    const balanceReq = await fetch(balance_api.href)
+    const balanceRes = await balanceReq.json()
+    const balance = parseFloat(balanceRes.result)
+
+    const formattedBalance = balance / 10**tokenDecimals
+    return { balance, formattedBalance }
+  }
+
+  useEffect(() => {
+    initPage()
+  }, [account])
+
   return (
     <PageWrapper gap="lg" justify="center">
       <VoteModal isOpen={showVoteModal} onDismiss={toggleVoteModal} proposalId={proposalData?.id} support={support} />
@@ -188,17 +269,17 @@ export default function VotePage({
           <ArrowWrapper to="/vote">
             <ArrowLeft size={20} /> All Proposals
           </ArrowWrapper>
-          {proposalData && (
-            <ProposalStatus status={proposalData.status}>{ProposalState[proposalData.status]}</ProposalStatus>
+          {snapshotProposalData && (
+            <SnapshotProposalStatus state={snapshotProposalData.state}>{snapshotProposalData.state}</SnapshotProposalStatus>
           )}
         </RowBetween>
         <AutoColumn gap="10px" style={{ width: '100%' }}>
-          <TYPE.largeHeader style={{ marginBottom: '.5rem' }}>{proposalData?.title}</TYPE.largeHeader>
+          <TYPE.largeHeader style={{ marginBottom: '.5rem' }}>{snapshotProposalData?.title}</TYPE.largeHeader>
           <RowBetween>
             <TYPE.main>
               {endDate && endDate < now
                 ? 'Voting ended ' + (endDate && endDate.toLocaleString(DateTime.DATETIME_FULL))
-                : proposalData
+                : snapshotProposalData
                 ? 'Voting ends approximately ' + (endDate && endDate.toLocaleString(DateTime.DATETIME_FULL))
                 : ''}
             </TYPE.main>
@@ -217,96 +298,59 @@ export default function VotePage({
             </GreyCard>
           )}
         </AutoColumn>
-        {showVotingButtons ? (
-          <RowFixed style={{ width: '100%', gap: '12px' }}>
-            <ButtonPrimary
-              padding="8px"
-              borderRadius="8px"
-              onClick={() => {
-                setSupport(true)
-                toggleVoteModal()
-              }}
-            >
-              Vote For
-            </ButtonPrimary>
-            <ButtonPrimary
-              padding="8px"
-              borderRadius="8px"
-              onClick={() => {
-                setSupport(false)
-                toggleVoteModal()
-              }}
-            >
-              Vote Against
-            </ButtonPrimary>
-          </RowFixed>
-        ) : (
-          ''
-        )}
         <CardWrapper>
-          <StyledDataCard>
-            <CardSection>
-              <AutoColumn gap="md">
-                <WrapSmall>
-                  <TYPE.black fontWeight={600}>For</TYPE.black>
-                  <TYPE.black fontWeight={600}>
-                    {' '}
-                    {proposalData?.forCount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </TYPE.black>
-                </WrapSmall>
-              </AutoColumn>
-              <ProgressWrapper>
-                <Progress status={'for'} percentageString={forPercentage} />
-              </ProgressWrapper>
-            </CardSection>
-          </StyledDataCard>
-          <StyledDataCard>
-            <CardSection>
-              <AutoColumn gap="md">
-                <WrapSmall>
-                  <TYPE.black fontWeight={600}>Against</TYPE.black>
-                  <TYPE.black fontWeight={600}>
-                    {proposalData?.againstCount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </TYPE.black>
-                </WrapSmall>
-              </AutoColumn>
-              <ProgressWrapper>
-                <Progress status={'against'} percentageString={againstPercentage} />
-              </ProgressWrapper>
-            </CardSection>
-          </StyledDataCard>
-        </CardWrapper>
-        <AutoColumn gap="md">
-          <TYPE.mediumHeader fontWeight={600}>Details</TYPE.mediumHeader>
-          {proposalData?.details?.map((d, i) => {
+          {snapshotProposalProgressArray?.map((p: any, i) => {
             return (
-              <DetailText key={i}>
-                {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
-                {d.callData.split(',').map((content, i) => {
-                  return (
-                    <span key={i}>
-                      {linkIfAddress(content)}
-                      {d.callData.split(',').length - 1 === i ? '' : ','}
-                    </span>
-                  )
-                })}
-                )
-              </DetailText>
+              <AutoColumn key={i}>
+              {showVotingButtons ? (
+                <RowFixed style={{ width: '100%', paddingBottom: '12px' }}>
+                  <ButtonPrimary
+                    padding="8px"
+                    borderRadius="8px"
+                    onClick={() => {
+                      setSupport(true)
+                      toggleVoteModal()
+                    }}
+                  >
+                    Vote {p.choice}
+                  </ButtonPrimary>
+                </RowFixed>
+              ) : (
+                ''
+              )}
+                <StyledDataCard>
+                  <CardSection>
+                    <AutoColumn gap="md">
+                      <WrapSmall>
+                        <TYPE.black fontWeight={600}>{p.choice}</TYPE.black>
+                        <TYPE.black fontWeight={600}>
+                          {' '}
+                          {p?.percentage}
+                          {/* ?.toLocaleString(undefined, { maximumFractionDigits: 0 })} */}
+                        </TYPE.black>
+                      </WrapSmall>
+                    </AutoColumn>
+                    <ProgressWrapper>
+                      <Progress status={'for'} percentageString={p.percentage} />
+                    </ProgressWrapper>
+                  </CardSection>
+                </StyledDataCard>
+              </AutoColumn>
             )
           })}
-        </AutoColumn>
+        </CardWrapper>
         <AutoColumn gap="md">
           <TYPE.mediumHeader fontWeight={600}>Description</TYPE.mediumHeader>
           <MarkDownWrapper>
-            <ReactMarkdown source={proposalData?.description} />
+            <ReactMarkdown source={snapshotProposalData?.body} />
           </MarkDownWrapper>
         </AutoColumn>
         <AutoColumn gap="md">
           <TYPE.mediumHeader fontWeight={600}>Proposer</TYPE.mediumHeader>
           <ProposerAddressLink
-            href={proposalData?.proposer && chainId ? getEtherscanLink(chainId, proposalData?.proposer, 'address') : ''}
+            href={snapshotProposalData?.author && chainId ? getEtherscanLink(chainId, snapshotProposalData?.author, 'address') : ''}
           >
-            <ReactMarkdown source={proposalData?.proposer} />
+            <ReactMarkdown source={snapshotProposalData?.author} />
           </ProposerAddressLink>
         </AutoColumn>
       </ProposalInfo>

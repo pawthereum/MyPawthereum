@@ -11,6 +11,7 @@ import ReactGA from 'react-ga'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
+import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ButtonConfirmed, ButtonError, ButtonGray, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { GreyCard } from '../../components/Card'
@@ -70,6 +71,12 @@ const StyledInfo = styled(Info)`
   :hover {
     opacity: 0.8;
   }
+`
+
+const InfoCard = styled(DataCard)`
+  background: radial-gradient(76.02% 75.41% at 1.84% 0%, #27ae60 0%, #000000 100%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 `
 
 const StyledSwapHeader = styled.div`
@@ -396,9 +403,19 @@ export default function Swap({ history }: RouteComponentProps) {
         onDismiss={handleDismissTokenWarning}
       />
       <AppBody>
-        <PaddedAutoColumn>
-          <img src={pawswapLogo} alt="PawSwap Logo" style={{ width: '100%' }} />
-        </PaddedAutoColumn>
+        <InfoCard>
+          <CardBGImage />
+          <CardNoise />
+          <CardSection>
+            <AutoColumn gap="md">
+              <RowBetween>
+                <img src={pawswapLogo} alt="PawSwap Logo" style={{ width: '100%' }} />
+              </RowBetween>
+            </AutoColumn>
+          </CardSection>
+          <CardBGImage />
+          <CardNoise />
+        </InfoCard>
       </AppBody>
       <AppBody>
         <SwapHeader />

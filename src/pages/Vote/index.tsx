@@ -1,17 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { ExternalLink, TYPE } from '../../theme'
 import { RowBetween, RowFixed } from '../../components/Row'
 import { Link } from 'react-router-dom'
-import { ProposalStatus } from './styled'
+import { ProposalStatus, SnapshotProposalStatus } from './styled'
 import { ButtonPrimary } from '../../components/Button'
 import { Button } from 'rebass/styled-components'
 import { darken } from 'polished'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import {
+  SnapshotProposalData,
   ProposalData,
   ProposalState,
+  SnapshotProposalState,
   useAllProposalData,
   useUserDelegatee,
   useUserVotes,
@@ -27,6 +29,9 @@ import Loader from '../../components/Loader'
 import FormattedCurrencyAmount from '../../components/FormattedCurrencyAmount'
 import { useModalOpen, useToggleDelegateModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/actions'
+import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
+const hubUrl: any = 'https://hub.snapshot.org';
+const snapshot = new Client(hubUrl);
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -55,6 +60,7 @@ const Proposal = styled(Button)`
   &:hover {
     background-color: ${({ theme }) => darken(0.05, theme.bg1)};
   }
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 `
 
 const ProposalNumber = styled.span`
@@ -67,6 +73,7 @@ const ProposalTitle = styled.span`
 
 const VoteCard = styled(DataCard)`
   background: radial-gradient(76.02% 75.41% at 1.84% 0%, #27ae60 0%, #000000 100%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 `
 
@@ -83,6 +90,10 @@ const TextButton = styled(TYPE.main)`
     cursor: pointer;
     text-decoration: underline;
   }
+`
+
+const DisclaimerText = styled.span`
+  color: ${({ theme }) => theme.text2};
 `
 
 const AddressButton = styled.div`
@@ -109,6 +120,13 @@ const EmptyProposals = styled.div`
 `
 
 export default function Vote() {
+  const [proposals, setProposals] = useState([])
+
+  async function initSnapshot() {
+    const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
+    setProposals(pawthSnapshotProposals)
+  }
+
   const { account, chainId } = useActiveWeb3React()
 
   // toggle for showing delegation modal
@@ -128,6 +146,10 @@ export default function Vote() {
     uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
+  useEffect(() => {
+    initSnapshot()
+  }, [account])
+
   return (
     <PageWrapper gap="lg" justify="center">
       <DelegateModal
@@ -142,21 +164,14 @@ export default function Vote() {
           <CardSection>
             <AutoColumn gap="md">
               <RowBetween>
-                <TYPE.white fontWeight={600}>Uniswap Governance</TYPE.white>
+                <TYPE.white fontWeight={600}>Pawthereum Voting</TYPE.white>
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  UNI tokens represent voting shares in Uniswap governance. You can vote on each proposal yourself or
-                  delegate your votes to a third party.
+                  Pawthereum is a community-run project and as such, the community can raise proposals.
+                  If you hold $PAWTH, you are welcomed and encouraged to vote on these proposals so that your voice can help shape the future of Pawthereum.
                 </TYPE.white>
               </RowBetween>
-              <ExternalLink
-                style={{ color: 'white', textDecoration: 'underline' }}
-                href="https://uniswap.org/blog/uni"
-                target="_blank"
-              >
-                <TYPE.white fontSize={14}>Read more about Uniswap governance</TYPE.white>
-              </ExternalLink>
             </AutoColumn>
           </CardSection>
           <CardBGImage />
@@ -216,7 +231,7 @@ export default function Vote() {
             )}
           </RowBetween>
         )}
-        {allProposals?.length === 0 && (
+        {proposals?.length === 0 && (
           <EmptyProposals>
             <TYPE.body style={{ marginBottom: '8px' }}>No proposals found.</TYPE.body>
             <TYPE.subHeader>
@@ -224,7 +239,7 @@ export default function Vote() {
             </TYPE.subHeader>
           </EmptyProposals>
         )}
-        {allProposals?.map((p: ProposalData, i) => {
+        {/* {allProposals?.map((p: ProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
               <ProposalNumber>{p.id}</ProposalNumber>
@@ -232,11 +247,20 @@ export default function Vote() {
               <ProposalStatus status={p.status}>{ProposalState[p.status]}</ProposalStatus>
             </Proposal>
           )
+        })} */}
+        {proposals?.map((p: SnapshotProposalData, i) => {
+          return (
+            <Proposal as={Link} to={'/vote/' + p.id} key={i}>
+              <ProposalNumber>{proposals.length - i}</ProposalNumber>
+              <ProposalTitle>{p.title}</ProposalTitle>
+              <SnapshotProposalStatus state={p.state}>{p.state}</SnapshotProposalStatus>
+            </Proposal>
+          )
         })}
       </TopSection>
-      <TYPE.subHeader color="text3">
-        A minimum threshhold of 1% of the total UNI supply is required to submit proposals
-      </TYPE.subHeader>
+      <DisclaimerText>
+        You must hold $PAWTH in order to participate in voting
+      </DisclaimerText>
     </PageWrapper>
   )
 }
