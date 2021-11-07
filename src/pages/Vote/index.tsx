@@ -92,6 +92,10 @@ const TextButton = styled(TYPE.main)`
   }
 `
 
+const DisclaimerText = styled.span`
+  color: ${({ theme }) => theme.text2};
+`
+
 const AddressButton = styled.div`
   border: 1px solid ${({ theme }) => theme.bg3};
   padding: 2px 4px;
@@ -254,9 +258,9 @@ export default function Vote() {
           )
         })}
       </TopSection>
-      <TYPE.subHeader color="text3">
+      <DisclaimerText>
         You must hold $PAWTH in order to participate in voting
-      </TYPE.subHeader>
+      </DisclaimerText>
     </PageWrapper>
   )
 }
