@@ -141,9 +141,28 @@ export default function VotePage({
   async function initPage () {
     const proposalData = await snapshot.getProposal(id)
     setSnapshotProposalData(proposalData)
+    console.log(proposalData)
 
     const proposalVotes = await snapshot.getProposalVotes(id)
     setSnapshotProposalVotes(proposalVotes)
+
+    const voterAddresses = proposalVotes.map((v: any) => v.voter)
+
+    console.log({
+      space: proposalData.space.id,
+      strategies: proposalData.strategies,
+      network: proposalData.network,
+      snapshot: parseInt(proposalData.snapshot),
+      addresses: voterAddresses,
+    })
+    const proposalVoteScores = await snapshot.getProposalVoteScores(
+      proposalData.space.id,
+      proposalData.strategies,
+      proposalData.network,
+      voterAddresses,
+      proposalData.snapshot,
+    )
+    console.log('scores', proposalVoteScores)
 
     const proposalProgress: Record<string, number> = { choice: 0 }
     delete proposalProgress.choice

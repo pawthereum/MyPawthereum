@@ -245,12 +245,12 @@ export default function Vote() {
         {proposals?.map((p: SnapshotProposalData, i) => {
           return (
             <Proposal as={Link} to={'/vote/' + p.id} key={i}>
-              <ProposalNumber>{i + 1}</ProposalNumber>
+              <ProposalNumber>{proposals.length - i}</ProposalNumber>
               <ProposalTitle>{p.title}</ProposalTitle>
               <SnapshotProposalStatus state={p.state}>{p.state}</SnapshotProposalStatus>
             </Proposal>
           )
-        }).reverse()}
+        })}
       </TopSection>
       <TYPE.subHeader color="text3">
         You must hold $PAWTH in order to participate in voting

@@ -3,6 +3,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { signMessage } from './utils/web3';
 import hubs from './hubs.json';
 import { version } from './constants.json';
+import { objectTraps } from 'immer/dist/internal';
 
 export default class Client {
   readonly address: string;
@@ -255,5 +256,43 @@ export default class Client {
     .then((result) => {
       return result.data.votes
     })
+  }
+
+  async getProposalVoteScores(
+    space: string,
+    strategies: any[],
+    network: string,
+    addresses: string[],
+    snapshot: number | string = 'latest',
+    scoreApiUrl = 'https://score.snapshot.org/api/scores'
+  ) {
+    try {
+      console.log('space', space)
+      const params = {
+        space,
+        strategies,
+        network,
+        addresses,
+        snapshot
+      }
+      // const params = {
+      //   space,
+      //   network,
+      //   snapshot,
+      //   strategies,
+      //   addresses
+      // };
+      console.log('params', params)
+      const res = await fetch(scoreApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ params })
+      });
+      const obj = await res.json();
+      console.log('obj', obj)
+      return obj
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 }
