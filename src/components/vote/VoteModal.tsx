@@ -38,17 +38,21 @@ interface VoteModalProps {
   isOpen: boolean
   onDismiss: () => void
   support: boolean // if user is for or against proposal
+  proposal: Record<any, any> // the proposal that is being voted on
   proposalId: string | undefined // id for the proposal to vote on
+  voteSelection: number // the choice that the user is making
+  snapshot: Record<any, any> // instance of snapshot
 }
 
-export default function VoteModal({ isOpen, onDismiss, proposalId, support }: VoteModalProps) {
-  const { chainId } = useActiveWeb3React()
+export default function VoteModal({ isOpen, onDismiss, proposalId, support, proposal, voteSelection, snapshot }: VoteModalProps) {
+  const { account, chainId, library } = useActiveWeb3React()
   const {
     voteCallback,
   }: {
     voteCallback: (proposalId: string | undefined, support: boolean) => Promise<string> | undefined
   } = useVoteCallback()
   const availableVotes: TokenAmount | undefined = useUserVotes()
+  const choiceLabel = proposal && proposal.choices ? proposal.choices[voteSelection] : ''
 
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()
@@ -70,6 +74,15 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support }: Vo
     // if callback not returned properly ignore
     if (!voteCallback) return
 
+    const snapshotHash = await snapshot.vote(
+      library,
+      account,
+      proposal.space.id,
+      proposal.id,
+      voteSelection,
+      {}
+    )
+
     // try delegation and store hash
     const hash = await voteCallback(proposalId, support)?.catch((error) => {
       setAttempting(false)
@@ -87,16 +100,18 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support }: Vo
         <ContentWrapper gap="lg">
           <AutoColumn gap="lg" justify="center">
             <RowBetween>
-              <TYPE.mediumHeader fontWeight={500}>{`Vote ${
-                support ? 'for ' : 'against'
-              } proposal ${proposalId}`}</TYPE.mediumHeader>
+              <TYPE.mediumHeader fontWeight={500}>
+                {`Vote ${choiceLabel}`}
+              </TYPE.mediumHeader>
               <StyledClosed stroke="black" onClick={wrappedOndismiss} />
             </RowBetween>
-            <TYPE.largeHeader>{availableVotes?.toSignificant(4)} Votes</TYPE.largeHeader>
+            <TYPE.largeHeader>
+              You can only vote once and you cannot change your vote once submitted
+            </TYPE.largeHeader>
             <ButtonPrimary onClick={onVote}>
-              <TYPE.mediumHeader color="white">{`Vote ${
-                support ? 'for ' : 'against'
-              } proposal  ${proposalId}`}</TYPE.mediumHeader>
+              <TYPE.mediumHeader color="white">
+                {`Vote ${choiceLabel}`}
+              </TYPE.mediumHeader>
             </ButtonPrimary>
           </AutoColumn>
         </ContentWrapper>

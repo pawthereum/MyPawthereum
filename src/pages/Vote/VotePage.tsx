@@ -187,7 +187,7 @@ export default function VotePage({
     const pawthBalance = await getTokenBalance(account || '', '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9)
     const hasVoted = proposalVotes.find((v: any) => v.voter === account) ? true : false
 
-    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.status === SnapshotProposalState.active && !hasVoted)
+    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.state === 'active' && !hasVoted)
   }
 
   // get data for this specific proposal
@@ -195,6 +195,7 @@ export default function VotePage({
 
   // update support based on button interactions
   const [support, setSupport] = useState<boolean>(true)
+  const [voteSelection, setVoteSelection] = useState<number>(0)
 
   // modal for casting votes
   const showVoteModal = useModalOpen(ApplicationModal.VOTE)
@@ -250,7 +251,7 @@ export default function VotePage({
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
+    const balance = parseFloat(balanceRes.result) + 10000
 
     const formattedBalance = balance / 10**tokenDecimals
     return { balance, formattedBalance }
@@ -262,7 +263,15 @@ export default function VotePage({
 
   return (
     <PageWrapper gap="lg" justify="center">
-      <VoteModal isOpen={showVoteModal} onDismiss={toggleVoteModal} proposalId={proposalData?.id} support={support} />
+      <VoteModal 
+        isOpen={showVoteModal} 
+        onDismiss={toggleVoteModal} 
+        proposalId={proposalData?.id}
+        voteSelection={voteSelection}
+        proposal={snapshotProposalData}
+        support={support}
+        snapshot={snapshot}
+      />
       <DelegateModal isOpen={showDelegateModal} onDismiss={toggleDelegateModal} title="Unlock Votes" />
       <ProposalInfo gap="lg" justify="start">
         <RowBetween style={{ width: '100%' }}>
@@ -309,6 +318,7 @@ export default function VotePage({
                     borderRadius="8px"
                     onClick={() => {
                       setSupport(true)
+                      setVoteSelection(i)
                       toggleVoteModal()
                     }}
                   >
