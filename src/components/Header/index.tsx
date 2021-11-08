@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { Moon, Sun } from 'react-feather'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 import Logo from '../../assets/images/myPawthLogo.png'
 import LogoDark from '../../assets/images/myPawthLogo.png'
@@ -292,6 +292,31 @@ export const StyledMenuButton = styled.button`
   }
 `
 
+const StyledMenuVotingOpportunity = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+`
+
+const pulseBoxShadow = keyframes`
+  0% {
+    box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 7px rgba(255, 0, 0, 0);
+  }
+`
+
+const StyledMenuVotingDot = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 3px;
+  box-shadow: 0px 0px 1px 1px #0000001a;
+  background: ${({ theme }) => theme.primary1};
+  animation: ${pulseBoxShadow} 2s infinite;
+`
+
 const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ROPSTEN]: 'Ropsten',
@@ -362,9 +387,15 @@ export default function Header() {
         >
           {t('pool')}
         </StyledNavLink> */}
-        {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
-          Vote
-        </StyledNavLink> */}
+        <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
+          <StyledMenuVotingOpportunity>
+            <StyledMenuVotingDot></StyledMenuVotingDot>
+            {/* <span style={{ backgroundColor: 'red', borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(255, 0, 0, 0.1), 0 2px 4px -1px rgba(255, 0, 0, 0.06)' }}>
+              <Circle size={12} style={{ marginRight: '5px', color: 'red' }} />
+            </span> */}
+            <div>Vote</div>
+          </StyledMenuVotingOpportunity>
+        </StyledNavLink>
         {/* 
         <StyledExternalLink id={`stake-nav-link`} href={'https://info.uniswap.org'}>
           Charts <span style={{ fontSize: '11px', textDecoration: 'none !important' }}>↗</span>
