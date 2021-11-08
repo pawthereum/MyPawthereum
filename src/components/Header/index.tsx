@@ -1,5 +1,5 @@
 import { ChainId } from '@uniswap/sdk-core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import { NavLink } from 'react-router-dom'
 import { darken } from 'polished'
@@ -28,6 +28,9 @@ import { useUserHasSubmittedClaim } from '../../state/transactions/hooks'
 import { Dots } from '../swap/styleds'
 import Modal from '../Modal'
 import UniBalanceContent from './UniBalanceContent'
+import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
+const hubUrl: any = 'https://hub.snapshot.org';
+const snapshot = new Client(hubUrl);
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -341,6 +344,24 @@ export default function Header() {
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
   const showClaimPopup = useShowClaimPopup()
 
+  const [showVotingOpportunityDot, setShowVotingOpportunityDot] = useState(false)
+
+  async function checkForVotingOpportunities () {
+    const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
+    const activeProposals = pawthSnapshotProposals.filter((p: any) => p.state === 'active')
+    activeProposals.forEach(async (p: any) => {
+      const votes = await snapshot.getProposalVotes(p.id)
+      const userVoted = votes.find((v: any) => v.voter.toLowerCase() === account?.toLowerCase())
+      if (!userVoted) {
+        setShowVotingOpportunityDot(true)
+      }
+    })
+  }
+
+  useEffect(() => {
+    checkForVotingOpportunities()
+  }, [account])
+
   return (
     <HeaderFrame>
       <ClaimModal />
@@ -389,10 +410,9 @@ export default function Header() {
         </StyledNavLink> */}
         <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           <StyledMenuVotingOpportunity>
-            <StyledMenuVotingDot></StyledMenuVotingDot>
-            {/* <span style={{ backgroundColor: 'red', borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(255, 0, 0, 0.1), 0 2px 4px -1px rgba(255, 0, 0, 0.06)' }}>
-              <Circle size={12} style={{ marginRight: '5px', color: 'red' }} />
-            </span> */}
+            {showVotingOpportunityDot ? (
+              <StyledMenuVotingDot></StyledMenuVotingDot>
+            ) : ''}
             <div>Vote</div>
           </StyledMenuVotingOpportunity>
         </StyledNavLink>
