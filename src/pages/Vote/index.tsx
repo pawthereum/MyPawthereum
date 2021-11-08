@@ -84,7 +84,7 @@ export default function Vote() {
   const [proposals, setProposals] = useState([])
 
   async function initSnapshot() {
-    const pawthSnapshotProposals = await snapshot.getProposals('testingfive.eth')
+    const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
     setProposals(pawthSnapshotProposals)
   }
 
