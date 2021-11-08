@@ -135,6 +135,7 @@ export default function VotePage({
   const [snapshotProposalProgress, setSnaspshotProposalProgress] = useState({})
   const [snapshotProposalProgressArray, setSnaspshotProposalProgressArray] = useState([{ choice: '', votes: 0 }])
   const [canVoteOnProposal, setCanVoteOnProposal] = useState(false)
+  const [usersSubmittedVote, setUsersSubmittedVote] = useState('-')
 
   const { chainId, account } = useActiveWeb3React()
 
@@ -187,6 +188,11 @@ export default function VotePage({
     const pawthBalance = await getTokenBalance(account || '', '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9)
     const hasVoted = proposalVotes.find((v: any) => v.voter === account) ? true : false
 
+    if (hasVoted) {
+      const usersVote = proposalVotes.find((v: any) => v.voter === account)
+      setUsersSubmittedVote(proposalData.choices[usersVote.choice - 1])
+    }
+
     setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.state === 'active' && !hasVoted)
   }
 
@@ -200,6 +206,10 @@ export default function VotePage({
   // modal for casting votes
   const showVoteModal = useModalOpen(ApplicationModal.VOTE)
   const toggleVoteModal = useToggleVoteModal()
+  const toggleVoteModalWithReload = () => {
+    initPage()
+    toggleVoteModal()
+  }
 
   // toggle for showing delegation modal
   const showDelegateModal = useModalOpen(ApplicationModal.DELEGATE)
@@ -251,7 +261,7 @@ export default function VotePage({
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
+    const balance = parseFloat(balanceRes.result) + 1000
 
     const formattedBalance = balance / 10**tokenDecimals
     return { balance, formattedBalance }
@@ -265,7 +275,7 @@ export default function VotePage({
     <PageWrapper gap="lg" justify="center">
       <VoteModal 
         isOpen={showVoteModal} 
-        onDismiss={toggleVoteModal} 
+        onDismiss={toggleVoteModalWithReload}
         proposalId={proposalData?.id}
         voteSelection={voteSelection}
         proposal={snapshotProposalData}
@@ -328,7 +338,7 @@ export default function VotePage({
               ) : (
                 ''
               )}
-                <StyledDataCard>
+                <StyledDataCard style={ usersSubmittedVote == p.choice ? { 'border': '1px solid #ff65b3' } : {} }>
                   <CardSection>
                     <AutoColumn gap="md">
                       <WrapSmall>

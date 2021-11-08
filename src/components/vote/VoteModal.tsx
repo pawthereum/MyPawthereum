@@ -6,13 +6,14 @@ import { AutoColumn, ColumnCenter } from '../Column'
 import styled, { ThemeContext } from 'styled-components'
 import { RowBetween } from '../Row'
 import { TYPE, CustomLightSpinner } from '../../theme'
-import { X, ArrowUpCircle } from 'react-feather'
+import { X, CheckCircle } from 'react-feather'
 import { ButtonPrimary } from '../Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import { useVoteCallback, useUserVotes } from '../../state/governance/hooks'
 import { getEtherscanLink } from '../../utils'
 import { ExternalLink } from '../../theme/components'
 import { TokenAmount } from '@uniswap/sdk-core'
+import Confetti from '../Confetti'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -79,7 +80,7 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
       account,
       proposal.space.id,
       proposal.id,
-      voteSelection,
+      voteSelection + 1,
       {}
     )
 
@@ -91,6 +92,10 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
 
     if (hash) {
       setHash(hash)
+    }
+
+    if (snapshotHash) {
+      setHash(snapshotHash)
     }
   }
 
@@ -135,21 +140,22 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
       )}
       {hash && (
         <ConfirmOrLoadingWrapper>
+          <Confetti start={Boolean(true)} />
           <RowBetween>
             <div />
             <StyledClosed onClick={wrappedOndismiss} />
           </RowBetween>
           <ConfirmedIcon>
-            <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary1} />
+            <CheckCircle strokeWidth={0.5} size={90} color={theme.primary1} />
           </ConfirmedIcon>
           <AutoColumn gap="100px" justify={'center'}>
             <AutoColumn gap="12px" justify={'center'}>
-              <TYPE.largeHeader>Transaction Submitted</TYPE.largeHeader>
+              <TYPE.largeHeader>Vote Submitted</TYPE.largeHeader>
             </AutoColumn>
             {chainId && (
-              <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')} style={{ marginLeft: '4px' }}>
-                <TYPE.subHeader>View transaction on Etherscan</TYPE.subHeader>
-              </ExternalLink>
+              <TYPE.subHeader>
+                Thank you for making your voice heard! Roar!
+              </TYPE.subHeader>
             )}
           </AutoColumn>
         </ConfirmOrLoadingWrapper>
