@@ -408,14 +408,14 @@ export default function Header() {
         >
           {t('pool')}
         </StyledNavLink> */}
-        <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
+        {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           <StyledMenuVotingOpportunity>
             {showVotingOpportunityDot ? (
               <StyledMenuVotingDot></StyledMenuVotingDot>
             ) : ''}
             <div>Vote</div>
           </StyledMenuVotingOpportunity>
-        </StyledNavLink>
+        </StyledNavLink> */}
         {/* 
         <StyledExternalLink id={`stake-nav-link`} href={'https://info.uniswap.org'}>
           Charts <span style={{ fontSize: '11px', textDecoration: 'none !important' }}>↗</span>
