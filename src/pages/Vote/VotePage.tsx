@@ -261,7 +261,7 @@ export default function VotePage({
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result) + 1000
+    const balance = parseFloat(balanceRes.result)
 
     const formattedBalance = balance / 10**tokenDecimals
     return { balance, formattedBalance }
