@@ -179,6 +179,10 @@ export default function VotePage({
     const proposalStrategy = proposalData?.strategies[0]?.name
     proposalProgressArray = proposalProgressArray.map((p: any) => {
       const votingPowerType = proposalStrategy === 'erc20-balance-of' ? totalTokensInVote : p.votes.length
+      if (p.votes === 0) {
+        p.percentage = '0%'
+        return p
+      }
       p.percentage = (p.votes / votingPowerType * 100).toFixed(2) + '%'
       return p
     })
@@ -261,7 +265,7 @@ export default function VotePage({
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
+    const balance = parseFloat(balanceRes.result) + 1000
 
     const formattedBalance = balance / 10**tokenDecimals
     return { balance, formattedBalance }
