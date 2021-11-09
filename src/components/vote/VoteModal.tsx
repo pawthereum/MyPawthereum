@@ -6,7 +6,7 @@ import { AutoColumn, ColumnCenter } from '../Column'
 import styled, { ThemeContext } from 'styled-components'
 import { RowBetween } from '../Row'
 import { TYPE, CustomLightSpinner } from '../../theme'
-import { X, CheckCircle } from 'react-feather'
+import { AlertTriangle, CheckCircle, X } from 'react-feather'
 import { ButtonPrimary } from '../Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import { useVoteCallback, useUserVotes } from '../../state/governance/hooks'
@@ -58,6 +58,7 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()
   const [attempting, setAttempting] = useState<boolean>(false)
+  const [voteError, setVoteError] = useState({ error: false, error_description: undefined })
 
   // get theme for colors
   const theme = useContext(ThemeContext)
@@ -65,6 +66,7 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
   // wrapper to reset state on modal close
   function wrappedOndismiss() {
     setHash(undefined)
+    setVoteError({ error: false, error_description: undefined })
     setAttempting(false)
     onDismiss()
   }
@@ -84,19 +86,17 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
       {}
     )
 
-    // try delegation and store hash
-    const hash = await voteCallback(proposalId, support)?.catch((error) => {
-      setAttempting(false)
-      console.log(error)
-    })
-
-    if (hash) {
-      setHash(hash)
-    }
-
     if (snapshotHash) {
-      setHash(snapshotHash)
+      if (snapshotHash.error) {
+        setVoteError(snapshotHash)
+      } else {
+        setHash(snapshotHash)
+      }
     }
+  }
+
+  function capitalizeFirstLetter(string: any) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
   return (
@@ -121,7 +121,7 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
           </AutoColumn>
         </ContentWrapper>
       )}
-      {attempting && !hash && (
+      {attempting && !hash && !voteError.error ? (
         <ConfirmOrLoadingWrapper>
           <RowBetween>
             <div />
@@ -135,6 +135,27 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
               <TYPE.largeHeader>Submitting Vote</TYPE.largeHeader>
             </AutoColumn>
             <TYPE.subHeader>Confirm this transaction in your wallet</TYPE.subHeader>
+          </AutoColumn>
+        </ConfirmOrLoadingWrapper>
+      ) : ''}
+      {voteError?.error && (
+        <ConfirmOrLoadingWrapper>
+          <RowBetween>
+            <div />
+            <StyledClosed onClick={wrappedOndismiss} />
+          </RowBetween>
+          <ConfirmedIcon>
+            <AlertTriangle strokeWidth={0.5} size={90} color={theme.error} />
+          </ConfirmedIcon>
+          <AutoColumn gap="100px" justify={'center'}>
+            <AutoColumn gap="12px" justify={'center'}>
+              <TYPE.largeHeader>Voting Problem</TYPE.largeHeader>
+            </AutoColumn>
+            {chainId && (
+              <TYPE.subHeader>
+                { capitalizeFirstLetter(voteError.error_description) }
+              </TYPE.subHeader>
+            )}
           </AutoColumn>
         </ConfirmOrLoadingWrapper>
       )}

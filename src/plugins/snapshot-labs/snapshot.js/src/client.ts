@@ -36,7 +36,11 @@ export default class Client {
   }
 
   async send(msg: any) {
-    return this.request('message', msg);
+    try {
+      return this.request('message', msg);
+    } catch (err) {
+      return err
+    }
   }
 
   async getSpaces() {
@@ -65,7 +69,11 @@ export default class Client {
       })
     };
     msg.sig = await signMessage(web3, msg.msg, account);
-    return await this.send(msg);
+    try {
+      return await this.send(msg);
+    } catch (err) {
+      return err
+    }
   }
 
   async sign(
@@ -96,11 +104,15 @@ export default class Client {
     choice: any, 
     metadata = {},
   ) {
-    return this.broadcast(web3, address, space, 'vote', {
-      proposal,
-      choice,
-      metadata
-    });
+    try {
+      return this.broadcast(web3, address, space, 'vote', {
+        proposal,
+        choice,
+        metadata
+      });
+    } catch (err) {
+      return err
+    }
   }
 
   async proposal(
