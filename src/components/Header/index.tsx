@@ -362,6 +362,8 @@ export default function Header() {
       const userVoted = votes.find((v: any) => v.voter.toLowerCase() === account?.toLowerCase())
       if (!userVoted) {
         return setShowVotingOpportunityDot(true)
+      } else {
+        return setShowVotingOpportunityDot(false)
       }
     }
     return false // be careful if this return causes a race condition with the forEach
