@@ -5,7 +5,8 @@ import styled from 'styled-components'
 import { RouteComponentProps } from 'react-router-dom'
 import { ExternalLink, StyledInternalLink, TYPE } from '../../theme'
 import { RowBetween, RowFixed } from '../../components/Row'
-import { CardSection, DataCard } from '../../components/earn/styled'
+import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
+import { VoteCard } from '../Vote'
 import { ArrowLeft, ExternalLink as ExternalLinkIcon } from 'react-feather'
 import { ButtonPrimary } from '../../components/Button'
 import { SnapshotProposalStatus } from './styled'
@@ -39,7 +40,10 @@ const snapshot = new Client(hubUrl);
 const PageWrapper = styled(AutoColumn)`
   width: 100%;
 `
-
+const TopSection = styled(AutoColumn)`
+  max-width: 640px;
+  width: 100%;
+`
 const ProposalInfo = styled(AutoColumn)`
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 12px;
@@ -130,7 +134,8 @@ export default function VotePage({
     end: 0,
     author: '',
     state: '',
-    link: ''
+    link: '',
+    strategies: [{ name: '' }],
   })
   const [snapshotProposalVotes, setSnapshotProposalVotes] = useState([{
     id: '',
@@ -264,6 +269,8 @@ export default function VotePage({
   useEffect(() => {
     initPage()
   }, [account])
+  
+  console.log('proposal', snapshotProposalData)
 
   return (
     <PageWrapper gap="lg" justify="center">
@@ -277,6 +284,33 @@ export default function VotePage({
         snapshot={snapshot}
       />
       <DelegateModal isOpen={showDelegateModal} onDismiss={toggleDelegateModal} title="Unlock Votes" />
+      <TopSection gap="md">
+        <VoteCard>
+          <CardBGImage />
+          <CardNoise />
+          <CardSection>
+            <AutoColumn gap="md">
+              <RowBetween>
+                <TYPE.white fontWeight={600}>Pawthereum Voting</TYPE.white>
+              </RowBetween>
+              <RowBetween>
+                <TYPE.white fontSize={14}>
+                  Pawthereum uses Snapshot for voting. 
+                  Snapshot is an official off chain voting protocol used for both fun and serious community votes. 
+                  Voting here will never cost gas. You will need to sign with your wallet to confirm your vote. 
+                  { snapshotProposalData?.strategies[0]?.name === 'erc20-balance-of'
+                    ? 
+                      ' Your total $pawth equals your total amount of votes.' 
+                    : ''
+                  }
+                </TYPE.white>
+              </RowBetween>
+            </AutoColumn>
+          </CardSection>
+          <CardBGImage />
+          <CardNoise />
+        </VoteCard>
+      </TopSection>
       <ProposalInfo gap="lg" justify="start">
         <RowBetween style={{ width: '100%' }}>
           <ArrowWrapper to="/vote">
