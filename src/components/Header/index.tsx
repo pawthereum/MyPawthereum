@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk-core'
+import { ChainId, TokenAmount } from '@uniswap/sdk-core'
 import React, { useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import { NavLink } from 'react-router-dom'
@@ -27,6 +27,8 @@ import { useUserHasAvailableClaim } from '../../state/claim/hooks'
 import { useUserHasSubmittedClaim } from '../../state/transactions/hooks'
 import { Dots } from '../swap/styleds'
 import Modal from '../Modal'
+import { useTokenBalance } from '../../state/wallet/hooks'
+import { PAWTH } from '../../constants'
 import UniBalanceContent from './UniBalanceContent'
 import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
 const hubUrl: any = 'https://hub.snapshot.org';
@@ -50,8 +52,7 @@ const HeaderFrame = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding:  1rem;
-    grid-template-columns: 120px 1fr;
-
+    grid-template-columns: 40px 1fr;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
@@ -344,23 +345,31 @@ export default function Header() {
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
   const showClaimPopup = useShowClaimPopup()
 
+  const pawth = PAWTH
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
+
   const [showVotingOpportunityDot, setShowVotingOpportunityDot] = useState(false)
 
   async function checkForVotingOpportunities () {
+    // dont bother loading snapshot without an account or balance
+    if (!account || !pawthBalance || pawthBalance?.toFixed(2) === '0.00') {
+      return setShowVotingOpportunityDot(false)
+    }
     const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
     const activeProposals = pawthSnapshotProposals.filter((p: any) => p.state === 'active')
-    activeProposals.forEach(async (p: any) => {
+    for (const p of activeProposals) {
       const votes = await snapshot.getProposalVotes(p.id)
       const userVoted = votes.find((v: any) => v.voter.toLowerCase() === account?.toLowerCase())
       if (!userVoted) {
-        setShowVotingOpportunityDot(true)
+        return setShowVotingOpportunityDot(true)
       }
-    })
+    }
+    return false // be careful if this return causes a race condition with the forEach
   }
 
   useEffect(() => {
     checkForVotingOpportunities()
-  }, [account])
+  }, [pawthBalance, account])
 
   return (
     <HeaderFrame>
@@ -374,9 +383,9 @@ export default function Header() {
             <img width={'32px'} src={darkMode ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
-        <TYPE.label>
+        {/* <TYPE.label>
           BETA
-        </TYPE.label>
+        </TYPE.label> */}
       </HeaderRow>
       <HeaderLinks>
         <StyledNavLink 
@@ -408,14 +417,14 @@ export default function Header() {
         >
           {t('pool')}
         </StyledNavLink> */}
-        {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
+        <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           <StyledMenuVotingOpportunity>
             {showVotingOpportunityDot ? (
               <StyledMenuVotingDot></StyledMenuVotingDot>
             ) : ''}
             <div>Vote</div>
           </StyledMenuVotingOpportunity>
-        </StyledNavLink> */}
+        </StyledNavLink>
         {/* 
         <StyledExternalLink id={`stake-nav-link`} href={'https://info.uniswap.org'}>
           Charts <span style={{ fontSize: '11px', textDecoration: 'none !important' }}>↗</span>
