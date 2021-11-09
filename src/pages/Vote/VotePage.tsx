@@ -6,7 +6,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { ExternalLink, StyledInternalLink, TYPE } from '../../theme'
 import { RowBetween, RowFixed } from '../../components/Row'
 import { CardSection, DataCard } from '../../components/earn/styled'
-import { ArrowLeft } from 'react-feather'
+import { ArrowLeft, ExternalLink as ExternalLinkIcon } from 'react-feather'
 import { ButtonPrimary } from '../../components/Button'
 import { SnapshotProposalStatus } from './styled'
 import {
@@ -112,6 +112,13 @@ const ProposerAddressLink = styled(ExternalLink)`
   word-break: break-all;
 `
 
+const SnapshotLink = styled(ExternalLink)`
+  word-break: break-all;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+`
+
 export default function VotePage({
   match: {
     params: { id },
@@ -122,7 +129,8 @@ export default function VotePage({
     body: '',
     end: 0,
     author: '',
-    state: ''
+    state: '',
+    link: ''
   })
   const [snapshotProposalVotes, setSnapshotProposalVotes] = useState([{
     id: '',
@@ -359,6 +367,18 @@ export default function VotePage({
             <ReactMarkdown source={snapshotProposalData?.author} />
           </ProposerAddressLink>
         </AutoColumn>
+        { snapshotProposalData ? (
+          <AutoColumn gap="md" style={{ width: '100%' }}>
+            <SnapshotLink
+              href={snapshotProposalData?.link ? snapshotProposalData.link : ''}
+            >
+              <div style={{ marginRight: '5px' }}><small>View on Snapshot.org</small></div>
+              <div style={{ display: 'flex', alignContent: 'center'}}>
+                <ExternalLinkIcon size={14} />
+              </div>
+            </SnapshotLink>
+          </AutoColumn>
+        ) : ''}
       </ProposalInfo>
     </PageWrapper>
   )
