@@ -23,7 +23,7 @@ import VoteModal from '../../components/vote/VoteModal'
 import { TokenAmount } from '@uniswap/sdk-core'
 import { JSBI } from '@uniswap/v2-sdk'
 import { useActiveWeb3React } from '../../hooks'
-import { AVERAGE_BLOCK_TIME_IN_SECS, COMMON_CONTRACT_NAMES, UNI, ZERO_ADDRESS } from '../../constants'
+import { PAWTH, COMMON_CONTRACT_NAMES, UNI, ZERO_ADDRESS } from '../../constants'
 import { getEtherscanLink, isAddress } from '../../utils'
 import { ApplicationModal } from '../../state/application/actions'
 import { useBlockNumber, useModalOpen, useToggleDelegateModal, useToggleVoteModal } from '../../state/application/hooks'
@@ -139,6 +139,9 @@ export default function VotePage({
 
   const { chainId, account } = useActiveWeb3React()
 
+  const pawth = PAWTH
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
+
   async function initPage () {
     const proposalData = await snapshot.getProposal(id)
     setSnapshotProposalData(proposalData)
@@ -189,14 +192,13 @@ export default function VotePage({
     setSnaspshotProposalProgress(proposalProgress)
     setSnaspshotProposalProgressArray(proposalProgressArray)
 
-    const pawthBalance = await getTokenBalance(account || '', '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9)
     const hasVoted = proposalVotes.find((v: any) => v.voter === account) ? true : false
 
     if (hasVoted) {
       const usersVote = proposalVotes.find((v: any) => v.voter === account)
       setUsersSubmittedVote(proposalData.choices[usersVote.choice - 1])
     }
-    setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.state === 'active' && !hasVoted)
+    setCanVoteOnProposal(pawthBalance !== undefined && pawthBalance?.toFixed(2) !== '0.00' && proposalData.state === 'active' && !hasVoted)
   }
 
   // get data for this specific proposal
@@ -249,25 +251,6 @@ export default function VotePage({
       return <ExternalLink href={getEtherscanLink(chainId, content, 'address')}>{commonName}</ExternalLink>
     }
     return <span>{content}</span>
-  }
-
-  async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
-    const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
-    const balance_api = new URL('https://api.etherscan.io/api')
-
-    balance_api.searchParams.append('module', 'account')
-    balance_api.searchParams.append('action', 'tokenbalance')
-    balance_api.searchParams.append('contractaddress', tokenAddr)
-    balance_api.searchParams.append('address', account)
-    balance_api.searchParams.append('tag', 'latest')
-    balance_api.searchParams.append('apikey', ethescanApiKey)
-
-    const balanceReq = await fetch(balance_api.href)
-    const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
-
-    const formattedBalance = balance / 10**tokenDecimals
-    return { balance, formattedBalance }
   }
 
   useEffect(() => {
