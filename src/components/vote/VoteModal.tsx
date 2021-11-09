@@ -118,6 +118,11 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support, prop
                 {`Vote ${choiceLabel}`}
               </TYPE.mediumHeader>
             </ButtonPrimary>
+            <TYPE.body style={{ textAlign: 'center' }}>
+              <small>
+                Voting does not cost gas but you will need to sign with your wallet to prove who you are
+              </small>
+            </TYPE.body>
           </AutoColumn>
         </ContentWrapper>
       )}
