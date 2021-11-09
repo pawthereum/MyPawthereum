@@ -196,7 +196,7 @@ export default function VotePage({
       const usersVote = proposalVotes.find((v: any) => v.voter === account)
       setUsersSubmittedVote(proposalData.choices[usersVote.choice - 1])
     }
-
+    console.log('pawthBalance.balance', pawthBalance)
     setCanVoteOnProposal(pawthBalance.balance > 0 && proposalData.state === 'active' && !hasVoted)
   }
 
@@ -265,7 +265,7 @@ export default function VotePage({
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result) + 1000
+    const balance = parseFloat(balanceRes.result)
 
     const formattedBalance = balance / 10**tokenDecimals
     return { balance, formattedBalance }
