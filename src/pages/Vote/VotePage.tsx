@@ -152,8 +152,7 @@ export default function VotePage({
 
   const { chainId, account } = useActiveWeb3React()
 
-  const pawth = PAWTH
-  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PAWTH[chainId] : undefined)
 
   async function initPage () {
     const proposalData = await snapshot.getProposal(id)

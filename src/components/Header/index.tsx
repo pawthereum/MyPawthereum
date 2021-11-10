@@ -345,8 +345,7 @@ export default function Header() {
   const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
   const showClaimPopup = useShowClaimPopup()
 
-  const pawth = PAWTH
-  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PAWTH[chainId] : undefined)
 
   const [showVotingOpportunityDot, setShowVotingOpportunityDot] = useState(false)
 
