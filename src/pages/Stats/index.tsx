@@ -35,6 +35,7 @@ import catDay from '../../assets/images/catDay.png'
 import shibaInuLp from '../../assets/images/shibaInuLp.png'
 import uniLp from '../../assets/images/uniLp.png'
 import heartSparkle from '../../assets/images/heartSparkle.png'
+import edinburgh from '../../assets/images/edinburgh.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -66,6 +67,7 @@ const MainContentWrapper = styled.main`
 `
 const PaddedAutoColumn = styled(AutoColumn)`
   padding: 12px;
+  min-width: 33%;
 `
 
 export const StyledHelpButton = styled.button`
@@ -147,6 +149,7 @@ export default function Stats() {
   const [isShibaLpProvider, setIsShibaLpProvider] = useState(false)
   const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
   const [isMarketingDonor, setIsMarketingDonor] = useState(false)
+  const [isEdinburghEventVisitor, setIsEdinburghEventVisitor] = useState(false)
 
   function openRankMenu () {
     const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
@@ -304,6 +307,21 @@ export default function Stats() {
       }
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
+  
+      // TODO: we can get rid of all of this after edinburgh donation event
+      const donationTime = 1636966800 // 9am UK time on 11/15/2021
+      const endOfEvent = 1637096400 // 9pm UK tike on 11/16/2021
+      const now = Math.floor(Date.now() / 1000)
+      const isEdinburghEvent = now >= donationTime && now <= endOfEvent
+      console.log('is edinburgh event', isEdinburghEvent)
+      if (isEdinburghEvent) {
+        const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
+        const resp = await fetch (addVisitorUrl)
+        console.log('resp', resp)
+      }
+      // once eventis over delete the code above and change the state setter
+      // to only check if they are part of the visitors constant
+      setIsEdinburghEventVisitor(isEdinburghEvent)
     }
   }
 
@@ -763,6 +781,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Marketing Donor</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Donated to the Marketing Wallet</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isEdinburghEventVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={edinburgh} alt="EdinburghVisitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Edinburgh Dog &amp; Cat Home</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day 11/14/2021 $118k</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
