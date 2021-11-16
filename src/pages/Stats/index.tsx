@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { HelpCircle } from 'react-feather'
-import { ORIGINAL_SWAPPERS, BUG_SQUISHERS, TESTERS, CAT_DAY_VISITORS } from './../../constants/index'
+import { ORIGINAL_SWAPPERS, BUG_SQUISHERS, TESTERS, CAT_DAY_VISITORS, EDINBURGH_VISITORS } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -307,21 +307,7 @@ export default function Stats() {
       }
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
-  
-      // TODO: we can get rid of all of this after edinburgh donation event
-      const donationTime = 1636966800 // 9am UK time on 11/15/2021
-      const endOfEvent = 1637096400 // 9pm UK tike on 11/16/2021
-      const now = Math.floor(Date.now() / 1000)
-      const isEdinburghEvent = now >= donationTime && now <= endOfEvent
-      console.log('is edinburgh event', isEdinburghEvent)
-      if (isEdinburghEvent) {
-        const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
-        const resp = await fetch (addVisitorUrl)
-        console.log('resp', resp)
-      }
-      // once eventis over delete the code above and change the state setter
-      // to only check if they are part of the visitors constant
-      setIsEdinburghEventVisitor(isEdinburghEvent)
+      setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
     }
   }
 

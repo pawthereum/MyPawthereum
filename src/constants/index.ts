@@ -27,6 +27,7 @@ export { ORIGINAL_SWAPPERS } from './originalSwappers'
 export { BUG_SQUISHERS } from './bugSquishers'
 export { TESTERS } from './testers'
 export { CAT_DAY_VISITORS } from './catDayVisitors'
+export { EDINBURGH_VISITORS } from './edinburghVisitors'
 
 // a list of tokens by chain
 type ChainTokenList = {
