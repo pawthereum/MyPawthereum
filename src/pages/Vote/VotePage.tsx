@@ -269,8 +269,6 @@ export default function VotePage({
   useEffect(() => {
     initPage()
   }, [account])
-  
-  console.log('proposal', snapshotProposalData)
 
   return (
     <PageWrapper gap="lg" justify="center">
