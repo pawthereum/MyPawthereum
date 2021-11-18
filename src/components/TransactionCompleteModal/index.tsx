@@ -170,7 +170,7 @@ export function ConfirmationPendingContent({
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
           <Text fontWeight={500} fontSize={20} textAlign="center">
-            Waiting For Confirmation - Hello there!
+            Waiting For Confirmation
           </Text>
           <AutoColumn gap="12px" justify={'center'}>
             <Text fontWeight={600} fontSize={14} color="" textAlign="center">
@@ -219,12 +219,9 @@ export function TransactionSubmittedContent({
   const tweetTemplate = "I%20just%20contributed%20to%20helping%20animal%20shelters%20around%20the%20world%20by%20purchasing%20Pawthereum!%20%23followthepawth%20%F0%9F%90%BE%20%40Pawthereum"
 
   async function getWallet() {
-    console.log('getting acct')
     if (account) {
-      console.log('got account', account)
       const pawthBalance = await getTokenBalance(account, pawthContractAddress, 9)
       const ranks = await getPawthRanks(pawthBalance.balance)
-      console.log('ranks', ranks)
       setPawthRank(ranks.rank)
       setNextPawthRank(ranks.nextRank)
       setDistanceToNextRank(ranks.distanceToNextRank)
@@ -346,6 +343,11 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
           <Text fontWeight={500} fontSize={16} color={theme.red1} style={{ textAlign: 'center', width: '85%' }}>
+            We are aware of an issue on PawSwap where swaps fail due because they cannot estimate gas. 
+            We are looking into it. 
+            These transactions normally succeed on Uniswap -- you can try there until we deploy a fix. 
+            Any transactions you made to approve Uniswap to use your PAWTH will not need to be made again if you try on Uniswap. 
+            <hr/>
             {message}
           </Text>
         </AutoColumn>
