@@ -343,10 +343,10 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
           <Text fontWeight={500} fontSize={16} color={theme.red1} style={{ textAlign: 'center', width: '85%' }}>
-            We are aware of an issue on PawSwap where swaps fail due because they cannot estimate gas. 
+            We are aware of an issue on PawSwap where some swaps fail because they cannot estimate gas. 
             We are looking into it. 
             These transactions normally succeed on Uniswap -- you can try there until we deploy a fix. 
-            Any transactions you made to approve Uniswap to use your PAWTH will not need to be made again if you try on Uniswap. 
+            Any approval transactions you made will not need to be made again if you attempt to swap on Uniswap. 
             <hr/>
             {message}
           </Text>
