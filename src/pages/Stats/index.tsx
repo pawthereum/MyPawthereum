@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { HelpCircle, AlertTriangle } from 'react-feather'
+import { HelpCircle } from 'react-feather'
 import { ORIGINAL_SWAPPERS, BUG_SQUISHERS, TESTERS, CAT_DAY_VISITORS, EDINBURGH_VISITORS } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
-import styled, { ThemeContext } from 'styled-components'
+import styled from 'styled-components'
 import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
@@ -546,8 +546,6 @@ export default function Stats() {
     getWallet()
   }, [account])
 
-  const theme = useContext(ThemeContext)
-
   return (
     <PageWrapper gap="lg" justify="center">
       <TopSection gap="md">
@@ -813,17 +811,6 @@ export default function Stats() {
               </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
-            <AutoColumn gap="lg">
-                <AutoRow justify="center">
-                  <PaddedAutoColumn gap="sm" justify="center">
-                    <AlertTriangle color={theme.yellow1} style={{ strokeWidth: 1.5 }} size={64} />
-                    <TYPE.largeHeader color={theme.yellow1} textAlign="center">Reflection Calculator Is Being Fixed!</TYPE.largeHeader>
-                    <TYPE.body fontWeight={500} fontSize={16} color={theme.yellow1} style={{ textAlign: 'center', width: '85%' }}>
-                      We are working on a fix -- this will be resolved shortly!
-                    </TYPE.body>
-                  </PaddedAutoColumn>
-                </AutoRow>
-              </AutoColumn>
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
