@@ -124,6 +124,18 @@ const InternalMenuItem = styled(Link)`
   }
 `
 
+const Version = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border: none;
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.text2};
+`
+
 const CODE_LINK = 'https://github.com/Financegrumpy/grumpy-swap'
 
 export default function Menu() {
@@ -168,8 +180,11 @@ export default function Menu() {
             pathname: '/feedback'
           }}>
             <Edit3 size={14} />
-              <div>Feedback</div>
+            <div>Feedback</div>
           </InternalMenuItem>
+          <Version>
+            <small>Version 0.1.0</small>
+          </Version>
           {/* {account && (
             <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
               Claim UNI
