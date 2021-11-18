@@ -777,7 +777,7 @@ export default function Stats() {
                         <img src={edinburgh} alt="EdinburghVisitor" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Edinburgh Dog &amp; Cat Home</strong></TYPE.body>
-                      <TYPE.body textAlign="center"><small>Visited on Donation Day 11/14/2021 $118k</small></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day 11/15/2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
