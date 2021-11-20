@@ -417,7 +417,6 @@ export default function Stats() {
     let isMarketingWalletDonor = false
     for (const item of transaction) {
       if (item.to === pawthMarketingWallet.toLowerCase()) {
-        console.log('item', item)
         isMarketingWalletDonor = true
       }
     }
@@ -439,8 +438,6 @@ export default function Stats() {
     const transactionReq = await fetch(transactions_api.href)
     const transactionRes = await transactionReq.json()
     const transaction = transactionRes.result
-
-    console.log('transaction', transaction)
 
     let totalIn = 0.0
     let totalOut = 0.0
