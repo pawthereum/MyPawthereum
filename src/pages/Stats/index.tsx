@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { HelpCircle } from 'react-feather'
-import { ORIGINAL_SWAPPERS, BUG_SQUISHERS, TESTERS, CAT_DAY_VISITORS, EDINBURGH_VISITORS } from './../../constants/index'
+import { 
+  ORIGINAL_SWAPPERS, 
+  BUG_SQUISHERS, 
+  TESTERS, 
+  CAT_DAY_VISITORS, 
+  EDINBURGH_VISITORS,
+  RED_CANDLE_SURVIVORS
+} from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -36,6 +43,7 @@ import shibaInuLp from '../../assets/images/shibaInuLp.png'
 import uniLp from '../../assets/images/uniLp.png'
 import heartSparkle from '../../assets/images/heartSparkle.png'
 import edinburgh from '../../assets/images/edinburgh.png'
+import redCandle from '../../assets/images/redCandle.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -150,6 +158,7 @@ export default function Stats() {
   const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
   const [isMarketingDonor, setIsMarketingDonor] = useState(false)
   const [isEdinburghEventVisitor, setIsEdinburghEventVisitor] = useState(false)
+  const [isRedCandleSurvivor, setIsRedCandleSurvivor] = useState(false)
 
   function openRankMenu () {
     const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
@@ -308,6 +317,7 @@ export default function Stats() {
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
+      setIsRedCandleSurvivor(RED_CANDLE_SURVIVORS.includes(account.toLowerCase()))
     }
   }
 
@@ -778,6 +788,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Edinburgh Dog &amp; Cat Home</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day 11/15/2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isRedCandleSurvivor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={redCandle} alt="Red Candle Survivor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Red Candle Survivor</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Survived the Nov. 18, 2021 Big Red Candle</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
