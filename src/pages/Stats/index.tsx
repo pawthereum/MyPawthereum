@@ -44,6 +44,7 @@ import uniLp from '../../assets/images/uniLp.png'
 import heartSparkle from '../../assets/images/heartSparkle.png'
 import edinburgh from '../../assets/images/edinburgh.png'
 import redCandle from '../../assets/images/redCandle.png'
+import slurp from '../../assets/images/slurp.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -159,6 +160,7 @@ export default function Stats() {
   const [isMarketingDonor, setIsMarketingDonor] = useState(false)
   const [isEdinburghEventVisitor, setIsEdinburghEventVisitor] = useState(false)
   const [isRedCandleSurvivor, setIsRedCandleSurvivor] = useState(false)
+  const [isNov18Slurper, setIsNov18Slurper] = useState(false)
 
   function openRankMenu () {
     const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
@@ -275,6 +277,9 @@ export default function Stats() {
       setCharityAllTimeTotal(charityTx.totalIn)
       setCharityTransferredOut(charityTx.totalOut)
 
+      // this needs to be set before the transactions are analyzed
+      setIsRedCandleSurvivor(RED_CANDLE_SURVIVORS.includes(account.toLowerCase()))
+
       const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
       const ranks = await getPawthRanks(balance)
@@ -317,7 +322,6 @@ export default function Stats() {
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
-      setIsRedCandleSurvivor(RED_CANDLE_SURVIVORS.includes(account.toLowerCase()))
     }
   }
 
@@ -436,14 +440,31 @@ export default function Stats() {
     const transactionRes = await transactionReq.json()
     const transaction = transactionRes.result
 
+    console.log('transaction', transaction)
+
     let totalIn = 0.0
     let totalOut = 0.0
+
+    const startBlockOfNov18Slurp = 13642443
+    const endBlockOfNov18Slurp = 13643054
 
     for (const item of transaction) {
       if (item.to === account.toLowerCase()) {
         totalIn += parseFloat(item.value)
+
+        if (parseInt(item.blockNumber) >= startBlockOfNov18Slurp &&
+            parseInt(item.blockNumber) <= endBlockOfNov18Slurp) {
+              setIsNov18Slurper(true)
+        }
+
       } else {
         totalOut += parseFloat(item.value)
+
+        // if you sold during the Nov 18 dip, you did not survive
+        if (parseInt(item.blockNumber) >= startBlockOfNov18Slurp &&
+            parseInt(item.blockNumber) <= endBlockOfNov18Slurp) {
+              setIsRedCandleSurvivor(false)
+            }
       }
     }
 
@@ -454,8 +475,14 @@ export default function Stats() {
     // if this person never sold, they are diamond hands
     setIsDiamondHands(totalOut === 0 && totalIn > 0)
 
-    const balanceWithoutRedistribution = totalIn - totalOut
+    let balanceWithoutRedistribution = totalIn - totalOut
     const redistribution = balance - balanceWithoutRedistribution
+    
+    // for paperhands who sold all of their pawth, dont let balance
+    // without reflections show a negative balance
+    if (balanceWithoutRedistribution < 0) {
+      balanceWithoutRedistribution = 0
+    }
 
     return { totalIn, totalOut, redistribution, balanceWithoutRedistribution }
   }
@@ -797,8 +824,19 @@ export default function Stats() {
                       <TYPE.body textAlign="center">
                         <img src={redCandle} alt="Red Candle Survivor" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
-                      <TYPE.body textAlign="center"><strong>Red Candle Survivor</strong></TYPE.body>
-                      <TYPE.body textAlign="center"><small>Survived the Nov. 18, 2021 Big Red Candle</small></TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Big Red Candle Survivor</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Survived the Nov. 18, 2021 Candle</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isNov18Slurper ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={slurp} alt="November 18 Slurper" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Dip Buyer</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Slurped the Nov. 18, 2021 Dip</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
