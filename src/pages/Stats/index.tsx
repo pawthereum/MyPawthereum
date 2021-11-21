@@ -45,6 +45,7 @@ import heartSparkle from '../../assets/images/heartSparkle.png'
 import edinburgh from '../../assets/images/edinburgh.png'
 import redCandle from '../../assets/images/redCandle.png'
 import slurp from '../../assets/images/slurp.png'
+import paws from '../../assets/images/paws.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -161,6 +162,7 @@ export default function Stats() {
   const [isEdinburghEventVisitor, setIsEdinburghEventVisitor] = useState(false)
   const [isRedCandleSurvivor, setIsRedCandleSurvivor] = useState(false)
   const [isNov18Slurper, setIsNov18Slurper] = useState(false)
+  const [isPawsOrgEventVisitor, setIsPawsOrgEventVisitor] = useState(false)
 
   function openRankMenu () {
     const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
@@ -322,6 +324,21 @@ export default function Stats() {
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
+
+      // TODO: we can get rid of all of this after paws donation event
+      const donationTime = 1637600400 // 9am West Coast time on 11/21/2021
+      const endOfEvent = 1637686800 // 9am West Coast time on 11/22/2021
+      const now = Math.floor(Date.now() / 1000)
+      const isPawsOrgEvent = now >= donationTime && now <= endOfEvent
+      console.log('is Paws Org Event', isPawsOrgEvent)
+      if (isPawsOrgEvent) {
+        const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
+        const resp = await fetch (addVisitorUrl)
+        console.log('resp', resp)
+      }
+      // once eventis over delete the code above and change the state setter
+      // to only check if they are part of the visitors constant
+      setIsPawsOrgEventVisitor(isPawsOrgEvent)
     }
   }
 
