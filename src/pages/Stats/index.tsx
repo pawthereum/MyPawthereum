@@ -828,7 +828,7 @@ export default function Stats() {
                         <img src={edinburgh} alt="EdinburghVisitor" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Edinburgh Dog &amp; Cat Home</strong></TYPE.body>
-                      <TYPE.body textAlign="center"><small>Visited on Donation Day 11/15/2021</small></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 15-Nov-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
@@ -839,7 +839,7 @@ export default function Stats() {
                         <img src={redCandle} alt="Red Candle Survivor" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Big Red Candle Survivor</strong></TYPE.body>
-                      <TYPE.body textAlign="center"><small>Survived the Nov. 18, 2021 Candle</small></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Survived the 18-Nov-2021 Candle</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
@@ -850,7 +850,18 @@ export default function Stats() {
                         <img src={slurp} alt="November 18 Slurper" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Dip Buyer</strong></TYPE.body>
-                      <TYPE.body textAlign="center"><small>Slurped the Nov. 18, 2021 Dip</small></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Slurped the 18-Nov-21 Dip</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isPawsOrgEventVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={paws} alt="Paws Org Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Paws.org</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 22-Nov-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
