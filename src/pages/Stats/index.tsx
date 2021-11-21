@@ -327,7 +327,7 @@ export default function Stats() {
 
       // TODO: we can get rid of all of this after paws donation event
       const donationTime = 1637600400 // 9am West Coast time on 11/21/2021
-      const endOfEvent = 1637686800 // 9am West Coast time on 11/22/2021
+      const endOfEvent = 1637729999 // 11:59pm West Coast time on 11/22/2021 (36h later)
       const now = Math.floor(Date.now() / 1000)
       const isPawsOrgEvent = now >= donationTime && now <= endOfEvent
       console.log('is Paws Org Event', isPawsOrgEvent)
