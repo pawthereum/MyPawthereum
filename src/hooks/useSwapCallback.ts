@@ -15,6 +15,7 @@ import { SignatureData } from './useERC20Permit'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
 import { Version } from './useToggledVersion'
+import { sign } from 'crypto'
 
 export enum SwapCallbackState {
   INVALID,
@@ -87,7 +88,10 @@ function useSwapCallArguments(
           })
         )
       }
-      return swapMethods.map(({ methodName, args, value }) => ({
+      console.log('swapMethods', swapMethods.filter(s => s.methodName === 'swapExactTokensForETHSupportingFeeOnTransferTokens'))
+      return swapMethods
+      .filter(s => s.methodName === 'swapExactTokensForETHSupportingFeeOnTransferTokens')
+      .map(({ methodName, args, value }) => ({
         address: routerContract.address,
         calldata: routerContract.interface.encodeFunctionData(methodName, args),
         value,
@@ -144,6 +148,7 @@ export function useSwapCallback(
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
 
+  console.log('signatureData', signatureData)
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, signatureData)
 
   const addTransaction = useTransactionAdder()
@@ -200,6 +205,7 @@ export function useSwapCallback(
                   .catch((callError) => {
                     console.debug('Call threw error', call, callError)
                     let errorMessage: string
+                    console.log('error:', callError.reason)
                     switch (callError.reason) {
                       case 'UniswapV2Router: EXPIRED':
                         errorMessage =
@@ -216,6 +222,12 @@ export function useSwapCallback(
                       case 'UniswapV2: K':
                         errorMessage =
                           'The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer.'
+                        break
+                      case 'cannot estimate gas; transaction may fail or may require manual gas limit':
+                        errorMessage =
+                          `PawSwap is experiencing issues with this transaction we are working hard to fix it.
+                          In the meantime, rest assured that this error does not appear if trading directly on uniswap and any gas spent you have spent to approve a sale on PawSwap will not need to be spent again to sell on Uniswap.
+                          The team is available in Telegram to help if needed.`
                         break
                       default:
                         return { call }
