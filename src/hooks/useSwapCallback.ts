@@ -87,10 +87,8 @@ function useSwapCallArguments(
           })
         )
       }
-      console.log('swapMethods', swapMethods.filter(s => s.methodName === 'swapExactTokensForETHSupportingFeeOnTransferTokens'))
-      return swapMethods
-      .filter(s => s.methodName === 'swapExactTokensForETHSupportingFeeOnTransferTokens')
-      .map(({ methodName, args, value }) => ({
+      
+      return swapMethods.map(({ methodName, args, value }) => ({
         address: routerContract.address,
         calldata: routerContract.interface.encodeFunctionData(methodName, args),
         value,
