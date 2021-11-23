@@ -217,6 +217,12 @@ export function useSwapCallback(
                         errorMessage =
                           'The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer.'
                         break
+                      case 'cannot estimate gas; transaction may fail or may require manual gas limit':
+                        errorMessage =
+                          `PawSwap is experiencing issues with this transaction we are working hard to fix it.
+                          In the meantime, rest assured that this error does not appear if trading directly on uniswap and any gas spent you have spent to approve a sale on PawSwap will not need to be spent again to sell on Uniswap.
+                          The team is available in Telegram to help if needed.`
+                        break
                       default:
                         return { call }
                     }
