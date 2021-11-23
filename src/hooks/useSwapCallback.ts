@@ -87,7 +87,6 @@ function useSwapCallArguments(
           })
         )
       }
-      
       return swapMethods.map(({ methodName, args, value }) => ({
         address: routerContract.address,
         calldata: routerContract.interface.encodeFunctionData(methodName, args),
