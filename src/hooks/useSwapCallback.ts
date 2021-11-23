@@ -15,7 +15,6 @@ import { SignatureData } from './useERC20Permit'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
 import { Version } from './useToggledVersion'
-import { sign } from 'crypto'
 
 export enum SwapCallbackState {
   INVALID,
@@ -148,7 +147,6 @@ export function useSwapCallback(
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
 
-  console.log('signatureData', signatureData)
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, signatureData)
 
   const addTransaction = useTransactionAdder()
@@ -205,7 +203,6 @@ export function useSwapCallback(
                   .catch((callError) => {
                     console.debug('Call threw error', call, callError)
                     let errorMessage: string
-                    console.log('error:', callError.reason)
                     switch (callError.reason) {
                       case 'UniswapV2Router: EXPIRED':
                         errorMessage =
