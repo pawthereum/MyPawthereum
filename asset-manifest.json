@@ -4,8 +4,8 @@
     "static/js/0.d88dfe8d.chunk.js.map": "/static/js/0.d88dfe8d.chunk.js.map",
     "static/js/1.b1ac651f.chunk.js": "/static/js/1.b1ac651f.chunk.js",
     "static/js/1.b1ac651f.chunk.js.map": "/static/js/1.b1ac651f.chunk.js.map",
-    "main.js": "/static/js/main.c8000907.chunk.js",
-    "main.js.map": "/static/js/main.c8000907.chunk.js.map",
+    "main.js": "/static/js/main.917036a2.chunk.js",
+    "main.js.map": "/static/js/main.917036a2.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.17d45958.js",
     "runtime-main.js.map": "/static/js/runtime-main.17d45958.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -53,7 +53,7 @@
     "static/media/metamask.02e3ec27.png": "/static/media/metamask.02e3ec27.png",
     "static/media/myPawthLogo.244c9a84.png": "/static/media/myPawthLogo.244c9a84.png",
     "static/media/noise.0473ebbb.png": "/static/media/noise.0473ebbb.png",
-    "static/media/paws.250cf207.png": "/static/media/paws.250cf207.png",
+    "static/media/paws.229a135f.png": "/static/media/paws.229a135f.png",
     "static/media/pawswapLogo.f04fc972.png": "/static/media/pawswapLogo.f04fc972.png",
     "static/media/portisIcon.f44aba13.png": "/static/media/portisIcon.f44aba13.png",
     "static/media/puma.bbf04e5a.png": "/static/media/puma.bbf04e5a.png",
@@ -78,6 +78,6 @@
     "static/js/runtime-main.17d45958.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.9f3705e2.chunk.js",
-    "static/js/main.c8000907.chunk.js"
+    "static/js/main.917036a2.chunk.js"
   ]
 }
