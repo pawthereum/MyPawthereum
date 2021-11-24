@@ -219,9 +219,7 @@ export function useSwapCallback(
                         break
                       case 'cannot estimate gas; transaction may fail or may require manual gas limit':
                         errorMessage =
-                          `PawSwap is experiencing issues with this transaction we are working hard to fix it.
-                          In the meantime, rest assured that this error does not appear if trading directly on uniswap and any gas spent you have spent to approve a sale on PawSwap will not need to be spent again to sell on Uniswap.
-                          The team is available in Telegram to help if needed.`
+                          `Pawthereum requires slippage to be set to at least 4.5% to account for taxes. Please try adjusting your slippage in the settings. If you continue to receive an error, try trading on Uniswap. Reach out to the team in Telegram if you continue to experience issues with swapping.`
                         break
                       default:
                         return { call }
