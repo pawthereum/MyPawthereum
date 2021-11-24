@@ -87,20 +87,7 @@ function useSwapCallArguments(
           })
         )
       }
-      return swapMethods
-      .map(s => {
-        const isSellingPawth = s.args[2][0] == '0xAEcc217a749c2405b5ebC9857a16d58Bdc1c367F'
-        if (!isSellingPawth) return s
-        // amountMinOut should be 4.5% less of the ETH depicted in the UI due to taxes
-        // TODO: we can try to remove this .map instance if taxes get lowered
-        const hex = s.args[1].toString()
-        const decimal = parseInt(hex, 16)
-        const decimalWithSlippage = decimal - decimal * .045
-        const roundedDecimal = Number(decimalWithSlippage)
-        s.args[1] = `0x${roundedDecimal.toString(16).split('.')[0]}`
-        return s
-      })
-      .map(({ methodName, args, value }) => ({
+      return swapMethods.map(({ methodName, args, value }) => ({
         address: routerContract.address,
         calldata: routerContract.interface.encodeFunctionData(methodName, args),
         value,
