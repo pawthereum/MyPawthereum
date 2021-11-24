@@ -32,6 +32,8 @@ import {
   UNI,
   MULTICALL2_ADDRESSES,
   V2_ROUTER_ADDRESS,
+  ROUTER_ADDRESS_SHIBASWAP,
+  ROUTER_ADDRESS_UNISWAP_V2
 } from 'constants/index'
 import { abi as NFTPositionManagerABI } from '@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json'
 import {
@@ -48,6 +50,7 @@ import { V3Migrator } from 'types/v3/V3Migrator'
 import { getContract } from 'utils'
 import { Multicall2 } from '../abis/types'
 import { useActiveWeb3React } from './index'
+import { useUserDexSwapSelection } from 'state/user/hooks'
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -125,7 +128,10 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 }
 
 export function useV2RouterContract(): Contract | null {
-  return useContract(V2_ROUTER_ADDRESS, IUniswapV2Router02ABI, true)
+  console.log('using v2 router contract')
+  const [userDexSwapSelection, setUserDexSwapSelection] = useUserDexSwapSelection()
+  const v2RouterAddress = userDexSwapSelection == 'Uniswap V2' ? ROUTER_ADDRESS_UNISWAP_V2 : ROUTER_ADDRESS_SHIBASWAP 
+  return useContract(v2RouterAddress, IUniswapV2Router02ABI, true)
 }
 
 export function useMulticall2Contract(): Multicall2 | null {

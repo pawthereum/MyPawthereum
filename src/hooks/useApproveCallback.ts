@@ -4,9 +4,10 @@ import { TokenAmount, CurrencyAmount, ETHER, ChainId, Percent } from '@uniswap/s
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useCallback, useMemo } from 'react'
-import { V2_ROUTER_ADDRESS } from '../constants'
+import { ROUTER_ADDRESS_SHIBASWAP, ROUTER_ADDRESS_UNISWAP_V2 } from '../constants'
 import { SWAP_ROUTER_ADDRESSES } from '../constants/v3'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
+import { useUserDexSwapSelection } from 'state/user/hooks'
 import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
@@ -106,8 +107,10 @@ export function useApproveCallbackFromTrade(trade: V2Trade | V3Trade | undefined
     trade,
     allowedSlippage,
   ])
+  const [userDexSwapSelection, setUserDexSwapSelection] = useUserDexSwapSelection()
+  const v2RouterAddress = userDexSwapSelection == 'Uniswap V2' ? ROUTER_ADDRESS_UNISWAP_V2 : ROUTER_ADDRESS_SHIBASWAP 
   return useApproveCallback(
     amountToApprove,
-    trade instanceof V2Trade ? V2_ROUTER_ADDRESS : trade instanceof V3Trade ? swapRouterAddress : undefined
+    trade instanceof V2Trade ? v2RouterAddress : trade instanceof V3Trade ? swapRouterAddress : undefined
   )
 }
