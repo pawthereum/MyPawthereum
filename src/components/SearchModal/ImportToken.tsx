@@ -6,7 +6,7 @@ import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { ArrowLeft, AlertCircle } from 'react-feather'
+import { ArrowLeft, AlertCircle, ArrowDownCircle } from 'react-feather'
 import { transparentize } from 'polished'
 import useTheme from 'hooks/useTheme'
 import { ButtonPrimary } from 'components/Button'
@@ -18,6 +18,7 @@ import { ExternalLink } from '../../theme/components'
 import { useCombinedInactiveList } from 'state/lists/hooks'
 import ListLogo from 'components/ListLogo'
 import { PaddedColumn } from './styleds'
+import { PAWTH } from '../../constants'
 
 const Wrapper = styled.div`
   position: relative;
@@ -55,6 +56,8 @@ export function ImportToken({ tokens, onBack, onDismiss, handleCurrencySelect }:
 
   // use for showing import source on inactive tokens
   const inactiveTokenList = useCombinedInactiveList()
+  
+  const isImportingPawthereum = tokens.filter(t => t.address.toLowerCase() == PAWTH.address.toLowerCase()).length > 0
 
   return (
     <Wrapper>
@@ -68,12 +71,28 @@ export function ImportToken({ tokens, onBack, onDismiss, handleCurrencySelect }:
       <SectionBreak />
       <AutoColumn gap="md" style={{ marginBottom: '32px', padding: '1rem' }}>
         <AutoColumn justify="center" style={{ textAlign: 'center', gap: '16px', padding: '1rem' }}>
-          <AlertCircle size={48} stroke={theme.text2} strokeWidth={1} />
-          <TYPE.body fontWeight={400} fontSize={16}>
-            {
-              "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
-            }
-          </TYPE.body>
+          { 
+            isImportingPawthereum ? (
+              <div>
+              <ArrowDownCircle size={48} stroke={theme.text2} strokeWidth={1} />
+              <TYPE.body fontWeight={400} fontSize={16}>
+                {
+                  "Import Pawthereum into your Token List!"
+                }
+              </TYPE.body>
+              </div>
+            ) :
+            (
+              <div>
+              <AlertCircle size={48} stroke={theme.text2} strokeWidth={1} />
+              <TYPE.body fontWeight={400} fontSize={16}>
+                {
+                  "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
+                }
+              </TYPE.body>
+              </div>
+            )
+          }
         </AutoColumn>
         {tokens.map((token) => {
           const list = chainId && inactiveTokenList?.[chainId]?.[token.address]?.list
