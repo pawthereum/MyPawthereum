@@ -6,7 +6,8 @@ import {
   TESTERS, 
   CAT_DAY_VISITORS, 
   EDINBURGH_VISITORS,
-  RED_CANDLE_SURVIVORS
+  RED_CANDLE_SURVIVORS,
+  PAWS_ORG_VISITORS
 } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
@@ -324,21 +325,7 @@ export default function Stats() {
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
-
-      // TODO: we can get rid of all of this after paws donation event
-      const donationTime = 1637600400 // 9am West Coast time on 11/21/2021
-      const endOfEvent = 1637729999 // 11:59pm West Coast time on 11/22/2021 (36h later)
-      const now = Math.floor(Date.now() / 1000)
-      const isPawsOrgEvent = now >= donationTime && now <= endOfEvent
-      console.log('is Paws Org Event', isPawsOrgEvent)
-      if (isPawsOrgEvent) {
-        const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
-        const resp = await fetch (addVisitorUrl)
-        console.log('resp', resp)
-      }
-      // once eventis over delete the code above and change the state setter
-      // to only check if they are part of the visitors constant
-      setIsPawsOrgEventVisitor(isPawsOrgEvent)
+      setIsPawsOrgEventVisitor(PAWS_ORG_VISITORS.includes(account.toLowerCase()))
     }
   }
 

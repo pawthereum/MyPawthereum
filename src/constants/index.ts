@@ -29,6 +29,7 @@ export { TESTERS } from './testers'
 export { CAT_DAY_VISITORS } from './catDayVisitors'
 export { EDINBURGH_VISITORS } from './edinburghVisitors'
 export { RED_CANDLE_SURVIVORS } from './redCandleSurvivors'
+export { PAWS_ORG_VISITORS } from './pawsOrgVisitors'
 
 // a list of tokens by chain
 type ChainTokenList = {
