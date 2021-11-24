@@ -106,7 +106,7 @@ export function useUserSlippageTolerance(): [Percent, (slippageBips: number) => 
     return state.user.userSlippageTolerance
   })
 
-  const percentage = useMemo(() => new Percent(userSlippageTolerance, 450_000), [userSlippageTolerance])
+  const percentage = useMemo(() => new Percent(userSlippageTolerance, 10_000), [userSlippageTolerance])
 
   const setUserSlippageTolerance = useCallback(
     (userSlippageTolerance: number) => {

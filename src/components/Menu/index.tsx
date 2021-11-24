@@ -183,7 +183,7 @@ export default function Menu() {
             <div>Feedback</div>
           </InternalMenuItem>
           <Version>
-            <small>Version 0.1.0</small>
+            <small>Version 0.1.1</small>
           </Version>
           {/* {account && (
             <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
