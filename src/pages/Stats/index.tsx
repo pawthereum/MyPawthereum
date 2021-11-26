@@ -47,6 +47,7 @@ import edinburgh from '../../assets/images/edinburgh.png'
 import redCandle from '../../assets/images/redCandle.png'
 import slurp from '../../assets/images/slurp.png'
 import paws from '../../assets/images/paws.png'
+import cart from '../../assets/images/cart.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -164,6 +165,7 @@ export default function Stats() {
   const [isRedCandleSurvivor, setIsRedCandleSurvivor] = useState(false)
   const [isNov18Slurper, setIsNov18Slurper] = useState(false)
   const [isPawsOrgEventVisitor, setIsPawsOrgEventVisitor] = useState(false)
+  const [isBlackFurday2021Buyer, setIsBlackFurday2021Buyer] = useState(false)
 
   function openRankMenu () {
     const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
@@ -449,6 +451,11 @@ export default function Stats() {
     const startBlockOfNov18Slurp = 13642443
     const endBlockOfNov18Slurp = 13643054
 
+    const startBlackFurday2021 = 13686521
+    const endBlackFurday2021 = 13695284
+
+    const startBlockReflectionsOff = 13643056
+
     for (const item of transaction) {
       if (item.to === account.toLowerCase()) {
         totalIn += parseFloat(item.value)
@@ -458,9 +465,15 @@ export default function Stats() {
               setIsNov18Slurper(true)
         }
 
-      } else {
-        totalOut += parseFloat(item.value)
+        if (parseInt(item.blockNumber) >= startBlackFurday2021 &&
+            parseInt(item.blockNumber) <= endBlackFurday2021) {
+              setIsBlackFurday2021Buyer(true)
+        }
 
+      } else if (parseInt(item.blockNumber) > startBlockReflectionsOff) {
+        totalOut += parseFloat(item.value)
+      } else {
+        totalOut += parseFloat(item.value) * 0.02
         // if you sold during the Nov 18 dip, you did not survive
         if (parseInt(item.blockNumber) >= startBlockOfNov18Slurp &&
             parseInt(item.blockNumber) <= endBlockOfNov18Slurp) {
@@ -470,8 +483,7 @@ export default function Stats() {
     }
 
     // 2% of the out transaction goes to reflections, but we don't see that in etherscan
-    // so we add it here instead. If reflection numbers ever changes, this is fucked.
-    totalOut = totalOut + totalOut * 0.02
+    // totalOut = totalOut + totalOut * 0.02
 
     // if this person never sold, they are diamond hands
     setIsDiamondHands(totalOut === 0 && totalIn > 0)
@@ -611,7 +623,7 @@ export default function Stats() {
         <TopSection gap="md">
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
                 Your Wallet
               </TYPE.mediumHeader>
             </WrapSmall>
@@ -648,7 +660,7 @@ export default function Stats() {
 
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
                 Your Rank and Badges
               </TYPE.mediumHeader>
             </WrapSmall>
@@ -852,6 +864,17 @@ export default function Stats() {
                     </PaddedAutoColumn>
                   ) : '' 
                 }
+                {
+                  isBlackFurday2021Buyer ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={cart} alt="Black Furday 2021 Buyer" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Black Furday 2021 Buyer</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Made a purchase on 26-Nov-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
                 </AutoRow>
               </AutoColumn>
               ) : (
@@ -875,9 +898,9 @@ export default function Stats() {
             </MainContentWrapper>
           </TopSection>
 
-          <TopSection gap="2px">
+          {/* <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
                 Your $PAWTH Activity
               </TYPE.mediumHeader>
             </WrapSmall>
@@ -914,11 +937,11 @@ export default function Stats() {
                 </AutoColumn>
               </AutoColumn>
             </MainContentWrapper>
-          </TopSection>
+          </TopSection> */}
 
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
                 Charity Wallet
               </TYPE.mediumHeader>
             </WrapSmall>
