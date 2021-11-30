@@ -48,6 +48,7 @@ import redCandle from '../../assets/images/redCandle.png'
 import slurp from '../../assets/images/slurp.png'
 import paws from '../../assets/images/paws.png'
 import cart from '../../assets/images/cart.png'
+import givingTuesday from '../../assets/images/givingTuesday.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -166,6 +167,7 @@ export default function Stats() {
   const [isNov18Slurper, setIsNov18Slurper] = useState(false)
   const [isPawsOrgEventVisitor, setIsPawsOrgEventVisitor] = useState(false)
   const [isBlackFurday2021Buyer, setIsBlackFurday2021Buyer] = useState(false)
+  const [isGivingTuesdayVisitor, setIsGivingTuesdayVisitor] = useState(false)
 
   function openRankMenu () {
     const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
@@ -328,6 +330,20 @@ export default function Stats() {
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
       setIsPawsOrgEventVisitor(PAWS_ORG_VISITORS.includes(account.toLowerCase()))
+
+      // TODO: we can get rid of all of this after giving tuesday
+      const endOfEvent = 1638421199 // 11:59pm dec 1 (est)
+      const now = Math.floor(Date.now() / 1000)
+      const isGivingTuesday = now <= endOfEvent
+      console.log('is Giving Event', isGivingTuesday)
+      if (isGivingTuesday) {
+        const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
+        const resp = await fetch (addVisitorUrl)
+        console.log('resp', resp)
+      }
+      // once eventis over delete the code above and change the state setter
+      // to only check if they are part of the visitors constant
+      setIsGivingTuesdayVisitor(isGivingTuesday)
     }
   }
 
@@ -872,6 +888,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Black Furday 2021 Buyer</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Made a purchase on 26-Nov-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isGivingTuesdayVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={givingTuesday} alt="Giving Tuesday Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Giving Tuesday Visitor</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on 30-Nov-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
