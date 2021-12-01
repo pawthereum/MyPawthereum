@@ -603,7 +603,7 @@ export default function Stats() {
       { name: 'Tiger', img: tiger, threshold: 7500000 },
       { name: 'Lion', img: lion, threshold: 10000000 },
       { name: 'Sabertooth', img: sabertooth, threshold: 10000000 },
-      { name: 'You achieved the top rank!', img: crown, threshold: 10000000 },
+      { name: 'You achieved the top rank!', img: crown, threshold: 10000000 }
     ]
 
     let rankIndex = ranks.findIndex((r: any) => {
