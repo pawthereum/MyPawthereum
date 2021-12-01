@@ -20,16 +20,30 @@ import logo from '../../assets/images/pawth-logo-transparent.png'
 import strayCat from '../../assets/images/strayCat.png'
 import kitten from '../../assets/images/kitten.png'
 import dwarfCat from '../../assets/images/dwarfCat.png'
+import ragdoll from '../../assets/images/ragdoll.png'
 import maineCoon from '../../assets/images/maineCoon.png'
 import abbysinian from '../../assets/images/abbysinian.png'
+import scottishFold from '../../assets/images/scottishFold.png'
+import cornishRex from '../../assets/images/cornishRex.png'
+import persian from '../../assets/images/persian.png'
 import siamese from '../../assets/images/siamese.png'
+import himalayan from '../../assets/images/himalayan.png'
+import blackFooted from '../../assets/images/blackFooted.png'
+import pallas from '../../assets/images/pallas.png'
+import iriomote from '../../assets/images/iriomote.png'
 import sandCat from '../../assets/images/sandCat.png'
+import desertLynx from '../../assets/images/desertLynx.png'
 import serval from '../../assets/images/serval.png'
 import puma from '../../assets/images/puma.png'
+import leopard from '../../assets/images/leopard.png'
+import cloudedLeopard from '../../assets/images/cloudedLeopard.png'
+import cheetah from '../../assets/images/cheetah.png'
 import jaguar from '../../assets/images/jaguar.png'
+import snowLeopard from '../../assets/images/snowLeopard.png'
 import blackPanther from '../../assets/images/blackPanther.png'
 import tiger from '../../assets/images/tiger.png'
 import lion from '../../assets/images/lion.png'
+import sabertooth from '../../assets/images/sabertooth.png'
 import crown from '../../assets/images/crown.png'
 import sadCat from '../../assets/images/sadCat.png'
 // Badges
@@ -397,7 +411,7 @@ export default function Stats() {
     if (formattedBalance >= 1) {
       setIsHolder(true)
     }
-    if (formattedBalance >= 100000) {
+    if (formattedBalance >= 10000) {
       setIsInWildCatClub(true)
     }
 
@@ -561,19 +575,34 @@ export default function Stats() {
     balance /= 1000000000
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
-      { name: 'Stray Cat', img: strayCat, threshold: 1000 },
-      { name: 'Kitten', img: kitten, threshold: 5000 },
-      { name: 'Dwarf Cat', img: dwarfCat, threshold: 10000 },
-      { name: 'Maine Coon', img: maineCoon, threshold: 25000 },
-      { name: 'Abbysinian', img: abbysinian, threshold: 50000 },
-      { name: 'Siamese', img: siamese, threshold: 100000 },
-      { name: 'Sand Cat', img: sandCat, threshold: 250000 },
-      { name: 'Serval', img: serval, threshold: 500000 },
-      { name: 'Puma', img: puma, threshold: 1000000 },
-      { name: 'Jaguar', img: jaguar, threshold: 2500000 },
+      { name: 'Stray Cat', img: strayCat, threshold: 50 },
+      { name: 'Kitten', img: kitten, threshold: 100 },
+      { name: 'Dwarf Cat', img: dwarfCat, threshold: 200 },
+      { name: 'Ragdoll', img: ragdoll, threshold: 300 },
+      { name: 'Maine Coon', img: maineCoon, threshold: 500 },
+      { name: 'Abbysinian', img: abbysinian, threshold: 750 },
+      { name: 'Scottish Fold', img: scottishFold, threshold: 1000 },
+      { name: 'Cornish Rex', img: cornishRex, threshold: 2000 },
+      { name: 'Persian', img: persian, threshold: 3000 },
+      { name: 'Siamese', img: siamese, threshold: 5000 },
+      { name: 'Sphynx', img: sphynx, threshold: 7500 },
+      { name: 'Himalayan', img: himalayan, threshold: 10000 },
+      { name: 'Black-footed', img: blackFooted, threshold: 20000 },
+      { name: 'Pallas', img: pallas, threshold: 30000 },
+      { name: 'Iriomote', img: iriomote, threshold: 50000 },
+      { name: 'Sand Cat', img: sandCat, threshold: 75000 },
+      { name: 'Desert Lynx', img: desertLynx, threshold: 100000 },
+      { name: 'Serval', img: serval, threshold: 200000 },
+      { name: 'Puma', img: puma, threshold: 300000 },
+      { name: 'Leopard', img: leopard, threshold: 500000 },
+      { name: 'Clouded Leopard', img: cloudedLeopard, threshold: 750000 },
+      { name: 'Cheetah', img: cheetah, threshold: 1000000 },
+      { name: 'Jaguar', img: jaguar, threshold: 2000000 },
+      { name: 'Snow Leopard', img: snowLeopard, threshold: 3000000 },
       { name: 'Black Panther', img: blackPanther, threshold: 5000000 },
-      { name: 'Tiger', img: tiger, threshold: 10000000 },
+      { name: 'Tiger', img: tiger, threshold: 7500000 },
       { name: 'Lion', img: lion, threshold: 10000000 },
+      { name: 'Sabertooth', img: sabertooth, threshold: 10000000 },
       { name: 'You achieved the top rank!', img: crown, threshold: 10000000 }
     ]
 
@@ -777,7 +806,7 @@ export default function Stats() {
                         <img src={wildcat} alt="Voter" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Wild Cats Club</strong></TYPE.body>
-                      <TYPE.body textAlign="center"><small>Holds 100k+ Pawth</small></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Holds 10k+ Pawth</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
