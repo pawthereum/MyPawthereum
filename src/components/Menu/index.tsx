@@ -136,7 +136,7 @@ const Version = styled.div`
   color: ${({ theme }) => theme.text2};
 `
 
-const CODE_LINK = 'https://github.com/Financegrumpy/grumpy-swap'
+const CODE_LINK = 'https://github.com/pawthereum/MyPawthereum'
 
 export default function Menu() {
   const { account } = useActiveWeb3React()
