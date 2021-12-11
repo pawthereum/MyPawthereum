@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { HelpCircle } from 'react-feather'
 import { 
   PAWTH,
   ORIGINAL_SWAPPERS, 
@@ -20,6 +19,9 @@ import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/
 import { useActiveWeb3React } from '../../hooks'
 import Rank from '../../components/Rank'
 import logo from '../../assets/images/pawth-logo-transparent.png'
+import { getFirestore, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
+
 // Badges
 import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
@@ -526,6 +528,33 @@ export default function Stats() {
       setUpdatingStats(false)
     }
   }, [account, pawthBalance])
+
+  useEffect(() => {
+    async function logVisit() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      console.log('user', user)
+
+      const db = getFirestore()
+      const docRef = doc(db, 'pawthereum', 'wallets', `${account}`, 'visits')
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        const dates = docSnap.data().dates
+        dates.push(Timestamp.fromDate(new Date()))
+        await updateDoc(docRef, {
+          dates
+        })
+      } else {
+        console.log('no doc data')
+        await setDoc(docRef, {
+          dates: [Timestamp.fromDate(new Date())]
+        })
+      }
+    }
+    if (account) {
+      logVisit()
+    }
+  }, [account])
 
   return (
     <PageWrapper gap="lg" justify="center">

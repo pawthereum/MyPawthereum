@@ -20,14 +20,22 @@ import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 import { firebaseConfig } from './config'
-import { initializeApp } from 'firebase/app'
+import { initializeApp, FirebaseApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
+import { 
+  getAuth, 
+  signInAnonymously, 
+  onAuthStateChanged, 
+  connectAuthEmulator,
+  setPersistence,
+  browserSessionPersistence,
+} from 'firebase/auth'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
-const app = initializeApp(firebaseConfig)
-const analytics = getAnalytics(app)
+const firebaseApp: FirebaseApp = initializeApp(firebaseConfig)
+const analytics = getAnalytics(firebaseApp)
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -73,8 +81,17 @@ function Updaters() {
 }
 
 const auth = getAuth()
+const db = getFirestore()
+
+if (process.env.NODE_ENV !== 'production') {
+  connectAuthEmulator(auth, "http://localhost:9099")
+  connectFirestoreEmulator(db, 'localhost', 8080)
+}
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    setPersistence(auth, browserSessionPersistence)
+    console.log('got a user!', user)
     ReactDOM.render(
       <StrictMode>
         <FixedGlobalStyle />

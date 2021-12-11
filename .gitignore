@@ -22,6 +22,9 @@
 .env.production.local
 .env.production
 
+# debug logs
+*-debug.log
+
 /.netlify
 
 npm-debug.log*
