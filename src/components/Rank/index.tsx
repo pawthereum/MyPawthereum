@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { HelpCircle } from 'react-feather'
 import { AutoColumn } from '../../components/Column'
+import { PAWTH } from '../../constants'
+import { useTokenBalance } from '../../state/wallet/hooks'
+import { TokenAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
@@ -106,7 +109,11 @@ interface Refresh {
 }
 
 export default function Rank(props:Refresh) {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
+
+  const pawth = chainId ? PAWTH[chainId] : undefined
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
+  console.log('pawthBalance', pawthBalance)
 
   // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)

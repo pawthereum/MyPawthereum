@@ -47,7 +47,6 @@ export const FRAX = new Token(ChainId.MAINNET, '0x853d955aCEf822Db058eb8505911ED
 export const FXS = new Token(ChainId.MAINNET, '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0', 18, 'FXS', 'Frax Share')
 export const renBTC = new Token(ChainId.MAINNET, '0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D', 8, 'renBTC', 'renBTC')
 export const GRUMPY = new Token(ChainId.MAINNET, '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b', 9, 'GRUMPY', 'Grumpy')
-export const PAWTH = new Token(ChainId.MAINNET, '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9, 'PAWTH', 'Pawthereum')
 
 // Block time here is slightly higher (~1s) than average in order to avoid ongoing proposals past the displayed time
 export const AVERAGE_BLOCK_TIME_IN_SECS = 13
@@ -66,6 +65,19 @@ export const UNI: { [chainId in ChainId]: Token } = {
   [ChainId.GÖRLI]: new Token(ChainId.GÖRLI, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.KOVAN]: new Token(ChainId.KOVAN, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
 }
+
+const PAWTH_ADDRESS_MAINNET = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
+const PAWTH_ADDRESS_RINKEBY = '0x8ff1b7d60c8d0a155e88073546e038d8e7afcece'
+const PAWTH_ADDRESS_GÖRLI = '0x41f999597f62991de0f43860023fa2f29a99a8a5'
+const PAWTH_ADDRESS_KOVAN = '0x947F1Fc5b8ae3c5e6Bb5b3eeD6A2c39d740aD4F3'
+const PAWTH_ADDRESS_ROPSTEN = '0x155b486f301f257321ca11d90ff652f4374b1b46' // not deployed on ropsten this is fake
+export const PAWTH: { [chainId in ChainId]: Token } = {
+  [ChainId.MAINNET]: new Token(ChainId.MAINNET, PAWTH_ADDRESS_MAINNET, 9, 'PAWTH', 'Pawthereum'),
+  [ChainId.RINKEBY]: new Token(ChainId.MAINNET, PAWTH_ADDRESS_RINKEBY, 9, 'PAWTH', 'Pawthereum'),
+  [ChainId.ROPSTEN]: new Token(ChainId.MAINNET, PAWTH_ADDRESS_ROPSTEN, 9, 'PAWTH', 'Pawthereum'),
+  [ChainId.GÖRLI]: new Token(ChainId.MAINNET, PAWTH_ADDRESS_GÖRLI, 9, 'PAWTH', 'Pawthereum'),
+  [ChainId.KOVAN]: new Token(ChainId.KOVAN, PAWTH_ADDRESS_KOVAN, 9, 'PAWTH', 'Pawthereum'),
+} 
 
 export const COMMON_CONTRACT_NAMES: { [address: string]: string } = {
   [UNI_ADDRESS]: 'UNI',
@@ -116,7 +128,7 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: Partial<ChainTokenList> = {
-  [ChainId.MAINNET]: [PAWTH],
+  [ChainId.MAINNET]: [PAWTH[ChainId.MAINNET]],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
