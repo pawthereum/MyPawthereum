@@ -1,30 +1,47 @@
 import React, { useEffect, useState } from 'react'
 import { HelpCircle } from 'react-feather'
 import { AutoColumn } from '../../components/Column'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
 import { DataCard } from '../../components/earn/styled'
-import { useActiveWeb3React } from '../../hooks'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 // Ranks
 import strayCat from '../../assets/images/strayCat.png'
 import kitten from '../../assets/images/kitten.png'
 import dwarfCat from '../../assets/images/dwarfCat.png'
+import ragdoll from '../../assets/images/ragdoll.png'
 import maineCoon from '../../assets/images/maineCoon.png'
 import abbysinian from '../../assets/images/abbysinian.png'
+import scottishFold from '../../assets/images/scottishFold.png'
+import cornishRex from '../../assets/images/cornishRex.png'
+import persian from '../../assets/images/persian.png'
 import siamese from '../../assets/images/siamese.png'
+import himalayan from '../../assets/images/himalayan.png'
+import blackFooted from '../../assets/images/blackFooted.png'
+import pallas from '../../assets/images/pallas.png'
+import iriomote from '../../assets/images/iriomote.png'
 import sandCat from '../../assets/images/sandCat.png'
+import desertLynx from '../../assets/images/desertLynx.png'
 import serval from '../../assets/images/serval.png'
 import puma from '../../assets/images/puma.png'
+import leopard from '../../assets/images/leopard.png'
+import cloudedLeopard from '../../assets/images/cloudedLeopard.png'
+import cheetah from '../../assets/images/cheetah.png'
 import jaguar from '../../assets/images/jaguar.png'
+import snowLeopard from '../../assets/images/snowLeopard.png'
 import blackPanther from '../../assets/images/blackPanther.png'
 import tiger from '../../assets/images/tiger.png'
 import lion from '../../assets/images/lion.png'
+import sabertooth from '../../assets/images/sabertooth.png'
 import crown from '../../assets/images/crown.png'
 import sadCat from '../../assets/images/sadCat.png'
+import sphynx from '../../assets/images/sphynx.png'
 
-const PageWrapper = styled(AutoColumn)``
+const PageWrapper = styled(AutoColumn)`
+  padding-bottom: 20px;
+`
 
 const TopSection = styled(AutoColumn)`
   max-width: 640px;
@@ -83,19 +100,13 @@ export const StyledHelpButton = styled.button`
   }
 `
 
-const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
-const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
-
 interface Refresh {
-  refresh: boolean
+  balance: CurrencyAmount | undefined,
+  refresh: boolean,
+  showHelp: boolean
 }
 
 export default function Rank(props:Refresh) {
-  const { account } = useActiveWeb3React()
-
-  // wallet state vars
-  const [grumpyBalance, setGrumpyBalance] = useState(0)
-
   // rank state vars
   const [previousPawthRank, setPreviousPawthRank] = useState({ name: '', img: '', threshold: 0 })
   const [pawthRank, setPawthRank] = useState({ name: '', img: '', threshold: 0 })
@@ -104,7 +115,7 @@ export default function Rank(props:Refresh) {
   const [distanceToPreviousRank, setDistanceToPreviousRank] = useState('-')
 
   function openRankMenu () {
-    const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
+    const rankMenuLink = 'https://cdn.discordapp.com/attachments/836555340497289256/919251612973809664/1r5bThUTAVLhGllydIzE-yQ.png'
     window.open(rankMenuLink);
   }
 
@@ -120,60 +131,56 @@ export default function Rank(props:Refresh) {
     return price.toString()
   }
 
-  async function getWallet() {
-    if (account) {
-      const balance = await getGrumpyBalance(account)
-      const ranks = await getPawthRanks(balance)
-      
-      setGrumpyBalance(balance)
+  async function refreshRank() {
+    const ranks = await getRanks()
 
-      setPreviousPawthRank(ranks.previousRank)
-      setPawthRank(ranks.rank)
-      setNextPawthRank(ranks.nextRank)
-      setDistanceToNextRank(ranks.distanceToNextRank)
-      setDistanceToPreviousRank(ranks.distanceToPreviousRank)
-    }
+    if (!ranks) return false
+    setPreviousPawthRank(ranks.previousRank)
+    setPawthRank(ranks.rank)
+    setNextPawthRank(ranks.nextRank)
+    setDistanceToNextRank(ranks.distanceToNextRank)
+    setDistanceToPreviousRank(ranks.distanceToPreviousRank)
+    return true
   }
 
-  async function getGrumpyBalance(account: string) {
-    const balance_api = new URL('https://api.etherscan.io/api')
-
-    balance_api.searchParams.append('module', 'account')
-    balance_api.searchParams.append('action', 'tokenbalance')
-    balance_api.searchParams.append('contractaddress', grumpyContractAddress)
-    balance_api.searchParams.append('address', account)
-    balance_api.searchParams.append('tag', 'latest')
-    balance_api.searchParams.append('apikey', ethescanApiKey)
-
-    const balanceReq = await fetch(balance_api.href)
-    const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
-
-    return balance
-  }
-
-  async function getPawthRanks(balance: number) {
-    balance /= 1000000000
+  async function getRanks() {
+    if (!props.balance) return null
+    const balance = parseFloat(props.balance?.toFixed())
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
-      { name: 'Stray Cat', img: strayCat, threshold: 1000 },
-      { name: 'Kitten', img: kitten, threshold: 5000 },
-      { name: 'Dwarf Cat', img: dwarfCat, threshold: 10000 },
-      { name: 'Maine Coon', img: maineCoon, threshold: 25000 },
-      { name: 'Abbysinian', img: abbysinian, threshold: 50000 },
-      { name: 'Siamese', img: siamese, threshold: 100000 },
-      { name: 'Sand Cat', img: sandCat, threshold: 250000 },
-      { name: 'Serval', img: serval, threshold: 500000 },
-      { name: 'Puma', img: puma, threshold: 1000000 },
-      { name: 'Jaguar', img: jaguar, threshold: 2500000 },
+      { name: 'Stray Cat', img: strayCat, threshold: 50 },
+      { name: 'Kitten', img: kitten, threshold: 100 },
+      { name: 'Dwarf Cat', img: dwarfCat, threshold: 200 },
+      { name: 'Ragdoll', img: ragdoll, threshold: 300 },
+      { name: 'Maine Coon', img: maineCoon, threshold: 500 },
+      { name: 'Abbysinian', img: abbysinian, threshold: 750 },
+      { name: 'Scottish Fold', img: scottishFold, threshold: 1000 },
+      { name: 'Cornish Rex', img: cornishRex, threshold: 2000 },
+      { name: 'Persian', img: persian, threshold: 3000 },
+      { name: 'Siamese', img: siamese, threshold: 5000 },
+      { name: 'Sphynx', img: sphynx, threshold: 7500 },
+      { name: 'Himalayan', img: himalayan, threshold: 10000 },
+      { name: 'Black-footed', img: blackFooted, threshold: 20000 },
+      { name: 'Pallas', img: pallas, threshold: 30000 },
+      { name: 'Iriomote', img: iriomote, threshold: 50000 },
+      { name: 'Sand Cat', img: sandCat, threshold: 75000 },
+      { name: 'Desert Lynx', img: desertLynx, threshold: 100000 },
+      { name: 'Serval', img: serval, threshold: 200000 },
+      { name: 'Puma', img: puma, threshold: 300000 },
+      { name: 'Leopard', img: leopard, threshold: 500000 },
+      { name: 'Clouded Leopard', img: cloudedLeopard, threshold: 750000 },
+      { name: 'Cheetah', img: cheetah, threshold: 1000000 },
+      { name: 'Snow Leopard', img: snowLeopard, threshold: 2000000 },
+      { name: 'Jaguar', img: jaguar, threshold: 3000000 },
       { name: 'Black Panther', img: blackPanther, threshold: 5000000 },
-      { name: 'Tiger', img: tiger, threshold: 10000000 },
+      { name: 'Tiger', img: tiger, threshold: 7500000 },
       { name: 'Lion', img: lion, threshold: 10000000 },
+      { name: 'Sabertooth', img: sabertooth, threshold: 10000000 },
       { name: 'You achieved the top rank!', img: crown, threshold: 10000000 }
     ]
 
     let rankIndex = ranks.findIndex((r: any) => {
-      return balance <= r.threshold
+      return balance < r.threshold
     })
 
     let distanceToNextRank, distanceToPreviousRank
@@ -204,24 +211,27 @@ export default function Rank(props:Refresh) {
   }
 
   useEffect(() => {
-    getWallet()
-  }, [account, props.refresh])
+    refreshRank()
+  }, [props.balance, props.refresh])
 
   return (
     <PageWrapper gap="lg" justify="center">
-      {account ? (
+      {props.balance ? (
         <TopSection gap="md">
           <TopSection gap="2px">
-            <MainContentWrapper>
-            { grumpyBalance ? (
+            { true ? (
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <AutoColumn gap="sm">
                     <TYPE.mediumHeader textAlign="center">
                       Your PAWTHER Rank 
-                      {/* <StyledHelpButton onClick={() => openRankMenu()}>
-                        <HelpCircle size={14} />
-                      </StyledHelpButton> */}
+                      { props.showHelp
+                        ? 
+                          <StyledHelpButton onClick={() => openRankMenu()}>
+                            <HelpCircle size={14} />
+                          </StyledHelpButton>
+                        : ''
+                      }
                     </TYPE.mediumHeader>
                     <TYPE.body textAlign="center">
                       <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
@@ -230,19 +240,19 @@ export default function Rank(props:Refresh) {
                   </AutoColumn>
                 </AutoRow>
                 <AutoRow justify="center">
-                  <AutoColumn gap="md" style={{ width: '50%' }}>
+                  <AutoColumn gap="md">
                     { nextPawthRank.name == 'You achieved the top rank!' ? (
-                      <TYPE.body textAlign="center">{distanceToNextRank}</TYPE.body>
+                      ''
                     ) : 
-                      <TYPE.body textAlign="center">You are {distanceToNextRank} $PAWTH away from leveling up to: </TYPE.body>
+                      <TYPE.body textAlign="center">Next Rank</TYPE.body>
                     }
                     <TYPE.body textAlign="center">
-                      <img src={nextPawthRank.img} alt="Logo" style={{ width: 50, height: 50 }} />
+                      <img src={nextPawthRank.img} alt="Logo" style={{ maxWidth: '50px', height: 'auto' }} />
                     </TYPE.body>
                     <TYPE.body textAlign="center">
                       <strong>{nextPawthRank.name}</strong>
                     </TYPE.body>
-                    {/* <TYPE.body textAlign="center">{distanceToNextRank} $PAWTH</TYPE.body> */}
+                    <TYPE.body textAlign="center">{distanceToNextRank}</TYPE.body>
                   </AutoColumn>
                   {/* TODO: Uncomment this if we ever want to show the previous rank
                   <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
@@ -268,7 +278,6 @@ export default function Rank(props:Refresh) {
                 </AutoColumn>
               )
             }
-            </MainContentWrapper>
           </TopSection>
         </TopSection>
       ) : (
@@ -276,14 +285,12 @@ export default function Rank(props:Refresh) {
           <WrapSmall>
             <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
           </WrapSmall>
-          <MainContentWrapper>
             <AutoColumn gap="lg" justify="center">
               <img src={logo} alt="Logo" style={{ width: 100, height: 100, padding: 20 }} />
             </AutoColumn>
             <AutoColumn gap="sm">
               <TYPE.body textAlign="center">Connect your wallet to see your PAWTHER Rank</TYPE.body>
             </AutoColumn>
-          </MainContentWrapper>
         </TopSection>
       )}
     </PageWrapper>
