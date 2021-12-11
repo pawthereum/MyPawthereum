@@ -115,7 +115,7 @@ export default function Rank(props:Refresh) {
   const [distanceToPreviousRank, setDistanceToPreviousRank] = useState('-')
 
   function openRankMenu () {
-    const rankMenuLink = 'https://cdn.discordapp.com/attachments/843736156839346187/912043689822527568/donedone.png'
+    const rankMenuLink = 'https://cdn.discordapp.com/attachments/836555340497289256/919251612973809664/1r5bThUTAVLhGllydIzE-yQ.png'
     window.open(rankMenuLink);
   }
 
