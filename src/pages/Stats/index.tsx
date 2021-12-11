@@ -46,6 +46,7 @@ import lion from '../../assets/images/lion.png'
 import sabertooth from '../../assets/images/sabertooth.png'
 import crown from '../../assets/images/crown.png'
 import sadCat from '../../assets/images/sadCat.png'
+import sphynx from '../../assets/images/sphynx.png'
 // Badges
 import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
@@ -184,7 +185,7 @@ export default function Stats() {
   const [isGivingTuesdayVisitor, setIsGivingTuesdayVisitor] = useState(false)
 
   function openRankMenu () {
-    const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
+    const rankMenuLink = 'https://cdn.discordapp.com/attachments/843736156839346187/909328526652616714/unknown.png'
     window.open(rankMenuLink);
   }
 

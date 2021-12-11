@@ -37,6 +37,7 @@ import lion from '../../assets/images/lion.png'
 import sabertooth from '../../assets/images/sabertooth.png'
 import crown from '../../assets/images/crown.png'
 import sadCat from '../../assets/images/sadCat.png'
+import sphynx from '../../assets/images/sphynx.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -118,7 +119,7 @@ export default function Rank(props:Refresh) {
   const [distanceToPreviousRank, setDistanceToPreviousRank] = useState('-')
 
   function openRankMenu () {
-    const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
+    const rankMenuLink = 'https://cdn.discordapp.com/attachments/843736156839346187/909328526652616714/unknown.png'
     window.open(rankMenuLink);
   }
 
