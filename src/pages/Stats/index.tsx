@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { HelpCircle } from 'react-feather'
 import { 
+  PAWTH,
   ORIGINAL_SWAPPERS, 
   BUG_SQUISHERS, 
   TESTERS, 
@@ -9,12 +10,15 @@ import {
   RED_CANDLE_SURVIVORS,
   PAWS_ORG_VISITORS
 } from './../../constants/index'
+import { useTokenBalance } from '../../state/wallet/hooks'
+import { TokenAmount } from '@uniswap/sdk-core'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
+import Rank from '../../components/Rank'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 // Ranks
 import strayCat from '../../assets/images/strayCat.png'
@@ -133,7 +137,11 @@ const pawthCharityWallet = '0xf4a22c530e8cc64770c4edb5766d26f8926e20bd'
 const pawthMarketingWallet = '0x16b1db77b60c8d8b6ecea0fa4e0481e9f53c9ba1'
 
 export default function Stats() {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
+
+  const pawth = chainId ? PAWTH[chainId] : undefined
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
+  console.log('pawthBalance', pawthBalance?.toFixed())
 
   // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)
@@ -711,46 +719,15 @@ export default function Stats() {
               </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
-            { grumpyBalance ? (
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
-                  <AutoColumn gap="sm">
-                    <TYPE.mediumHeader textAlign="center">
-                      Your PAWTHER Rank 
-                      <StyledHelpButton onClick={() => openRankMenu()}>
-                        <HelpCircle size={14} />
-                      </StyledHelpButton>
-                    </TYPE.mediumHeader>
-                    <TYPE.body textAlign="center">
-                      <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
-                    </TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
-                  </AutoColumn>
-                </AutoRow>
-                <AutoRow justify="center">
-                  <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
-                    <TYPE.body textAlign="center"><small>Next Rank</small></TYPE.body>
-                    <TYPE.body textAlign="center">
-                      <img src={nextPawthRank.img} alt="Logo" style={{ maxWidth: '50px', height: 'auto' }} />
-                    </TYPE.body>
-                    <TYPE.body textAlign="center">
-                      <small><strong>{nextPawthRank.name}</strong></small>
-                    </TYPE.body>
-                    <TYPE.body textAlign="center"><small>{distanceToNextRank}</small></TYPE.body>
+                  <PaddedAutoColumn gap="sm">
+                    <Rank refresh={false} balance={pawthBalance} showHelp={true} />
                   </PaddedAutoColumn>
-                  {/* TODO: Uncomment this if we ever want to show the previous rank
-                  <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
-                    <TYPE.body textAlign="center"><small>Previous Rank</small></TYPE.body>
-                    <TYPE.body textAlign="center">
-                      <img src={previousPawthRank.img} alt="Logo" style={{ width: 50, height: 50 }} />
-                    </TYPE.body>
-                    <TYPE.body textAlign="center">
-                      <small><strong>{previousPawthRank.name}</strong></small>
-                    </TYPE.body>
-                    <TYPE.body textAlign="center"><small>{distanceToPreviousRank}</small></TYPE.body>
-                  </PaddedAutoColumn> */}
                 </AutoRow>
-                
+              </AutoColumn>
+            { grumpyBalance ? (
+              <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
                     <TYPE.mediumHeader textAlign="center">Your $PAWTH Badges</TYPE.mediumHeader>
@@ -955,7 +932,8 @@ export default function Stats() {
             </MainContentWrapper>
           </TopSection>
 
-          {/* <TopSection gap="2px">
+          {/* REFLECTION TRACKER 
+          <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
                 Your $PAWTH Activity
