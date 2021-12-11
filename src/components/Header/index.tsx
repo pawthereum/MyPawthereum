@@ -402,7 +402,7 @@ export default function Header() {
         </StyledNavLink>
         <StyledNavLink 
           id={`swap-nav-link`} 
-          to={'/swap?use=V2&inputCurrency=ETH&outputCurrency=0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'}
+          to={`/swap?use=V2&inputCurrency=ETH&outputCurrency=${pawth?.address || '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'}`}
         >
           {t('PawSwap')}
         </StyledNavLink>

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { HelpCircle } from 'react-feather'
 import { AutoColumn } from '../../components/Column'
-import { TokenAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
 import { DataCard } from '../../components/earn/styled'
-import { useActiveWeb3React } from '../../hooks'
-import { useTokenBalance } from '../../state/wallet/hooks'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 // Ranks
 import strayCat from '../../assets/images/strayCat.png'
@@ -103,7 +101,7 @@ export const StyledHelpButton = styled.button`
 `
 
 interface Refresh {
-  balance: TokenAmount | undefined,
+  balance: CurrencyAmount | undefined,
   refresh: boolean,
   showHelp: boolean
 }
@@ -148,7 +146,6 @@ export default function Rank(props:Refresh) {
   async function getRanks() {
     if (!props.balance) return null
     const balance = parseFloat(props.balance?.toFixed())
-    console.log('balance', balance)
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
       { name: 'Stray Cat', img: strayCat, threshold: 50 },

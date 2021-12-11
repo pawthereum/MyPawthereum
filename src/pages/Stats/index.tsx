@@ -10,8 +10,8 @@ import {
   RED_CANDLE_SURVIVORS,
   PAWS_ORG_VISITORS
 } from './../../constants/index'
-import { useTokenBalance } from '../../state/wallet/hooks'
-import { TokenAmount } from '@uniswap/sdk-core'
+import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -20,37 +20,6 @@ import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/
 import { useActiveWeb3React } from '../../hooks'
 import Rank from '../../components/Rank'
 import logo from '../../assets/images/pawth-logo-transparent.png'
-// Ranks
-import strayCat from '../../assets/images/strayCat.png'
-import kitten from '../../assets/images/kitten.png'
-import dwarfCat from '../../assets/images/dwarfCat.png'
-import ragdoll from '../../assets/images/ragdoll.png'
-import maineCoon from '../../assets/images/maineCoon.png'
-import abbysinian from '../../assets/images/abbysinian.png'
-import scottishFold from '../../assets/images/scottishFold.png'
-import cornishRex from '../../assets/images/cornishRex.png'
-import persian from '../../assets/images/persian.png'
-import siamese from '../../assets/images/siamese.png'
-import himalayan from '../../assets/images/himalayan.png'
-import blackFooted from '../../assets/images/blackFooted.png'
-import pallas from '../../assets/images/pallas.png'
-import iriomote from '../../assets/images/iriomote.png'
-import sandCat from '../../assets/images/sandCat.png'
-import desertLynx from '../../assets/images/desertLynx.png'
-import serval from '../../assets/images/serval.png'
-import puma from '../../assets/images/puma.png'
-import leopard from '../../assets/images/leopard.png'
-import cloudedLeopard from '../../assets/images/cloudedLeopard.png'
-import cheetah from '../../assets/images/cheetah.png'
-import jaguar from '../../assets/images/jaguar.png'
-import snowLeopard from '../../assets/images/snowLeopard.png'
-import blackPanther from '../../assets/images/blackPanther.png'
-import tiger from '../../assets/images/tiger.png'
-import lion from '../../assets/images/lion.png'
-import sabertooth from '../../assets/images/sabertooth.png'
-import crown from '../../assets/images/crown.png'
-import sadCat from '../../assets/images/sadCat.png'
-import sphynx from '../../assets/images/sphynx.png'
 // Badges
 import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
@@ -140,13 +109,13 @@ export default function Stats() {
   const { account, chainId } = useActiveWeb3React()
 
   const pawth = chainId ? PAWTH[chainId] : undefined
-  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
-  console.log('pawthBalance', pawthBalance?.toFixed())
-
+  const pawthBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, pawth)
+  
+  const [updatingStats, setUpdatingStats] = useState(false)
   // wallet state vars
-  const [grumpyBalance, setGrumpyBalance] = useState(0)
+  const [balance, setBalance] = useState<number>()
   const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
-  const [grumpyUsdValue, setGrumpyUsdValue] = useState('-')
+  const [tokenUsdValue, setTokenUsdValue] = useState('-')
   const [redistributedAmount, setRedistributedAmount] = useState(0)
   const [redistributedUsdValue, setRedistributedUsdValue] = useState('-')
   const [totalIn, setTotalIn] = useState(0)
@@ -163,13 +132,6 @@ export default function Stats() {
   const [charityWalletAllTimeUsd, setCharityWalletAllTimeUsd] = useState('-')
   const [charityTransferredOut, setCharityTransferredOut] = useState(0)
   const [charityTransferredOutUsd, setCharityTransferredOutUsd] = useState('-')
-
-  // rank state vars
-  const [previousPawthRank, setPreviousPawthRank] = useState({ name: '', img: '', threshold: 0 })
-  const [pawthRank, setPawthRank] = useState({ name: '', img: '', threshold: 0 })
-  const [nextPawthRank, setNextPawthRank] = useState({ name: '', img: '', threshold: 0 })
-  const [distanceToNextRank, setDistanceToNextRank] = useState('-')
-  const [distanceToPreviousRank, setDistanceToPreviousRank] = useState('-')
 
   // for testing
   const [isTester, setIsTester] = useState(false)
@@ -192,14 +154,9 @@ export default function Stats() {
   const [isBlackFurday2021Buyer, setIsBlackFurday2021Buyer] = useState(false)
   const [isGivingTuesdayVisitor, setIsGivingTuesdayVisitor] = useState(false)
 
-  function openRankMenu () {
-    const rankMenuLink = 'https://cdn.discordapp.com/attachments/843736156839346187/912043689822527568/donedone.png'
-    window.open(rankMenuLink);
-  }
-
   function formatPrice(price: number) {
     if (price > 0) {
-      const priceString = (price / 1000000000).toLocaleString('en-US', {
+      const priceString = (price).toLocaleString('en-US', {
         maximumFractionDigits: 0,
       })
 
@@ -211,7 +168,7 @@ export default function Stats() {
 
   function formatPriceUsd(price: number) {
     if (price > 0) {
-      return (price / 1000000000).toLocaleString('en-US', {
+      return (price).toLocaleString('en-US', {
         maximumFractionDigits: 0,
       })
     }
@@ -219,7 +176,7 @@ export default function Stats() {
     return price.toString()
   }
 
-  async function getGrumpyStats(balance: number, redistributedAmount: number, charityOneDayTotal: number) {
+  async function getTokenStats(redistributedAmount: number, charityOneDayTotal: number) {
     const stats_api = new URL('https://api.ethplorer.io/getTokenInfo/0xaecc217a749c2405b5ebc9857a16d58bdc1c367f')
     stats_api.searchParams.append('apiKey', ethplorerApiKey)
 
@@ -227,44 +184,33 @@ export default function Stats() {
     const statsRes = await statsReq.json()
 
     if (!statsRes.hasOwnProperty('error')) {
+      const balance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
       const price = statsRes.price
-      const userGrumpyValueInUsd = balance * price.rate
+      const userTokenValueInUsd = balance ? balance * price.rate : 0
       const userRedistributedValueInUsd = redistributedAmount * price.rate
 
-      const charityWalletAllTimeUsd = charityAllTimeTotal * price.rate
-      const charityWalletTodayUsd = charityOneDayTotal * price.rate
+      const charityWalletAllTimeUsd = charityAllTimeTotal / 1000000000 * price.rate
+      const charityWalletTodayUsd = charityOneDayTotal / 1000000000 * price.rate
       const charityTransferredOutUsd = charityTransferredOut * price.rate
 
       setPrice(price.rate ? '$' + price.rate.toFixed(6) : '-')
 
-      // TODO: once market cap starts coming back in the API, use that
-      // setMarketCap(
-      //   price.rate 
-      //   ?
-      //     '$' +
-      //       price.marketCapUsd.toLocaleString(undefined, {
-      //         maximumFractionDigits: 0,
-      //       })
-      //   :
-      //     '-'
-      // )
-      const hardcodedSupply = 858000000 // hardcode supply until we get mc data in api
       setMarketCap(
         price.rate 
         ?
           '$' +
-            (price.rate * hardcodedSupply).toLocaleString(undefined, {
+            price.marketCapUsd.toLocaleString(undefined, {
               maximumFractionDigits: 0,
             })
         :
           '-'
       )
-      setGrumpyUsdValue(
-        isNaN(userGrumpyValueInUsd) 
+      setTokenUsdValue(
+        isNaN(userTokenValueInUsd) 
         ?
           '-'
         :
-          '$' + formatPriceUsd(userGrumpyValueInUsd)
+          '$' + formatPriceUsd(userTokenValueInUsd)
       )
       setRedistributedUsdValue(
         isNaN(userRedistributedValueInUsd) 
@@ -309,24 +255,14 @@ export default function Stats() {
 
       // this needs to be set before the transactions are analyzed
       setIsRedCandleSurvivor(RED_CANDLE_SURVIVORS.includes(account.toLowerCase()))
+      
+      const tx = await getTransactionHistory()
+      const isVoter = await getVoterStatus()
 
-      const balance = await getGrumpyBalance(account)
-      const tx = await getGrumpyTransaction(account, balance)
-      const ranks = await getPawthRanks(balance)
-      const isVoter = await getVoterStatus(account)
-
-      const ethTransactions = await getEthTransaction(account)
+      const ethTransactions = await getEthTransaction()
       setIsMarketingDonor(ethTransactions.isMarketingWalletDonor)
       
-      getGrumpyStats(balance, tx.redistribution, charityTx.oneDayTotal)
-
-      setGrumpyBalance(balance)
-
-      setPreviousPawthRank(ranks.previousRank)
-      setPawthRank(ranks.rank)
-      setNextPawthRank(ranks.nextRank)
-      setDistanceToNextRank(ranks.distanceToNextRank)
-      setDistanceToPreviousRank(ranks.distanceToPreviousRank)
+      getTokenStats(tx.redistribution, charityTx.oneDayTotal)
 
       setTotalIn(tx.totalIn)
       setTotalOut(tx.totalOut)
@@ -358,7 +294,7 @@ export default function Stats() {
       const endOfEvent = 1638421199 // 11:59pm dec 1 (est)
       const now = Math.floor(Date.now() / 1000)
       const isGivingTuesday = now <= endOfEvent
-      console.log('is Giving Event', isGivingTuesday)
+
       if (isGivingTuesday) {
         const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
         const resp = await fetch (addVisitorUrl)
@@ -370,7 +306,7 @@ export default function Stats() {
     }
   }
 
-  async function getVoterStatus(account: string) {
+  async function getVoterStatus() {
     return fetch('https://hub.snapshot.org/graphql', {
       method: 'POST',
       headers: {
@@ -402,31 +338,6 @@ export default function Stats() {
       })
   }
 
-  async function getGrumpyBalance(account: string) {
-    const balance_api = new URL('https://api.etherscan.io/api')
-
-    balance_api.searchParams.append('module', 'account')
-    balance_api.searchParams.append('action', 'tokenbalance')
-    balance_api.searchParams.append('contractaddress', grumpyContractAddress)
-    balance_api.searchParams.append('address', account)
-    balance_api.searchParams.append('tag', 'latest')
-    balance_api.searchParams.append('apikey', ethescanApiKey)
-
-    const balanceReq = await fetch(balance_api.href)
-    const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
-
-    const formattedBalance = balance / 1000000000
-    if (formattedBalance >= 1) {
-      setIsHolder(true)
-    }
-    if (formattedBalance >= 10000) {
-      setIsInWildCatClub(true)
-    }
-
-    return balance
-  }
-
   async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
     const balance_api = new URL('https://api.etherscan.io/api')
 
@@ -445,7 +356,8 @@ export default function Stats() {
     return { balance, formattedBalance }
   }
 
-  async function getEthTransaction(account: string) {
+  async function getEthTransaction() {
+    if (!account) return { isMarketingWalletDonor: false }
     const transactions_api = new URL('https://api.etherscan.io/api')
 
     transactions_api.searchParams.append('module', 'account')
@@ -469,7 +381,13 @@ export default function Stats() {
     return { isMarketingWalletDonor }
   }
 
-  async function getGrumpyTransaction(account: string, balance: number) {
+  async function getTransactionHistory() {
+    if (!account) return {
+      totalIn: 0, 
+      totalOut: 0,
+      redistribution: 0,
+      balanceWithoutRedistribution: 0
+    }
     const transactions_api = new URL('https://api.etherscan.io/api')
 
     transactions_api.searchParams.append('module', 'account')
@@ -528,7 +446,7 @@ export default function Stats() {
     setIsDiamondHands(totalOut === 0 && totalIn > 0)
 
     let balanceWithoutRedistribution = totalIn - totalOut
-    const redistribution = balance - balanceWithoutRedistribution
+    const redistribution = balance ? balance - balanceWithoutRedistribution : 0
     
     // for paperhands who sold all of their pawth, dont let balance
     // without reflections show a negative balance
@@ -554,16 +472,22 @@ export default function Stats() {
     const transactionReq = await fetch(transactions_api.href)
     const transactionRes = await transactionReq.json()
     const transaction = transactionRes.result
-
+    if (transaction === 'Max rate limit reached') {
+      return {
+        oneDayTotal: 0,
+        totalIn: 0,
+        totalOut: 0
+      }
+    }
     let totalIn = 0.0
     let totalOut = 0.0
     let oneDayTotal = 0.0
 
     const now = new Date().getTime()
     const oneDayAgo = 60 * 60 * 24 * 1000
-    const transactionHashesToday = transaction.filter((t: any) => {
+    const transactionHashesToday = transaction ? transaction.filter((t: any) => {
       return now - new Date(t.timeStamp * 1000).getTime() <= oneDayAgo
-    }).map((t: any) => t.hash)
+    }).map((t: any) => t.hash) : []
 
     for (const item of transaction) {
       if (item.to === charityWallet.toLowerCase()) {
@@ -580,75 +504,28 @@ export default function Stats() {
 
   }
 
-  async function getPawthRanks(balance: number) {
-    balance /= 1000000000
-    const ranks = [
-      { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
-      { name: 'Stray Cat', img: strayCat, threshold: 50 },
-      { name: 'Kitten', img: kitten, threshold: 100 },
-      { name: 'Dwarf Cat', img: dwarfCat, threshold: 200 },
-      { name: 'Ragdoll', img: ragdoll, threshold: 300 },
-      { name: 'Maine Coon', img: maineCoon, threshold: 500 },
-      { name: 'Abbysinian', img: abbysinian, threshold: 750 },
-      { name: 'Scottish Fold', img: scottishFold, threshold: 1000 },
-      { name: 'Cornish Rex', img: cornishRex, threshold: 2000 },
-      { name: 'Persian', img: persian, threshold: 3000 },
-      { name: 'Siamese', img: siamese, threshold: 5000 },
-      { name: 'Sphynx', img: sphynx, threshold: 7500 },
-      { name: 'Himalayan', img: himalayan, threshold: 10000 },
-      { name: 'Black-footed', img: blackFooted, threshold: 20000 },
-      { name: 'Pallas', img: pallas, threshold: 30000 },
-      { name: 'Iriomote', img: iriomote, threshold: 50000 },
-      { name: 'Sand Cat', img: sandCat, threshold: 75000 },
-      { name: 'Desert Lynx', img: desertLynx, threshold: 100000 },
-      { name: 'Serval', img: serval, threshold: 200000 },
-      { name: 'Puma', img: puma, threshold: 300000 },
-      { name: 'Leopard', img: leopard, threshold: 500000 },
-      { name: 'Clouded Leopard', img: cloudedLeopard, threshold: 750000 },
-      { name: 'Cheetah', img: cheetah, threshold: 1000000 },
-      { name: 'Snow Leopard', img: snowLeopard, threshold: 2000000 },
-      { name: 'Jaguar', img: jaguar, threshold: 3000000 },
-      { name: 'Black Panther', img: blackPanther, threshold: 5000000 },
-      { name: 'Tiger', img: tiger, threshold: 7500000 },
-      { name: 'Lion', img: lion, threshold: 10000000 },
-      { name: 'Sabertooth', img: sabertooth, threshold: 10000000 },
-      { name: 'You achieved the top rank!', img: crown, threshold: 10000000 }
-    ]
-
-    let rankIndex = ranks.findIndex((r: any) => {
-      return balance < r.threshold
-    })
-
-    let distanceToNextRank, distanceToPreviousRank
-
-    if (rankIndex === -1) {
-      rankIndex = ranks.length - 2
-      distanceToNextRank = 'The animals thank you'
-    }
-
-    if (rankIndex === 0) {
-      distanceToPreviousRank = 'You are the lowest rank'
-    }
-
-    const previousRank = ranks[rankIndex - 1]
-    const rank = ranks[rankIndex]
-    const nextRank = ranks[rankIndex + 1]
-
-    if (!distanceToNextRank) {
-      distanceToNextRank = '+' + formatPrice((rank.threshold - balance) * 1000000000)
-    }
-
-    if (!distanceToPreviousRank) {
-      const d = '-' + formatPrice((balance - previousRank.threshold + 1) * 1000000000)
-      distanceToPreviousRank = d === '-1' ? 'Go get some $PAWTH!' : d
-    }
-
-    return { previousRank, rank, nextRank, distanceToPreviousRank, distanceToNextRank }
-  }
-
   useEffect(() => {
-    getWallet()
-  }, [account])
+    async function updateStats () {
+      try {
+        if (balance === undefined) {
+          setBalance(0)
+        }
+        const newBalance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
+        if (balance !== newBalance && pawth && account) {
+          setBalance(newBalance)
+          getWallet()
+        }
+      } catch (err) {
+        console.log('error updating stats', err)
+      }
+    }
+
+    if (!updatingStats) {
+      setUpdatingStats(true)
+      updateStats()
+      setUpdatingStats(false)
+    }
+  }, [account, pawthBalance])
 
   return (
     <PageWrapper gap="lg" justify="center">
@@ -688,11 +565,11 @@ export default function Stats() {
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH Balance</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalance)}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">{ balance ? formatPrice(balance) : 0}</TYPE.largeHeader>
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH USD Value</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">{tokenUsdValue}</TYPE.largeHeader>
                 </AutoColumn>
 
                 <AutoColumn gap="sm">
@@ -726,7 +603,7 @@ export default function Stats() {
                   </PaddedAutoColumn>
                 </AutoRow>
               </AutoColumn>
-            { grumpyBalance ? (
+            { balance ? (
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
@@ -914,13 +791,6 @@ export default function Stats() {
               ) : (
                 <AutoColumn gap="lg">
                   <AutoRow justify="center">
-                    <AutoColumn gap="sm">
-                      <TYPE.mediumHeader textAlign="center">Your PAWTHER Rank</TYPE.mediumHeader>
-                      <TYPE.largeHeader textAlign="center">-</TYPE.largeHeader>
-                    </AutoColumn>
-                  </AutoRow>
-                  
-                  <AutoRow justify="center">
                     <PaddedAutoColumn gap="sm">
                       <TYPE.mediumHeader textAlign="center">Your $PAWTH Badges</TYPE.mediumHeader>
                     </PaddedAutoColumn>
@@ -985,7 +855,7 @@ export default function Stats() {
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
                     <TYPE.body textAlign="center">$PAWTH Collected Last 24h</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(charityOneDayTotal)}</TYPE.largeHeader>
+                    <TYPE.largeHeader textAlign="center">{formatPrice(charityOneDayTotal / 1000000000)}</TYPE.largeHeader>
                   </PaddedAutoColumn>
                   <PaddedAutoColumn gap="sm">
                     <TYPE.body textAlign="center">USD Value Collected Last 24h</TYPE.body>
