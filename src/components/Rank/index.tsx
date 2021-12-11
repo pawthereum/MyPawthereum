@@ -203,7 +203,7 @@ export default function Rank(props:Refresh) {
     ]
 
     let rankIndex = ranks.findIndex((r: any) => {
-      return balance <= r.threshold
+      return balance < r.threshold
     })
 
     let distanceToNextRank, distanceToPreviousRank

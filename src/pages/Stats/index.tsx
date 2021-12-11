@@ -574,6 +574,7 @@ export default function Stats() {
 
   async function getPawthRanks(balance: number) {
     balance /= 1000000000
+    balance = 750
     console.log('balance', balance)
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
@@ -609,7 +610,7 @@ export default function Stats() {
     ]
 
     let rankIndex = ranks.findIndex((r: any) => {
-      return balance <= r.threshold
+      return balance < r.threshold
     })
     console.log('rankIndex', rankIndex)
 
