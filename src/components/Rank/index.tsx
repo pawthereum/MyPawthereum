@@ -267,8 +267,7 @@ export default function Rank(props:Refresh) {
                       <TYPE.body textAlign="center">You are {distanceToNextRank} $PAWTH away from leveling up to: </TYPE.body>
                     }
                     <TYPE.body textAlign="center">
-                      <img src={nextPawthRank.img} alt="Logo" style={{ width: 50, height: 50 }} />
-                    </TYPE.body>
+                      <img src={nextPawthRank.img} alt="Logo" style={{ maxWidth: '50px', height: 'auto' }} />                    </TYPE.body>
                     <TYPE.body textAlign="center">
                       <strong>{nextPawthRank.name}</strong>
                     </TYPE.body>

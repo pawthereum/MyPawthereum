@@ -574,7 +574,7 @@ export default function Stats() {
 
   async function getPawthRanks(balance: number) {
     balance /= 1000000000
-    balance = 1000000
+    balance = 500000
     console.log('balance', balance)
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
@@ -735,7 +735,7 @@ export default function Stats() {
                   <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
                     <TYPE.body textAlign="center"><small>Next Rank</small></TYPE.body>
                     <TYPE.body textAlign="center">
-                      <img src={nextPawthRank.img} alt="Logo" style={{ width: 50, height: 50 }} />
+                      <img src={nextPawthRank.img} alt="Logo" style={{ maxWidth: '50px', height: 'auto' }} />
                     </TYPE.body>
                     <TYPE.body textAlign="center">
                       <small><strong>{nextPawthRank.name}</strong></small>
