@@ -574,7 +574,7 @@ export default function Stats() {
 
   async function getPawthRanks(balance: number) {
     balance /= 1000000000
-    balance = 750
+    balance = 1000000
     console.log('balance', balance)
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
@@ -600,8 +600,8 @@ export default function Stats() {
       { name: 'Leopard', img: leopard, threshold: 500000 },
       { name: 'Clouded Leopard', img: cloudedLeopard, threshold: 750000 },
       { name: 'Cheetah', img: cheetah, threshold: 1000000 },
-      { name: 'Jaguar', img: jaguar, threshold: 2000000 },
-      { name: 'Snow Leopard', img: snowLeopard, threshold: 3000000 },
+      { name: 'Snow Leopard', img: snowLeopard, threshold: 2000000 },
+      { name: 'Jaguar', img: jaguar, threshold: 3000000 },
       { name: 'Black Panther', img: blackPanther, threshold: 5000000 },
       { name: 'Tiger', img: tiger, threshold: 7500000 },
       { name: 'Lion', img: lion, threshold: 10000000 },
