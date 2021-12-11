@@ -19,8 +19,15 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
+import { firebaseConfig } from './config'
+import { initializeApp } from 'firebase/app'
+import { getAnalytics } from 'firebase/analytics'
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
+
+const app = initializeApp(firebaseConfig)
+const analytics = getAnalytics(app)
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -65,26 +72,33 @@ function Updaters() {
   )
 }
 
-ReactDOM.render(
-  <StrictMode>
-    <FixedGlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Blocklist>
-          <Provider store={store}>
-            <Updaters />
-            <ThemeProvider>
-              <ThemedGlobalStyle />
-              <HashRouter>
-                <App />
-              </HashRouter>
-            </ThemeProvider>
-          </Provider>
-        </Blocklist>
-      </Web3ProviderNetwork>
-    </Web3ReactProvider>
-  </StrictMode>,
-  document.getElementById('root')
-)
+const auth = getAuth()
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    ReactDOM.render(
+      <StrictMode>
+        <FixedGlobalStyle />
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <Web3ProviderNetwork getLibrary={getLibrary}>
+            <Blocklist>
+              <Provider store={store}>
+                <Updaters />
+                <ThemeProvider>
+                  <ThemedGlobalStyle />
+                  <HashRouter>
+                    <App />
+                  </HashRouter>
+                </ThemeProvider>
+              </Provider>
+            </Blocklist>
+          </Web3ProviderNetwork>
+        </Web3ReactProvider>
+      </StrictMode>,
+      document.getElementById('root')
+    )
+  } else {
+    signInAnonymously(auth)
+  }
+})
 
 serviceWorkerRegistration.unregister()

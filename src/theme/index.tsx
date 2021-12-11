@@ -208,12 +208,12 @@ export const ThemedBackground = styled.div<{ backgroundColor?: string | undefine
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'Comfortaa', sans-serif;
+  font-family: 'Comfortaa', sans-serif !important;
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'Comfortaa', sans-serif;
+    font-family: 'Comfortaa', sans-serif !important;
   }
 }
 
