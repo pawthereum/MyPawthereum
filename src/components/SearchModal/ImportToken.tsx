@@ -57,7 +57,8 @@ export function ImportToken({ tokens, onBack, onDismiss, handleCurrencySelect }:
   // use for showing import source on inactive tokens
   const inactiveTokenList = useCombinedInactiveList()
   
-  const isImportingPawthereum = tokens.filter(t => t.address.toLowerCase() == PAWTH.address.toLowerCase()).length > 0
+  const pawth = chainId ? PAWTH[chainId] : undefined
+  const isImportingPawthereum = tokens.filter(t => t.address.toLowerCase() == pawth?.address.toLowerCase()).length > 0
 
   return (
     <Wrapper>

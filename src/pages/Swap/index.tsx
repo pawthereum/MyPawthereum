@@ -60,6 +60,9 @@ import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import { ApplicationModal } from 'state/application/actions'
+import { PAWTH } from '../../constants'
+import { TokenAmount } from '@uniswap/sdk-core'
+import { useTokenBalance } from '../../state/wallet/hooks'
 
 import pawswapLogo from '../../assets/images/pawswapLogo.png'
 
@@ -101,6 +104,14 @@ const StyledSwapHeaderTitle = styled.div`
 const PaddedAutoColumn = styled(AutoColumn)`
   padding: 20px;
 `
+const ContentWrapper = styled.main`
+  background-color: ${({ theme }) => theme.bg0};
+  padding: 32px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+`
 
 export default function Swap({ history }: RouteComponentProps) {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -127,8 +138,11 @@ export default function Swap({ history }: RouteComponentProps) {
       return !Boolean(token.address in defaultTokens)
     })
 
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
+
+  const pawth = chainId ? PAWTH[chainId] : undefined
+  const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
@@ -705,7 +719,7 @@ export default function Swap({ history }: RouteComponentProps) {
                 </TYPE.black>
               </RowFixed>
               <RowFixed>
-                <ExternalLink href={'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'} style={{ textDecoration: 'none' }}>
+                <ExternalLink href={'https://cdn.discordapp.com/attachments/836555340497289256/919251612973809664/1r5bThUTAVLhGllydIzE-yQ.png'} style={{ textDecoration: 'none' }}>
                   <StyledSwapHeaderTitleWrapper>
                     <HelpCircle /> <StyledSwapHeaderTitle>Learn More</StyledSwapHeaderTitle>
                   </StyledSwapHeaderTitleWrapper>
@@ -714,7 +728,9 @@ export default function Swap({ history }: RouteComponentProps) {
             </RowBetween>
           </StyledSwapHeader>
           <AutoColumn gap={'md'}>
-            <Rank refresh={showTransactionCompleteModal} />
+            <ContentWrapper>
+              <Rank balance={pawthBalance} refresh={showTransactionCompleteModal} showHelp={false} />
+            </ContentWrapper>
           </AutoColumn>
         </AppBody>
       ) : '' }

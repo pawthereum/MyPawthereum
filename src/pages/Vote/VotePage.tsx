@@ -152,7 +152,7 @@ export default function VotePage({
 
   const { chainId, account } = useActiveWeb3React()
 
-  const pawth = PAWTH
+  const pawth = chainId ? PAWTH[chainId] : undefined
   const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
 
   async function initPage () {
