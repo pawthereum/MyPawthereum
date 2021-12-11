@@ -719,7 +719,7 @@ export default function Swap({ history }: RouteComponentProps) {
                 </TYPE.black>
               </RowFixed>
               <RowFixed>
-                <ExternalLink href={'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'} style={{ textDecoration: 'none' }}>
+                <ExternalLink href={'https://cdn.discordapp.com/attachments/836555340497289256/919251612973809664/1r5bThUTAVLhGllydIzE-yQ.png'} style={{ textDecoration: 'none' }}>
                   <StyledSwapHeaderTitleWrapper>
                     <HelpCircle /> <StyledSwapHeaderTitle>Learn More</StyledSwapHeaderTitle>
                   </StyledSwapHeaderTitleWrapper>
