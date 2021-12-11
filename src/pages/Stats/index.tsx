@@ -185,7 +185,7 @@ export default function Stats() {
   const [isGivingTuesdayVisitor, setIsGivingTuesdayVisitor] = useState(false)
 
   function openRankMenu () {
-    const rankMenuLink = 'https://cdn.discordapp.com/attachments/843736156839346187/909328526652616714/unknown.png'
+    const rankMenuLink = 'https://cdn.discordapp.com/attachments/843736156839346187/912043689822527568/donedone.png'
     window.open(rankMenuLink);
   }
 
@@ -574,6 +574,7 @@ export default function Stats() {
 
   async function getPawthRanks(balance: number) {
     balance /= 1000000000
+    console.log('balance', balance)
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
       { name: 'Stray Cat', img: strayCat, threshold: 50 },
@@ -610,6 +611,7 @@ export default function Stats() {
     let rankIndex = ranks.findIndex((r: any) => {
       return balance <= r.threshold
     })
+    console.log('rankIndex', rankIndex)
 
     let distanceToNextRank, distanceToPreviousRank
 
@@ -625,6 +627,7 @@ export default function Stats() {
     const previousRank = ranks[rankIndex - 1]
     const rank = ranks[rankIndex]
     const nextRank = ranks[rankIndex + 1]
+    console.log('rank', rank)
 
     if (!distanceToNextRank) {
       distanceToNextRank = '+' + formatPrice((rank.threshold - balance) * 1000000000)
