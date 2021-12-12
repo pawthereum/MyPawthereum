@@ -4,8 +4,8 @@
     "static/js/0.e7014e4e.chunk.js.map": "/static/js/0.e7014e4e.chunk.js.map",
     "static/js/1.eeae4594.chunk.js": "/static/js/1.eeae4594.chunk.js",
     "static/js/1.eeae4594.chunk.js.map": "/static/js/1.eeae4594.chunk.js.map",
-    "main.js": "/static/js/main.73320646.chunk.js",
-    "main.js.map": "/static/js/main.73320646.chunk.js.map",
+    "main.js": "/static/js/main.122ac8bf.chunk.js",
+    "main.js.map": "/static/js/main.122ac8bf.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.bb19d753.js",
     "runtime-main.js.map": "/static/js/runtime-main.bb19d753.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -33,6 +33,7 @@
     "static/media/inter.css": "/static/media/Inter.var.9df5db38.woff2",
     "static/media/abbysinian.6ded83e6.png": "/static/media/abbysinian.6ded83e6.png",
     "static/media/arrow-right.956d575c.svg": "/static/media/arrow-right.956d575c.svg",
+    "static/media/bg.8a4ac1af.png": "/static/media/bg.8a4ac1af.png",
     "static/media/big_unicorn.4d5d3c09.png": "/static/media/big_unicorn.4d5d3c09.png",
     "static/media/blackFooted.00383a5a.png": "/static/media/blackFooted.00383a5a.png",
     "static/media/blackPanther.adcc209a.png": "/static/media/blackPanther.adcc209a.png",
@@ -95,6 +96,6 @@
     "static/js/runtime-main.bb19d753.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.9f25acd5.chunk.js",
-    "static/js/main.73320646.chunk.js"
+    "static/js/main.122ac8bf.chunk.js"
   ]
 }
