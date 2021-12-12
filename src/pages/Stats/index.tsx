@@ -522,7 +522,6 @@ export default function Stats() {
         const newBalance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
         if (balance !== newBalance && pawth && account) {
           setBalance(newBalance)
-          console.log('new balance', newBalance)
           if (newBalance && newBalance > 0) {
             setIsHolder(true)
           }
