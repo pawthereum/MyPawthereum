@@ -104,7 +104,7 @@ onAuthStateChanged(auth, (user) => {
                 <ThemeProvider>
                   <ThemedGlobalStyle />
                   <HashRouter>
-                    <Snowfall color="pink" />
+                    <Snowfall color="white" />
                     <App />
                   </HashRouter>
                 </ThemeProvider>

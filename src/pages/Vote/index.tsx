@@ -119,15 +119,15 @@ export default function Vote() {
       </TopSection>
       <TopSection gap="2px">
         <WrapSmall>
-          <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Proposals</TYPE.mediumHeader>
+          <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0, color: 'white' }}>Proposals</TYPE.mediumHeader>
           {(!proposals || proposals.length === 0) ? ( <Loader /> ) : ''}
         </WrapSmall>
         {proposals?.length === 0 && (
           <EmptyProposals>
             <TYPE.body style={{ marginBottom: '8px' }}>No proposals found.</TYPE.body>
-            <TYPE.subHeader>
+            <TYPE.body style={{ color: 'white', opacity: 0.5 }}>
               <i>Proposals submitted by community members will appear here.</i>
-            </TYPE.subHeader>
+            </TYPE.body>
           </EmptyProposals>
         )}
         {proposals?.map((p: SnapshotProposalData, i) => {
@@ -140,7 +140,7 @@ export default function Vote() {
           )
         })}
       </TopSection>
-      <DisclaimerText>
+      <DisclaimerText style={{ color: 'white', opacity: 0.75 }}>
         You must hold $PAWTH in order to participate in voting
       </DisclaimerText>
     </PageWrapper>

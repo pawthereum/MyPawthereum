@@ -611,7 +611,7 @@ export default function Stats() {
         <TopSection gap="md">
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
                 Your Wallet
               </TYPE.mediumHeader>
             </WrapSmall>
@@ -648,7 +648,7 @@ export default function Stats() {
 
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
                 Your Rank and Badges
               </TYPE.mediumHeader>
             </WrapSmall>
@@ -914,7 +914,7 @@ export default function Stats() {
 
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
                 Charity Wallet
               </TYPE.mediumHeader>
             </WrapSmall>

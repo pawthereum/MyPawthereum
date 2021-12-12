@@ -31,11 +31,17 @@ import { RedirectDuplicateTokenIdsV2 } from './AddLiquidityV2/redirects'
 import { PositionPage } from './Pool/PositionPage'
 import AddLiquidity from './AddLiquidity'
 import { ThemedBackground } from '../theme'
+import bg from '../assets/images/bg.png'
 
 const AppWrapper = styled.div`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
+  background-image: url(${bg});
+  background-size: auto;
+  background-repeat: repeat;
+  min-height: 100vh;
+  overflow-y: visible;
 `
 
 const BodyWrapper = styled.div`
