@@ -101,9 +101,6 @@ const StyledSwapHeaderTitle = styled.div`
   margin-left: 0.5rem;
   color: ${({ theme }) => theme.text2};
 `
-const PaddedAutoColumn = styled(AutoColumn)`
-  padding: 20px;
-`
 const ContentWrapper = styled.main`
   background-color: ${({ theme }) => theme.bg0};
   padding: 32px;

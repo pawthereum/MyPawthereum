@@ -13,10 +13,8 @@ import { SnapshotProposalStatus } from './styled'
 import {
   ProposalData,
   ProposalState,
-  SnapshotProposalState,
   useProposalData,
   useUserDelegatee,
-  useUserVotesAsOfBlock,
 } from '../../state/governance/hooks'
 import { DateTime } from 'luxon'
 import ReactMarkdown from 'react-markdown'
@@ -24,14 +22,12 @@ import VoteModal from '../../components/vote/VoteModal'
 import { TokenAmount } from '@uniswap/sdk-core'
 import { JSBI } from '@uniswap/v2-sdk'
 import { useActiveWeb3React } from '../../hooks'
-import { PAWTH, COMMON_CONTRACT_NAMES, UNI, ZERO_ADDRESS } from '../../constants'
-import { getEtherscanLink, isAddress } from '../../utils'
+import { PAWTH, UNI, ZERO_ADDRESS } from '../../constants'
+import { getEtherscanLink } from '../../utils'
 import { ApplicationModal } from '../../state/application/actions'
-import { useBlockNumber, useModalOpen, useToggleDelegateModal, useToggleVoteModal } from '../../state/application/hooks'
+import { useModalOpen, useToggleDelegateModal, useToggleVoteModal } from '../../state/application/hooks'
 import DelegateModal from '../../components/vote/DelegateModal'
 import { useTokenBalance } from '../../state/wallet/hooks'
-import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
-import { BigNumber } from 'ethers'
 import { GreyCard } from '../../components/Card'
 import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
 const hubUrl: any = 'https://hub.snapshot.org';
@@ -137,15 +133,7 @@ export default function VotePage({
     link: '',
     strategies: [{ name: '' }],
   })
-  const [snapshotProposalVotes, setSnapshotProposalVotes] = useState([{
-    id: '',
-    voter: '',
-    proposal: { id: '' },
-    choice: 0,
-    space: { id: '' }
-  }])
 
-  const [snapshotProposalProgress, setSnaspshotProposalProgress] = useState({})
   const [snapshotProposalProgressArray, setSnaspshotProposalProgressArray] = useState([{ choice: '', votes: 0 }])
   const [canVoteOnProposal, setCanVoteOnProposal] = useState(false)
   const [usersSubmittedVote, setUsersSubmittedVote] = useState('-')
@@ -160,7 +148,6 @@ export default function VotePage({
     setSnapshotProposalData(proposalData)
 
     const proposalVotes = await snapshot.getProposalVotes(id)
-    setSnapshotProposalVotes(proposalVotes)
 
     const voterAddresses = proposalVotes.map((v: any) => v.voter)
 
@@ -202,7 +189,6 @@ export default function VotePage({
       p.percentage = (p.votes / votingPowerType * 100).toFixed(2) + '%'
       return p
     })
-    setSnaspshotProposalProgress(proposalProgress)
     setSnaspshotProposalProgressArray(proposalProgressArray)
 
     const hasVoted = proposalVotes.find((v: any) => v.voter === account) ? true : false
@@ -238,13 +224,6 @@ export default function VotePage({
   const endDate: DateTime | undefined = DateTime.fromSeconds(snapshotProposalData?.end)
   const now: DateTime = DateTime.local()
 
-  // get total votes and format percentages for UI
-  const totalVotes: number | undefined = proposalData ? proposalData.forCount + proposalData.againstCount : undefined
-  const forPercentage: string =
-    proposalData && totalVotes ? ((proposalData.forCount * 100) / totalVotes).toFixed(0) + '%' : '0%'
-  const againstPercentage: string =
-    proposalData && totalVotes ? ((proposalData.againstCount * 100) / totalVotes).toFixed(0) + '%' : '0%'
-
   // only show voting if user can vote on the proposal
   const showVotingButtons = canVoteOnProposal
 
@@ -255,16 +234,6 @@ export default function VotePage({
   const showLinkForUnlock = Boolean(
     uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
-
-  // show links in propsoal details if content is an address
-  // if content is contract with common name, replace address with common name
-  const linkIfAddress = (content: string) => {
-    if (isAddress(content) && chainId) {
-      const commonName = COMMON_CONTRACT_NAMES[content] ?? content
-      return <ExternalLink href={getEtherscanLink(chainId, content, 'address')}>{commonName}</ExternalLink>
-    }
-    return <span>{content}</span>
-  }
 
   useEffect(() => {
     initPage()

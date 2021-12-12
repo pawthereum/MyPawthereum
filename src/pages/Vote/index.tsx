@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
-import { ExternalLink, TYPE } from '../../theme'
+import { TYPE } from '../../theme'
 import { RowBetween } from '../../components/Row'
 import { Link } from 'react-router-dom'
 import { SnapshotProposalStatus } from './styled'

@@ -1,5 +1,5 @@
 import styled, { DefaultTheme } from 'styled-components'
-import { ProposalState, SnapshotProposalState } from '../../state/governance/hooks'
+import { ProposalState } from '../../state/governance/hooks'
 
 const handleColorType = (status: ProposalState, theme: DefaultTheme) => {
   switch (status) {

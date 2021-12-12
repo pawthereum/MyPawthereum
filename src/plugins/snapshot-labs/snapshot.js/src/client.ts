@@ -3,7 +3,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import { signMessage } from './utils/web3';
 import hubs from './hubs.json';
 import { version } from './constants.json';
-import { objectTraps } from 'immer/dist/internal';
 
 export default class Client {
   readonly address: string;
