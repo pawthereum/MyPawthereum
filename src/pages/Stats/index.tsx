@@ -20,7 +20,6 @@ import { useActiveWeb3React } from '../../hooks'
 import Rank from '../../components/Rank'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 import { getFirestore, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'
 
 // Badges
 import swap from '../../assets/images/swap.png'
@@ -39,6 +38,7 @@ import slurp from '../../assets/images/slurp.png'
 import paws from '../../assets/images/paws.png'
 import cart from '../../assets/images/cart.png'
 import givingTuesday from '../../assets/images/givingTuesday.png'
+import twelveDaysOfGiving from '../../assets/images/twelveDaysOfGiving.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -155,6 +155,13 @@ export default function Stats() {
   const [isPawsOrgEventVisitor, setIsPawsOrgEventVisitor] = useState(false)
   const [isBlackFurday2021Buyer, setIsBlackFurday2021Buyer] = useState(false)
   const [isGivingTuesdayVisitor, setIsGivingTuesdayVisitor] = useState(false)
+  const [is12DaysVisitor, setIs12DaysVisitor] = useState(false)
+
+  // visits for awards
+  const [visits, setVisits] = useState<any[]>([])
+  const badgeEvents = [
+    { name: '12 Days of Giving' , start: 1639458000, end: 1640451599, setState: setIs12DaysVisitor }
+  ]
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -531,30 +538,45 @@ export default function Stats() {
 
   useEffect(() => {
     async function logVisit() {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      console.log('user', user)
-
       const db = getFirestore()
       const docRef = doc(db, 'pawthereum', 'wallets', `${account}`, 'visits')
       const docSnap = await getDoc(docRef)
+      let dates = []
       if (docSnap.exists()) {
-        const dates = docSnap.data().dates
+        dates = docSnap.data().dates || []
         dates.push(Timestamp.fromDate(new Date()))
         await updateDoc(docRef, {
           dates
         })
       } else {
-        console.log('no doc data')
+        dates.push(Timestamp.fromDate(new Date()))
         await setDoc(docRef, {
-          dates: [Timestamp.fromDate(new Date())]
+          dates: dates
         })
       }
+      setVisits(dates)
     }
     if (account) {
       logVisit()
     }
   }, [account])
+
+  useEffect(() => {
+    async function checkBadgeVisits() {
+      if (visits.length === 0) return
+      let badges:any[] = []
+      for (const visit of visits) {
+        const date = new Date(visit.toDate()).getTime() / 1000
+        badges = badges.concat(badgeEvents.filter(e => {
+          return date >= e.start && date <= e.end
+        }))
+      }
+      for (const badge of badges) {
+        badge.setState(true)
+      }
+    }
+    checkBadgeVisits()
+  }, [visits])
 
   return (
     <PageWrapper gap="lg" justify="center">
@@ -569,7 +591,7 @@ export default function Stats() {
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal shelters all over the world and has already donated over $80k!
+                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal shelters all over the world and has already donated over $279k!
                 </TYPE.white>
               </RowBetween>
             </AutoColumn>
@@ -812,6 +834,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Giving Tuesday Visitor</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on 30-Nov-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  is12DaysVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={twelveDaysOfGiving} alt="12 Days of Giving Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>12 Days of Giving Visitor</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited during 12 Days of Giving</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
