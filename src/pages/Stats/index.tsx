@@ -522,6 +522,12 @@ export default function Stats() {
         const newBalance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
         if (balance !== newBalance && pawth && account) {
           setBalance(newBalance)
+          if (newBalance && newBalance > 0) {
+            setIsHolder(true)
+          }
+          if (newBalance && newBalance >= 10000) {
+            setIsInWildCatClub(true)
+          }
           getWallet()
         }
       } catch (err) {
