@@ -22,6 +22,9 @@
 .env.production.local
 .env.production
 
+# firebase
+.firebase
+
 # debug logs
 *-debug.log
 
