@@ -43,6 +43,12 @@ yarn
 yarn start
 ```
 
+make sure you have firebase-tools installed.
+in a separate terminal, run
+```bash
+firebase emulators:start
+```
+
 ### Configuring the environment (optional)
 
 To have the interface default to a different network when a wallet is not connected:
