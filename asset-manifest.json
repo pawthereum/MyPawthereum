@@ -4,8 +4,8 @@
     "static/js/0.e7014e4e.chunk.js.map": "/static/js/0.e7014e4e.chunk.js.map",
     "static/js/1.eeae4594.chunk.js": "/static/js/1.eeae4594.chunk.js",
     "static/js/1.eeae4594.chunk.js.map": "/static/js/1.eeae4594.chunk.js.map",
-    "main.js": "/static/js/main.01b0d4d0.chunk.js",
-    "main.js.map": "/static/js/main.01b0d4d0.chunk.js.map",
+    "main.js": "/static/js/main.810ef5e1.chunk.js",
+    "main.js.map": "/static/js/main.810ef5e1.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.bb19d753.js",
     "runtime-main.js.map": "/static/js/runtime-main.bb19d753.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -62,6 +62,7 @@
     "static/media/menu.79681e1f.svg": "/static/media/menu.79681e1f.svg",
     "static/media/metamask.02e3ec27.png": "/static/media/metamask.02e3ec27.png",
     "static/media/myPawthLogo.244c9a84.png": "/static/media/myPawthLogo.244c9a84.png",
+    "static/media/newtown.b4b1f4f3.png": "/static/media/newtown.b4b1f4f3.png",
     "static/media/noise.0473ebbb.png": "/static/media/noise.0473ebbb.png",
     "static/media/pallas.cf339185.png": "/static/media/pallas.cf339185.png",
     "static/media/paws.229a135f.png": "/static/media/paws.229a135f.png",
@@ -96,6 +97,6 @@
     "static/js/runtime-main.bb19d753.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.9f25acd5.chunk.js",
-    "static/js/main.01b0d4d0.chunk.js"
+    "static/js/main.810ef5e1.chunk.js"
   ]
 }
