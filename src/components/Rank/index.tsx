@@ -145,8 +145,7 @@ export default function Rank(props:Refresh) {
 
   async function getRanks() {
     if (!props.balance) return null
-    // const balance = parseFloat(props.balance?.toFixed())
-    const balance = 1500000
+    const balance = parseFloat(props.balance?.toFixed())
     const ranks = [
       { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
       { name: 'Stray Cat', img: strayCat, threshold: 50 },
