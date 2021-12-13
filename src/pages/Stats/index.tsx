@@ -39,6 +39,7 @@ import paws from '../../assets/images/paws.png'
 import cart from '../../assets/images/cart.png'
 import givingTuesday from '../../assets/images/givingTuesday.png'
 import twelveDaysOfGiving from '../../assets/images/twelveDaysOfGiving.png'
+import newtown from '../../assets/images/newtown.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -156,11 +157,13 @@ export default function Stats() {
   const [isBlackFurday2021Buyer, setIsBlackFurday2021Buyer] = useState(false)
   const [isGivingTuesdayVisitor, setIsGivingTuesdayVisitor] = useState(false)
   const [is12DaysVisitor, setIs12DaysVisitor] = useState(false)
+  const [isNewtownVisitor, setIsNewtownVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
   const badgeEvents = [
-    { name: '12 Days of Giving' , start: 1639458000, end: 1640451599, setState: setIs12DaysVisitor }
+    { name: '12 Days of Giving' , start: 1639458000, end: 1640451599, setState: setIs12DaysVisitor },
+    { name: 'Newtown Visitor', start: 1639490400, end: 1639576800, setState: setIsNewtownVisitor }
   ]
 
   function formatPrice(price: number) {
@@ -851,6 +854,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>12 Days of Giving Visitor</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited during 12 Days of Giving</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isNewtownVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={newtown} alt="12 Days of Giving Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Catherine Hubbard Sanctuary</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 14-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
