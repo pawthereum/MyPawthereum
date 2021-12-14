@@ -163,7 +163,7 @@ export default function Stats() {
   const [visits, setVisits] = useState<any[]>([])
   const badgeEvents = [
     { name: '12 Days of Giving' , start: 1639458000, end: 1640451599, setState: setIs12DaysVisitor },
-    { name: 'Newtown Visitor', start: 1639490400, end: 1639576800, setState: setIsNewtownVisitor }
+    { name: 'Newtown Visitor', start: 1639489730, end: 1639576800, setState: setIsNewtownVisitor }
   ]
 
   function formatPrice(price: number) {
