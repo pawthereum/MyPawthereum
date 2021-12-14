@@ -7,4 +7,5 @@ export const BUG_SQUISHERS = [
   '0x2da9c5a2fe553b9f3fd7d9328169e247ab7aeccd',
   '0xaf86e7bbe342702d90fe87d80ab35c9344346997',
   '0x3865c63b989FfD50F8a6775B70e3Ca83c42A2BE3',
+  '0xC4d5eA4726Bb5a23D164977b5b3282be3C33CD4A',
 ].map(bs => bs.toLowerCase())
