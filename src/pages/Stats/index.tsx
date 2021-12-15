@@ -169,7 +169,7 @@ export default function Stats() {
     { name: '12 Days of Giving' , start: 1639458000, end: 1640451599, setState: setIs12DaysVisitor },
     { name: 'Newtown Visitor', start: 1639489730, end: 1639576800, setState: setIsNewtownVisitor },
     { name: 'Korean K9 Rescue Visitor', start: 1639576800, end: 1639663200, setState: setIsKoreanK9Visitor },
-    { name: 'Cat Town Visitor', start: 1639663200, end: 1639749600, setState: setIsCatTownVisitor },
+    { name: 'Cat Town Visitor', start: 1639674000, end: 1639749600, setState: setIsCatTownVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -523,12 +523,13 @@ export default function Stats() {
   }
 
   useEffect(() => {
+    const newBalance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
+
     async function updateStats () {
       try {
         if (balance === undefined) {
           setBalance(0)
         }
-        const newBalance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
         if (balance !== newBalance && pawth && account) {
           setBalance(newBalance)
           if (newBalance && newBalance > 0) {
@@ -549,6 +550,11 @@ export default function Stats() {
       updateStats()
       setUpdatingStats(false)
     }
+
+    if (newBalance !== 0) {
+
+    }
+
   }, [account, pawthBalance])
 
   useEffect(() => {
