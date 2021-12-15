@@ -666,7 +666,6 @@ export default function Stats() {
                   </PaddedAutoColumn>
                 </AutoRow>
               </AutoColumn>
-            { balance ? (
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
@@ -884,17 +883,6 @@ export default function Stats() {
                 }
                 </AutoRow>
               </AutoColumn>
-              ) : (
-                <AutoColumn gap="lg">
-                  <AutoRow justify="center">
-                    <PaddedAutoColumn gap="sm">
-                      <TYPE.mediumHeader textAlign="center">Your $PAWTH Badges</TYPE.mediumHeader>
-                    </PaddedAutoColumn>
-                  </AutoRow>
-                </AutoColumn>
-                
-              )
-            }
             </MainContentWrapper>
           </TopSection>
 
