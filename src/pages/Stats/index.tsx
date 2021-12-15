@@ -41,6 +41,7 @@ import givingTuesday from '../../assets/images/givingTuesday.png'
 import twelveDaysOfGiving from '../../assets/images/twelveDaysOfGiving.png'
 import newtown from '../../assets/images/newtown.png'
 import koreanK9Rescue from '../../assets/images/koreanK9Rescue.png'
+import catTown from '../../assets/images/catTown.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -160,6 +161,7 @@ export default function Stats() {
   const [is12DaysVisitor, setIs12DaysVisitor] = useState(false)
   const [isNewtownVisitor, setIsNewtownVisitor] = useState(false)
   const [isKoreanK9Visitor, setIsKoreanK9Visitor] = useState(false)
+  const [isCatTownVisitor, setIsCatTownVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -167,6 +169,7 @@ export default function Stats() {
     { name: '12 Days of Giving' , start: 1639458000, end: 1640451599, setState: setIs12DaysVisitor },
     { name: 'Newtown Visitor', start: 1639489730, end: 1639576800, setState: setIsNewtownVisitor },
     { name: 'Korean K9 Rescue Visitor', start: 1639576800, end: 1639663200, setState: setIsKoreanK9Visitor },
+    { name: 'Cat Town Visitor', start: 1639663200, end: 1639749600, setState: setIsCatTownVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -863,7 +866,7 @@ export default function Stats() {
                   isNewtownVisitor ? (
                     <PaddedAutoColumn gap="sm">
                       <TYPE.body textAlign="center">
-                        <img src={newtown} alt="12 Days of Giving Visitor" style={{ width: 50, height: 50 }} />
+                        <img src={newtown} alt="Catherine Hubbard Sanctuary Visitor" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Catherine Hubbard Sanctuary</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 14-Dec-2021</small></TYPE.body>
@@ -874,10 +877,21 @@ export default function Stats() {
                   isKoreanK9Visitor ? (
                     <PaddedAutoColumn gap="sm">
                       <TYPE.body textAlign="center">
-                        <img src={koreanK9Rescue} alt="12 Days of Giving Visitor" style={{ width: 50, height: 50 }} />
+                        <img src={koreanK9Rescue} alt="Korean K9 Rescue Visitor" style={{ width: 50, height: 50 }} />
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Korean K9 Rescue</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 15-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isCatTownVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={catTown} alt="Cat Town Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Cat Town</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 16-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
