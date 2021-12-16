@@ -42,6 +42,7 @@ import twelveDaysOfGiving from '../../assets/images/twelveDaysOfGiving.png'
 import newtown from '../../assets/images/newtown.png'
 import koreanK9Rescue from '../../assets/images/koreanK9Rescue.png'
 import catTown from '../../assets/images/catTown.png'
+import forgottenAnimals from '../../assets/images/forgottenAnimals.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -162,6 +163,7 @@ export default function Stats() {
   const [isNewtownVisitor, setIsNewtownVisitor] = useState(false)
   const [isKoreanK9Visitor, setIsKoreanK9Visitor] = useState(false)
   const [isCatTownVisitor, setIsCatTownVisitor] = useState(false)
+  const [isForgottenAnimalsVisitor, setIsForgottenAnimalsVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -170,6 +172,7 @@ export default function Stats() {
     { name: 'Newtown Visitor', start: 1639489730, end: 1639576800, setState: setIsNewtownVisitor },
     { name: 'Korean K9 Rescue Visitor', start: 1639576800, end: 1639663200, setState: setIsKoreanK9Visitor },
     { name: 'Cat Town Visitor', start: 1639674000, end: 1639749600, setState: setIsCatTownVisitor },
+    { name: 'Forgotten Animals Visitor', start: 1639749600, end: 1639836000, setState: setIsForgottenAnimalsVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -898,6 +901,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Cat Town</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 16-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isForgottenAnimalsVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={forgottenAnimals} alt="Forgotten Animals Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Forgotten Animals</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 17-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
