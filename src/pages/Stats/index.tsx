@@ -175,7 +175,7 @@ export default function Stats() {
     { name: 'Korean K9 Rescue Visitor', start: 1639576800, end: 1639663200, setState: setIsKoreanK9Visitor },
     { name: 'Cat Town Visitor', start: 1639674000, end: 1639749600, setState: setIsCatTownVisitor },
     { name: 'Forgotten Animals Visitor', start: 1639749600, end: 1639836000, setState: setIsForgottenAnimalsVisitor },
-    { name: 'Muttville Visitor', start: 1639837800, end: 1639924200, setState: setIsMuttvilleVisitor },
+    { name: 'Muttville Visitor', start: 1639836000, end: 1639924200, setState: setIsMuttvilleVisitor },
   ]
 
   function formatPrice(price: number) {
