@@ -43,6 +43,7 @@ import newtown from '../../assets/images/newtown.png'
 import koreanK9Rescue from '../../assets/images/koreanK9Rescue.png'
 import catTown from '../../assets/images/catTown.png'
 import forgottenAnimals from '../../assets/images/forgottenAnimals.png'
+import muttville from '../../assets/images/muttville.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -164,6 +165,7 @@ export default function Stats() {
   const [isKoreanK9Visitor, setIsKoreanK9Visitor] = useState(false)
   const [isCatTownVisitor, setIsCatTownVisitor] = useState(false)
   const [isForgottenAnimalsVisitor, setIsForgottenAnimalsVisitor] = useState(false)
+  const [isMuttvilleVisitor, setIsMuttvilleVisitor] = useState(false) 
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -173,6 +175,7 @@ export default function Stats() {
     { name: 'Korean K9 Rescue Visitor', start: 1639576800, end: 1639663200, setState: setIsKoreanK9Visitor },
     { name: 'Cat Town Visitor', start: 1639674000, end: 1639749600, setState: setIsCatTownVisitor },
     { name: 'Forgotten Animals Visitor', start: 1639749600, end: 1639836000, setState: setIsForgottenAnimalsVisitor },
+    { name: 'Muttville Visitor', start: 1639837800, end: 1639924200, setState: setIsMuttvilleVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -912,6 +915,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Forgotten Animals</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 17-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isMuttvilleVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={muttville} alt="Muttville Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Muttville</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 18-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
