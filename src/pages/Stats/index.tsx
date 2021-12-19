@@ -178,7 +178,7 @@ export default function Stats() {
     { name: 'Cat Town Visitor', start: 1639674000, end: 1639749600, setState: setIsCatTownVisitor },
     { name: 'Forgotten Animals Visitor', start: 1639749600, end: 1639836000, setState: setIsForgottenAnimalsVisitor },
     { name: 'Muttville Visitor', start: 1639836000, end: 1639924200, setState: setIsMuttvilleVisitor },
-    { name: 'Global Elephant Sanctuary Visitor', start: 1639924200, end: 1640010600, setState: setIsGlobalElephantSanctuaryVisitor },
+    { name: 'Global Elephant Sanctuary Visitor', start: 1639834778, end: 1640010600, setState: setIsGlobalElephantSanctuaryVisitor },
   ]
 
   function formatPrice(price: number) {
