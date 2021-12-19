@@ -44,6 +44,7 @@ import koreanK9Rescue from '../../assets/images/koreanK9Rescue.png'
 import catTown from '../../assets/images/catTown.png'
 import forgottenAnimals from '../../assets/images/forgottenAnimals.png'
 import muttville from '../../assets/images/muttville.png'
+import globalSanctuaryElephants from '../../assets/images/globalSanctuaryElephants.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -166,6 +167,7 @@ export default function Stats() {
   const [isCatTownVisitor, setIsCatTownVisitor] = useState(false)
   const [isForgottenAnimalsVisitor, setIsForgottenAnimalsVisitor] = useState(false)
   const [isMuttvilleVisitor, setIsMuttvilleVisitor] = useState(false) 
+  const [isGlobalElephantSanctuaryVisitor, setIsGlobalElephantSanctuaryVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -176,6 +178,7 @@ export default function Stats() {
     { name: 'Cat Town Visitor', start: 1639674000, end: 1639749600, setState: setIsCatTownVisitor },
     { name: 'Forgotten Animals Visitor', start: 1639749600, end: 1639836000, setState: setIsForgottenAnimalsVisitor },
     { name: 'Muttville Visitor', start: 1639836000, end: 1639924200, setState: setIsMuttvilleVisitor },
+    { name: 'Global Elephant Sanctuary Visitor', start: 1639924200, end: 1640010600, setState: setIsGlobalElephantSanctuaryVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -926,6 +929,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Muttville</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 18-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isGlobalElephantSanctuaryVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={globalSanctuaryElephants} alt="Global Sanctuary for Elephants Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Global Sanctuary for Elephants</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 19-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
