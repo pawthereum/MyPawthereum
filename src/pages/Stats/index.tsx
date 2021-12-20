@@ -45,6 +45,7 @@ import catTown from '../../assets/images/catTown.png'
 import forgottenAnimals from '../../assets/images/forgottenAnimals.png'
 import muttville from '../../assets/images/muttville.png'
 import globalSanctuaryElephants from '../../assets/images/globalSanctuaryElephants.png'
+import dogsForBetterLvies from '../../assets/images/dogsForBetterLives.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -168,6 +169,7 @@ export default function Stats() {
   const [isForgottenAnimalsVisitor, setIsForgottenAnimalsVisitor] = useState(false)
   const [isMuttvilleVisitor, setIsMuttvilleVisitor] = useState(false) 
   const [isGlobalElephantSanctuaryVisitor, setIsGlobalElephantSanctuaryVisitor] = useState(false)
+  const [isDogsForBetterLivesVisitor, setIsDogsForBetterLivesVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -179,6 +181,7 @@ export default function Stats() {
     { name: 'Forgotten Animals Visitor', start: 1639749600, end: 1639836000, setState: setIsForgottenAnimalsVisitor },
     { name: 'Muttville Visitor', start: 1639836000, end: 1639924200, setState: setIsMuttvilleVisitor },
     { name: 'Global Elephant Sanctuary Visitor', start: 1639834778, end: 1640010600, setState: setIsGlobalElephantSanctuaryVisitor },
+    { name: 'Dogs for Better Lives', start: 1640010600, end: 1640097000, setState: setIsDogsForBetterLivesVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -940,6 +943,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Global Sanctuary for Elephants</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 19-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isDogsForBetterLivesVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={dogsForBetterLvies} alt="Dogs For Better Lives Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Dogs For Better Lives</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 20-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
