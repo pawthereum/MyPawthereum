@@ -4,8 +4,8 @@
     "static/js/0.e7014e4e.chunk.js.map": "/static/js/0.e7014e4e.chunk.js.map",
     "static/js/1.eeae4594.chunk.js": "/static/js/1.eeae4594.chunk.js",
     "static/js/1.eeae4594.chunk.js.map": "/static/js/1.eeae4594.chunk.js.map",
-    "main.js": "/static/js/main.d3615ed7.chunk.js",
-    "main.js.map": "/static/js/main.d3615ed7.chunk.js.map",
+    "main.js": "/static/js/main.ea666404.chunk.js",
+    "main.js.map": "/static/js/main.ea666404.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.bb19d753.js",
     "runtime-main.js.map": "/static/js/runtime-main.bb19d753.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -88,6 +88,7 @@
     "static/media/sphynx.74920a37.png": "/static/media/sphynx.74920a37.png",
     "static/media/squiggle.294665ed.png": "/static/media/squiggle.294665ed.png",
     "static/media/strayCat.a11da6f2.png": "/static/media/strayCat.a11da6f2.png",
+    "static/media/theRealBark.6166e798.png": "/static/media/theRealBark.6166e798.png",
     "static/media/tiger.b64917f6.png": "/static/media/tiger.b64917f6.png",
     "static/media/tokenlist.831c6277.svg": "/static/media/tokenlist.831c6277.svg",
     "static/media/twelveDaysOfGiving.a2e86ea1.png": "/static/media/twelveDaysOfGiving.a2e86ea1.png",
@@ -101,6 +102,6 @@
     "static/js/runtime-main.bb19d753.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.9f25acd5.chunk.js",
-    "static/js/main.d3615ed7.chunk.js"
+    "static/js/main.ea666404.chunk.js"
   ]
 }
