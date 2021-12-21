@@ -20,6 +20,7 @@ import {
   updateUserSlippageTolerance,
   toggleURLWarning,
   updateUserSingleHopOnly,
+  updateUserDexSwapSelection,
 } from './actions'
 
 function serializeToken(token: Token): SerializedToken {
@@ -98,6 +99,22 @@ export function useUserSingleHopOnly(): [boolean, (newSingleHopOnly: boolean) =>
   )
 
   return [singleHopOnly, setSingleHopOnly]
+}
+
+export function useUserDexSwapSelection(): [string, (dex: string) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userDexSwapSelection = useSelector<AppState, AppState['user']['userDexSwapSelection']>((state) => {
+    return state.user.userDexSwapSelection
+  })
+  console.log('dex is', userDexSwapSelection)
+  const setUserDexSwapSelection = useCallback(
+    (userDexSwapSelection: string) => {
+      dispatch(updateUserDexSwapSelection({ userDexSwapSelection }))
+    },
+    [dispatch]
+  )
+
+  return [userDexSwapSelection, setUserDexSwapSelection]
 }
 
 export function useUserSlippageTolerance(): [Percent, (slippageBips: number) => void] {

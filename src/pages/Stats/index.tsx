@@ -362,7 +362,7 @@ export default function Stats() {
     })
       .then((res) => res.json())
       .then((result) => {
-        const votes = result.data.votes
+        const votes = result.data?.votes
         const voters = Object.entries(votes).map((v: any) => v[1].voter)
         return voters.includes(account)
       })

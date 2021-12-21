@@ -11,6 +11,7 @@ import {
   updateMatchesDarkMode,
   updateUserDarkMode,
   updateUserExpertMode,
+  updateUserDexSwapSelection,
   updateUserSlippageTolerance,
   updateUserDeadline,
   toggleURLWarning,
@@ -29,6 +30,9 @@ export interface UserState {
   userExpertMode: boolean
 
   userSingleHopOnly: boolean // only allow swaps on direct pairs
+
+  // user defines which dex they want to swap with
+  userDexSwapSelection: string
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -64,6 +68,7 @@ export const initialState: UserState = {
   userSingleHopOnly: false,
   userSlippageTolerance: PAWTH_RECOMMENDED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
+  userDexSwapSelection: 'Uniswap V2',
   tokens: {},
   pairs: {},
   timestamp: currentTimestamp(),
@@ -97,6 +102,10 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserDexSwapSelection, (state, action) => {
+      state.userDexSwapSelection = action.payload.userDexSwapSelection
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {
