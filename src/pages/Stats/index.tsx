@@ -47,6 +47,7 @@ import muttville from '../../assets/images/muttville.png'
 import globalSanctuaryElephants from '../../assets/images/globalSanctuaryElephants.png'
 import dogsForBetterLvies from '../../assets/images/dogsForBetterLives.png'
 import theRealBark from '../../assets/images/theRealBark.png'
+import mauiHumaneSociety from '../../assets/images/mauiHumaneSociety.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -172,6 +173,7 @@ export default function Stats() {
   const [isGlobalElephantSanctuaryVisitor, setIsGlobalElephantSanctuaryVisitor] = useState(false)
   const [isDogsForBetterLivesVisitor, setIsDogsForBetterLivesVisitor] = useState(false)
   const [isTheRealBarkVisitor, setIsTheRealBarkVisitor] = useState(false)
+  const [isMauiHumaneSocietyVisitor, setIsMauiHumaneSocietyVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -185,6 +187,7 @@ export default function Stats() {
     { name: 'Global Elephant Sanctuary Visitor', start: 1639834778, end: 1640010600, setState: setIsGlobalElephantSanctuaryVisitor },
     { name: 'Dogs for Better Lives', start: 1640010600, end: 1640097000, setState: setIsDogsForBetterLivesVisitor },
     { name: 'The Real Bark', start: 1640095200, end: 1640181600, setState: setIsTheRealBarkVisitor },
+    { name: 'Maui Humane Society', start: 1640183400, end: 1640269800, setState: setIsMauiHumaneSocietyVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -968,6 +971,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>The Real Bark</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 21-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isMauiHumaneSocietyVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={mauiHumaneSociety} alt="Maui Humane Society Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Maui Humane Society</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 22-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
