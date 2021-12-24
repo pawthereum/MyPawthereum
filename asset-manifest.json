@@ -4,8 +4,8 @@
     "static/js/0.e7014e4e.chunk.js.map": "/static/js/0.e7014e4e.chunk.js.map",
     "static/js/1.eeae4594.chunk.js": "/static/js/1.eeae4594.chunk.js",
     "static/js/1.eeae4594.chunk.js.map": "/static/js/1.eeae4594.chunk.js.map",
-    "main.js": "/static/js/main.a1595202.chunk.js",
-    "main.js.map": "/static/js/main.a1595202.chunk.js.map",
+    "main.js": "/static/js/main.1e2e1d31.chunk.js",
+    "main.js.map": "/static/js/main.1e2e1d31.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.bb19d753.js",
     "runtime-main.js.map": "/static/js/runtime-main.bb19d753.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -84,6 +84,7 @@
     "static/media/serval.d9481afb.png": "/static/media/serval.d9481afb.png",
     "static/media/shibaInuLp.d7923021.png": "/static/media/shibaInuLp.d7923021.png",
     "static/media/siamese.284d3b9a.png": "/static/media/siamese.284d3b9a.png",
+    "static/media/slothConservationFoundation.1716f836.png": "/static/media/slothConservationFoundation.1716f836.png",
     "static/media/slurp.0d5b1d11.png": "/static/media/slurp.0d5b1d11.png",
     "static/media/snowLeopard.98360fb9.png": "/static/media/snowLeopard.98360fb9.png",
     "static/media/sphynx.74920a37.png": "/static/media/sphynx.74920a37.png",
@@ -103,6 +104,6 @@
     "static/js/runtime-main.bb19d753.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.9f25acd5.chunk.js",
-    "static/js/main.a1595202.chunk.js"
+    "static/js/main.1e2e1d31.chunk.js"
   ]
 }
