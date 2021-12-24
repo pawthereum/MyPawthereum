@@ -185,7 +185,7 @@ export default class Client {
     })
     .then((res) => res.json())
     .then((result) => {
-      const proposals = result.data.proposals
+      const proposals = result.data ? result.data.proposals : []
       return proposals
     })
   }
@@ -265,7 +265,8 @@ export default class Client {
     })
     .then((res) => res.json())
     .then((result) => {
-      return result.data.votes
+      const votes = result.data ? result.data.votes : []
+      return votes
     })
   }
 

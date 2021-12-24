@@ -49,6 +49,8 @@ import dogsForBetterLvies from '../../assets/images/dogsForBetterLives.png'
 import theRealBark from '../../assets/images/theRealBark.png'
 import mauiHumaneSociety from '../../assets/images/mauiHumaneSociety.png'
 import savasSafeHaven from '../../assets/images/savasSafeHaven.png'
+import slothConservationFoundation from '../../assets/images/slothConservationFoundation.png'
+import northShoreAnimalLeague from '../../assets/images/northShoreAnimalLeague.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -176,6 +178,8 @@ export default function Stats() {
   const [isTheRealBarkVisitor, setIsTheRealBarkVisitor] = useState(false)
   const [isMauiHumaneSocietyVisitor, setIsMauiHumaneSocietyVisitor] = useState(false)
   const [isSavasSafeHavenVisitor, setIsSavasSafeHavenVisitor] = useState(false)
+  const [isSlothFoundationVisitor, setIsSlothFoundationVisitor] = useState(false)
+  const [isNorthShoreAnimalLeagueVisitor, setIsNorthShoreAnimalLeagueVisitor] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -191,6 +195,8 @@ export default function Stats() {
     { name: 'The Real Bark', start: 1640095200, end: 1640181600, setState: setIsTheRealBarkVisitor },
     { name: 'Maui Humane Society', start: 1640183400, end: 1640269800, setState: setIsMauiHumaneSocietyVisitor },
     { name: 'Savas Safe Haven', start: 1640269800, end: 1640356200, setState: setIsSavasSafeHavenVisitor },
+    { name: 'Sloth Conservation Foundation', start: 1640356200, end: 1640442600, setState: setIsSlothFoundationVisitor },
+    { name: 'North Shore Animal League', start: 1640442600, end: 1640529000, setState: setIsNorthShoreAnimalLeagueVisitor },
   ]
 
   function formatPrice(price: number) {
@@ -371,7 +377,7 @@ export default function Stats() {
     })
       .then((res) => res.json())
       .then((result) => {
-        const votes = result.data.votes
+        const votes = result.data ? result.data.votes : []
         const voters = Object.entries(votes).map((v: any) => v[1].voter)
         return voters.includes(account)
       })
@@ -996,6 +1002,28 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Sava&apos;s Safe Haven</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 23-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isSlothFoundationVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={slothConservationFoundation} alt="Sloth Conservation Foundation Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>The Sloth Conservation Foundation</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 24-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isNorthShoreAnimalLeagueVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={northShoreAnimalLeague} alt="North Shore Animal League Visitor" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>North Shore Animal League America</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited on Donation Day: 25-Dec-2021</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
