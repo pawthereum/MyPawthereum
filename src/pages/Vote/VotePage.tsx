@@ -22,13 +22,14 @@ import VoteModal from '../../components/vote/VoteModal'
 import { TokenAmount } from '@uniswap/sdk-core'
 import { JSBI } from '@uniswap/v2-sdk'
 import { useActiveWeb3React } from '../../hooks'
-import { PAWTH, UNI, ZERO_ADDRESS } from '../../constants'
+import { PAWTH, UNI, ZERO_ADDRESS, DISQUS_ID } from '../../constants'
 import { getEtherscanLink } from '../../utils'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleDelegateModal, useToggleVoteModal } from '../../state/application/hooks'
 import DelegateModal from '../../components/vote/DelegateModal'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { GreyCard } from '../../components/Card'
+import { DiscussionEmbed } from 'disqus-react' 
 import Client from '../../plugins/snapshot-labs/snapshot.js/src/client';
 const hubUrl: any = 'https://hub.snapshot.org';
 const snapshot = new Client(hubUrl);
@@ -125,6 +126,7 @@ export default function VotePage({
   },
 }: RouteComponentProps<{ id: string }>) {
   const [snapshotProposalData, setSnapshotProposalData] = useState({
+    id: '',
     title: '',
     body: '',
     end: 0,
@@ -137,6 +139,11 @@ export default function VotePage({
   const [snapshotProposalProgressArray, setSnaspshotProposalProgressArray] = useState([{ choice: '', votes: 0 }])
   const [canVoteOnProposal, setCanVoteOnProposal] = useState(false)
   const [usersSubmittedVote, setUsersSubmittedVote] = useState('-')
+  const [disqusConfig, setDisqusConfig] = useState({
+    url: '',
+    identifier: '',
+    title: ''
+  })
 
   const { chainId, account } = useActiveWeb3React()
 
@@ -144,6 +151,7 @@ export default function VotePage({
   const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
 
   async function initPage () {
+    if (snapshotProposalData.id) return // avoid rate limits
     const proposalData = await snapshot.getProposal(id)
     setSnapshotProposalData(proposalData)
 
@@ -198,6 +206,12 @@ export default function VotePage({
       setUsersSubmittedVote(proposalData.choices[usersVote.choice - 1])
     }
     setCanVoteOnProposal(pawthBalance !== undefined && pawthBalance?.toFixed(2) !== '0.00' && proposalData.state === 'active' && !hasVoted)
+
+    setDisqusConfig({
+      url: 'https://my.pawthereum.com/#/vote/' + proposalData?.id,
+      identifier: proposalData?.id,
+      title: proposalData?.title,
+    })
   }
 
   // get data for this specific proposal
@@ -379,6 +393,17 @@ export default function VotePage({
               </div>
             </SnapshotLink>
           </AutoColumn>
+        ) : ''}
+        {
+          disqusConfig.identifier !== '' ? (
+            <AutoColumn gap="md" style={{ width: '100%' }}>
+              <TYPE.mediumHeader fontWeight={600}>Discussion</TYPE.mediumHeader>
+              <TYPE.body>Beware of scammers. The Pawthereum team will never ask you for your seedphrase or any other credentials!</TYPE.body>
+              <DiscussionEmbed
+                shortname={DISQUS_ID}
+                config={disqusConfig}
+              />
+            </AutoColumn>
         ) : ''}
       </ProposalInfo>
     </PageWrapper>

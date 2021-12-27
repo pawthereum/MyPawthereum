@@ -84,6 +84,7 @@ export default function Vote() {
   const [proposals, setProposals] = useState([])
 
   async function initSnapshot() {
+    if (proposals.length > 0) return // do not keep fetching from snapshot if we have data
     const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
     setProposals(pawthSnapshotProposals)
   }
