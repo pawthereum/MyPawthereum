@@ -349,14 +349,18 @@ export default function Header() {
   const pawthBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, pawth)
 
   const [showVotingOpportunityDot, setShowVotingOpportunityDot] = useState(false)
+  const [gotSnapshotData, setGotSnapshotData] = useState(false) 
 
   async function checkForVotingOpportunities () {
+    // avoid rate limits
+    if (gotSnapshotData) return
     // dont bother loading snapshot without an account or balance
     if (!account || !pawthBalance || pawthBalance?.toFixed(2) === '0.00') {
       return setShowVotingOpportunityDot(false)
     }
     const pawthSnapshotProposals = await snapshot.getProposals('pawthereum.eth')
     const activeProposals = pawthSnapshotProposals.filter((p: any) => p.state === 'active')
+    setGotSnapshotData(true)
     for (const p of activeProposals) {
       const votes = await snapshot.getProposalVotes(p.id)
       const userVoted = votes.find((v: any) => v.voter.toLowerCase() === account?.toLowerCase())
