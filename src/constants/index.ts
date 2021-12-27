@@ -70,7 +70,7 @@ export const UNI: { [chainId in ChainId]: Token } = {
 
 const PAWTH_ADDRESS_MAINNET = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 const PAWTH_ADDRESS_RINKEBY = '0xaffbad7157d22b6e7a53afe097387503a1792351'
-const PAWTH_ADDRESS_GÖRLI = '0x41f999597f62991de0f43860023fa2f29a99a8a5'
+const PAWTH_ADDRESS_GÖRLI = '0xc2a8dd01aabb1e21bf2535ca1c222ffc916e6609'
 const PAWTH_ADDRESS_KOVAN = '0x947F1Fc5b8ae3c5e6Bb5b3eeD6A2c39d740aD4F3'
 const PAWTH_ADDRESS_ROPSTEN = '0x155b486f301f257321ca11d90ff652f4374b1b46' // not deployed on ropsten this is fake
 export const PAWTH: { [chainId in ChainId]: Token } = {
