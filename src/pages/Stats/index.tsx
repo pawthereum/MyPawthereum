@@ -7,7 +7,8 @@ import {
   CAT_DAY_VISITORS, 
   EDINBURGH_VISITORS,
   RED_CANDLE_SURVIVORS,
-  PAWS_ORG_VISITORS
+  PAWS_ORG_VISITORS,
+  BRIDGE_TESTERS,
 } from './../../constants/index'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -51,6 +52,7 @@ import mauiHumaneSociety from '../../assets/images/mauiHumaneSociety.png'
 import savasSafeHaven from '../../assets/images/savasSafeHaven.png'
 import slothConservationFoundation from '../../assets/images/slothConservationFoundation.png'
 import northShoreAnimalLeague from '../../assets/images/northShoreAnimalLeague.png'
+import bridge from '../../assets/images/bridge.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -180,6 +182,7 @@ export default function Stats() {
   const [isSavasSafeHavenVisitor, setIsSavasSafeHavenVisitor] = useState(false)
   const [isSlothFoundationVisitor, setIsSlothFoundationVisitor] = useState(false)
   const [isNorthShoreAnimalLeagueVisitor, setIsNorthShoreAnimalLeagueVisitor] = useState(false)
+  const [isBridgeTester, setIsBridgeTester] = useState(false)
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -316,6 +319,7 @@ export default function Stats() {
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsBugSquisher(BUG_SQUISHERS.includes(account.toLowerCase()))
+      setIsBridgeTester(BRIDGE_TESTERS.includes(account.toLowerCase()))
       setIsTester(TESTERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
 
@@ -1024,6 +1028,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>North Shore Animal League America</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited on Donation Day: 25-Dec-2021</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isBridgeTester ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={bridge} alt="Bridge Tester" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Bridge Tester</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Helped Test Pawth Bridges</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
