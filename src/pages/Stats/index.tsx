@@ -124,8 +124,7 @@ const ethplorerApiKey = process.env.REACT_APP_ETHPLORER_API_KEY || ''
 const pawthMarketingWallet = '0x16b1db77b60c8d8b6ecea0fa4e0481e9f53c9ba1'
 
 export default function Stats() {
-  const { chainId } = useActiveWeb3React()
-  const account = '0x663a5c229c09b049e36dcc11a9b0d4a8eb9db214'
+  const { account, chainId } = useActiveWeb3React()
 
   const pawth = chainId ? PAWTH[chainId] : undefined
   const pawthBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, pawth)
