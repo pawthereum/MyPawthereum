@@ -50,6 +50,8 @@ export const FRAX = new Token(ChainId.MAINNET, '0x853d955aCEf822Db058eb8505911ED
 export const FXS = new Token(ChainId.MAINNET, '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0', 18, 'FXS', 'Frax Share')
 export const renBTC = new Token(ChainId.MAINNET, '0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D', 8, 'renBTC', 'renBTC')
 export const GRUMPY = new Token(ChainId.MAINNET, '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b', 9, 'GRUMPY', 'Grumpy')
+export const SHIBLP = new Token(ChainId.MAINNET, '0xc57dc778a0d2d150d04fc0fd09a0113ebe9d600c', 18, 'SSLP', 'ShibaSwap LP Token')
+export const PAWTHLP = new Token(ChainId.MAINNET, '0x800a45f2b861229d59e952aef57b22e84ff949a1', 18, 'UNI-V2', 'Uniswap PAWTH/ETH LP')
 
 // Block time here is slightly higher (~1s) than average in order to avoid ongoing proposals past the displayed time
 export const AVERAGE_BLOCK_TIME_IN_SECS = 13

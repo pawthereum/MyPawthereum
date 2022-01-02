@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { 
   PAWTH,
+  SHIBLP,
+  PAWTHLP,
   ORIGINAL_SWAPPERS, 
   BUG_SQUISHERS, 
   TESTERS, 
@@ -123,7 +125,7 @@ const pawthMarketingWallet = '0x16b1db77b60c8d8b6ecea0fa4e0481e9f53c9ba1'
 
 export default function Stats() {
   const { chainId } = useActiveWeb3React()
-  const account = '0xc57dc778a0d2d150d04fc0fd09a0113ebe9d600c'
+  const account = '0x663a5c229c09b049e36dcc11a9b0d4a8eb9db214'
 
   const pawth = chainId ? PAWTH[chainId] : undefined
   const pawthBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, pawth)
@@ -163,8 +165,6 @@ export default function Stats() {
   const [isInWildCatClub, setIsInWildCatClub] = useState(false)
   const [isBugSquisher, setIsBugSquisher] = useState(false)
   const [isCatDayVisitor, setIsCatDayVisitor] = useState(false)
-  const [isShibaLpProvider, setIsShibaLpProvider] = useState(false)
-  const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
   const [isMarketingDonor, setIsMarketingDonor] = useState(false)
   const [isEdinburghEventVisitor, setIsEdinburghEventVisitor] = useState(false)
   const [isRedCandleSurvivor, setIsRedCandleSurvivor] = useState(false)
@@ -186,6 +186,12 @@ export default function Stats() {
   const [isSlothFoundationVisitor, setIsSlothFoundationVisitor] = useState(false)
   const [isNorthShoreAnimalLeagueVisitor, setIsNorthShoreAnimalLeagueVisitor] = useState(false)
   const [isBridgeTester, setIsBridgeTester] = useState(false)
+
+  const shibaLpBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, SHIBLP)
+  const isShibaLpProvider = shibaLpBalance ? parseFloat(shibaLpBalance.toFixed()) > 0 : false
+
+  const uniPawthLpBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, PAWTHLP)
+  const isUniswapLpProvider = uniPawthLpBalance ? parseFloat(uniPawthLpBalance.toFixed()) > 0 : false
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -326,18 +332,6 @@ export default function Stats() {
       setIsTester(TESTERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
 
-      const shibaLpTokenAddr = '0xc57dc778a0d2d150d04fc0fd09a0113ebe9d600c'
-      const shibaLpTokenBalance = await getTokenBalance(account, shibaLpTokenAddr, 18)
-      if (shibaLpTokenBalance.balance > 0) {
-        setIsShibaLpProvider(true)
-      }
-
-      const uniswapLpTokenAddr = '0x800a45f2b861229d59e952aef57b22e84ff949a1'
-      const uniswapLpTokenBalance = await getTokenBalance(account, uniswapLpTokenAddr, 18)
-      if (uniswapLpTokenBalance.balance > 0) {
-        setIsUniswapLpProvider(true)
-      }
-
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
       setIsPawsOrgEventVisitor(PAWS_ORG_VISITORS.includes(account.toLowerCase()))
@@ -388,24 +382,6 @@ export default function Stats() {
         const voters = Object.entries(votes).map((v: any) => v[1].voter)
         return voters.includes(account)
       })
-  }
-
-  async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
-    const balance_api = new URL('https://api.etherscan.io/api')
-
-    balance_api.searchParams.append('module', 'account')
-    balance_api.searchParams.append('action', 'tokenbalance')
-    balance_api.searchParams.append('contractaddress', tokenAddr)
-    balance_api.searchParams.append('address', account)
-    balance_api.searchParams.append('tag', 'latest')
-    balance_api.searchParams.append('apikey', ethescanApiKey)
-
-    const balanceReq = await fetch(balance_api.href)
-    const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
-
-    const formattedBalance = balance / 10**tokenDecimals
-    return { balance, formattedBalance }
   }
 
   async function getEthTransaction() {
@@ -578,7 +554,7 @@ export default function Stats() {
         }
         if (balance !== newBalance && pawth && account) {
           setBalance(newBalance)
-          if (newBalance && newBalance > 0) {
+          if (newBalance && newBalance >= 1) {
             setIsHolder(true)
           }
           if (newBalance && newBalance >= 10000) {
