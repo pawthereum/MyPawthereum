@@ -4,8 +4,8 @@
     "static/js/0.7f46d69f.chunk.js.map": "/static/js/0.7f46d69f.chunk.js.map",
     "static/js/1.b9d9dade.chunk.js": "/static/js/1.b9d9dade.chunk.js",
     "static/js/1.b9d9dade.chunk.js.map": "/static/js/1.b9d9dade.chunk.js.map",
-    "main.js": "/static/js/main.621fa209.chunk.js",
-    "main.js.map": "/static/js/main.621fa209.chunk.js.map",
+    "main.js": "/static/js/main.0d077081.chunk.js",
+    "main.js.map": "/static/js/main.0d077081.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.4255111d.js",
     "runtime-main.js.map": "/static/js/runtime-main.4255111d.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -38,6 +38,7 @@
     "static/media/blackFooted.00383a5a.png": "/static/media/blackFooted.00383a5a.png",
     "static/media/blackPanther.adcc209a.png": "/static/media/blackPanther.adcc209a.png",
     "static/media/blue-loader.249140da.svg": "/static/media/blue-loader.249140da.svg",
+    "static/media/bridge.6cac806c.png": "/static/media/bridge.6cac806c.png",
     "static/media/bug.031ec184.png": "/static/media/bug.031ec184.png",
     "static/media/cart.f8428c8c.png": "/static/media/cart.f8428c8c.png",
     "static/media/catDay.1ce1fd1c.png": "/static/media/catDay.1ce1fd1c.png",
@@ -104,6 +105,6 @@
     "static/js/runtime-main.4255111d.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.b365e955.chunk.js",
-    "static/js/main.621fa209.chunk.js"
+    "static/js/main.0d077081.chunk.js"
   ]
 }
