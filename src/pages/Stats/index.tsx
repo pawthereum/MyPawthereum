@@ -15,7 +15,7 @@ import {
 import useUSDCPrice from 'hooks/useUSDCPrice'
 import { useUSDCValue } from '../../hooks/useUSDCPrice'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, TokenAmount } from '@uniswap/sdk-core'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -23,6 +23,7 @@ import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
 import Rank from '../../components/Rank'
+import Reflections from '../../components/Reflections'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 import { getFirestore, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
 
@@ -134,10 +135,7 @@ export default function Stats() {
   const [updatingStats, setUpdatingStats] = useState(false)
   // wallet state vars
   const [balance, setBalance] = useState<number>()
-  const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
-  const [tokenUsdValue, setTokenUsdValue] = useState('-')
-  const [redistributedAmount, setRedistributedAmount] = useState(0)
-  const [redistributedUsdValue, setRedistributedUsdValue] = useState('-')
+  const [reflectionBalance, setReflectionBalance] = useState<CurrencyAmount | null>(null)
   const [totalIn, setTotalIn] = useState(0)
   const [totalOut, setTotalOut] = useState(0)
   
@@ -242,8 +240,6 @@ export default function Stats() {
     if (!statsRes.hasOwnProperty('error')) {
       const balance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
       const price = statsRes.price
-      const userTokenValueInUsd = balance ? balance * price.rate : 0
-      const userRedistributedValueInUsd = redistributedAmount * price.rate
 
       const charityWalletAllTimeUsd = charityAllTimeTotal / 1000000000 * price.rate
       const charityWalletTodayUsd = charityOneDayTotal / 1000000000 * price.rate
@@ -260,20 +256,6 @@ export default function Stats() {
             })
         :
           '-'
-      )
-      setTokenUsdValue(
-        isNaN(userTokenValueInUsd) 
-        ?
-          '-'
-        :
-          '$' + formatPriceUsd(userTokenValueInUsd)
-      )
-      setRedistributedUsdValue(
-        isNaN(userRedistributedValueInUsd) 
-        ?
-          '-'
-        :
-          '$' + formatPriceUsd(userRedistributedValueInUsd)
       )
       // TODO: when you are ready to show all time charity stats, pass the 
       // charityWalletAllTimeUsd data into this getStats function to 
@@ -322,8 +304,6 @@ export default function Stats() {
 
       setTotalIn(tx.totalIn)
       setTotalOut(tx.totalOut)
-      setRedistributedAmount(tx.redistribution)
-      setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsBugSquisher(BUG_SQUISHERS.includes(account.toLowerCase()))
@@ -488,8 +468,11 @@ export default function Stats() {
 
     totalIn = totalIn / 10**pawth?.decimals
     totalOut = totalOut / 10**pawth?.decimals
-    redistribution = redistribution
+    redistribution = redistribution * 10**pawth?.decimals
     balanceWithoutRedistribution = balanceWithoutRedistribution / 10**pawth?.decimals
+
+    const redistributionBalance: CurrencyAmount | undefined = new TokenAmount(pawth, Math.floor(redistribution).toString())
+    setReflectionBalance(redistributionBalance)
     return { totalIn, totalOut, redistribution, balanceWithoutRedistribution }
   }
 
@@ -685,6 +668,22 @@ export default function Stats() {
                   </AutoRow>
                 </AutoColumn>
               </AutoColumn>
+            </MainContentWrapper>
+          </TopSection>
+
+          <TopSection gap="2px">
+            <WrapSmall>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
+                Your $PAWTH Activity
+              </TYPE.mediumHeader>
+            </WrapSmall>
+            <MainContentWrapper>
+              <Reflections
+                reflectionBalance={reflectionBalance} 
+                pawthBalance={pawthBalance}
+                totalIn={totalIn}
+                totalOut={totalOut}
+              />
             </MainContentWrapper>
           </TopSection>
 
@@ -1039,47 +1038,6 @@ export default function Stats() {
                   ) : '' 
                 }
                 </AutoRow>
-              </AutoColumn>
-            </MainContentWrapper>
-          </TopSection>
-
-          <TopSection gap="2px">
-            <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
-                Your $PAWTH Activity
-              </TYPE.mediumHeader>
-            </WrapSmall>
-            <MainContentWrapper>
-              <AutoColumn gap="lg">
-                <AutoRow justify="center">
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $PAWTH In</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(totalIn)}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $PAWTH Out</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(totalOut)}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-                </AutoRow>
-
-                <AutoRow justify="center">
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">$PAWTH Reflections Earned</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(redistributedAmount)}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">$PAWTH Reflections USD Value</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{redistributedUsdValue}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-                </AutoRow>
-
-                <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">$PAWTH Balance without Reflections</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">
-                    {formatPrice(grumpyBalanceWithoutRedistribution)}
-                  </TYPE.largeHeader>
-                </AutoColumn>
               </AutoColumn>
             </MainContentWrapper>
           </TopSection>
