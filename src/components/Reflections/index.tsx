@@ -1,7 +1,7 @@
 import React from 'react'
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../../components/Column'
-import { RowBetween, AutoRow } from '../../components/Row'
+import { AutoRow } from '../../components/Row'
 import styled from 'styled-components'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useUSDCValue } from '../../hooks/useUSDCPrice'
