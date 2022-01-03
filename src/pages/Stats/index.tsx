@@ -674,7 +674,7 @@ export default function Stats() {
           <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
-                Your $PAWTH Activity
+                Your $PAWTH Reflections
               </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
