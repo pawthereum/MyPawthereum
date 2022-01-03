@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { 
   PAWTH,
+  SHIBLP,
+  PAWTHLP,
   ORIGINAL_SWAPPERS, 
   BUG_SQUISHERS, 
   TESTERS, 
@@ -10,8 +12,10 @@ import {
   PAWS_ORG_VISITORS,
   BRIDGE_TESTERS,
 } from './../../constants/index'
+import useUSDCPrice from 'hooks/useUSDCPrice'
+import { useUSDCValue } from '../../hooks/useUSDCPrice'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, TokenAmount } from '@uniswap/sdk-core'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -19,6 +23,7 @@ import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
 import Rank from '../../components/Rank'
+// import Reflections from '../../components/Reflections'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 import { getFirestore, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
 
@@ -117,8 +122,6 @@ export const StyledHelpButton = styled.button`
 
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 const ethplorerApiKey = process.env.REACT_APP_ETHPLORER_API_KEY || ''
-const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
-const pawthCharityWallet = '0xf4a22c530e8cc64770c4edb5766d26f8926e20bd'
 const pawthMarketingWallet = '0x16b1db77b60c8d8b6ecea0fa4e0481e9f53c9ba1'
 
 export default function Stats() {
@@ -126,14 +129,13 @@ export default function Stats() {
 
   const pawth = chainId ? PAWTH[chainId] : undefined
   const pawthBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, pawth)
-  
+  const pawthBalanceUsdValue = useUSDCValue(pawthBalance)
+  const pawthPrice = useUSDCPrice(pawth)
+
   const [updatingStats, setUpdatingStats] = useState(false)
   // wallet state vars
   const [balance, setBalance] = useState<number>()
-  const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
-  const [tokenUsdValue, setTokenUsdValue] = useState('-')
-  const [redistributedAmount, setRedistributedAmount] = useState(0)
-  const [redistributedUsdValue, setRedistributedUsdValue] = useState('-')
+  const [reflectionBalance, setReflectionBalance] = useState<CurrencyAmount | null>(null)
   const [totalIn, setTotalIn] = useState(0)
   const [totalOut, setTotalOut] = useState(0)
   
@@ -160,8 +162,6 @@ export default function Stats() {
   const [isInWildCatClub, setIsInWildCatClub] = useState(false)
   const [isBugSquisher, setIsBugSquisher] = useState(false)
   const [isCatDayVisitor, setIsCatDayVisitor] = useState(false)
-  const [isShibaLpProvider, setIsShibaLpProvider] = useState(false)
-  const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
   const [isMarketingDonor, setIsMarketingDonor] = useState(false)
   const [isEdinburghEventVisitor, setIsEdinburghEventVisitor] = useState(false)
   const [isRedCandleSurvivor, setIsRedCandleSurvivor] = useState(false)
@@ -183,6 +183,12 @@ export default function Stats() {
   const [isSlothFoundationVisitor, setIsSlothFoundationVisitor] = useState(false)
   const [isNorthShoreAnimalLeagueVisitor, setIsNorthShoreAnimalLeagueVisitor] = useState(false)
   const [isBridgeTester, setIsBridgeTester] = useState(false)
+
+  const shibaLpBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, SHIBLP)
+  const isShibaLpProvider = shibaLpBalance ? parseFloat(shibaLpBalance.toFixed()) > 0 : false
+
+  const uniPawthLpBalance: CurrencyAmount | undefined = useCurrencyBalance(account ?? undefined, PAWTHLP)
+  const isUniswapLpProvider = uniPawthLpBalance ? parseFloat(uniPawthLpBalance.toFixed()) > 0 : false
 
   // visits for awards
   const [visits, setVisits] = useState<any[]>([])
@@ -234,8 +240,6 @@ export default function Stats() {
     if (!statsRes.hasOwnProperty('error')) {
       const balance = pawthBalance ? parseFloat(pawthBalance.toFixed()) : 0
       const price = statsRes.price
-      const userTokenValueInUsd = balance ? balance * price.rate : 0
-      const userRedistributedValueInUsd = redistributedAmount * price.rate
 
       const charityWalletAllTimeUsd = charityAllTimeTotal / 1000000000 * price.rate
       const charityWalletTodayUsd = charityOneDayTotal / 1000000000 * price.rate
@@ -252,20 +256,6 @@ export default function Stats() {
             })
         :
           '-'
-      )
-      setTokenUsdValue(
-        isNaN(userTokenValueInUsd) 
-        ?
-          '-'
-        :
-          '$' + formatPriceUsd(userTokenValueInUsd)
-      )
-      setRedistributedUsdValue(
-        isNaN(userRedistributedValueInUsd) 
-        ?
-          '-'
-        :
-          '$' + formatPriceUsd(userRedistributedValueInUsd)
       )
       // TODO: when you are ready to show all time charity stats, pass the 
       // charityWalletAllTimeUsd data into this getStats function to 
@@ -314,26 +304,12 @@ export default function Stats() {
 
       setTotalIn(tx.totalIn)
       setTotalOut(tx.totalOut)
-      setRedistributedAmount(tx.redistribution)
-      setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsBugSquisher(BUG_SQUISHERS.includes(account.toLowerCase()))
       setIsBridgeTester(BRIDGE_TESTERS.includes(account.toLowerCase()))
       setIsTester(TESTERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
-
-      const shibaLpTokenAddr = '0xc57dc778a0d2d150d04fc0fd09a0113ebe9d600c'
-      const shibaLpTokenBalance = await getTokenBalance(account, shibaLpTokenAddr, 18)
-      if (shibaLpTokenBalance.balance > 0) {
-        setIsShibaLpProvider(true)
-      }
-
-      const uniswapLpTokenAddr = '0x800a45f2b861229d59e952aef57b22e84ff949a1'
-      const uniswapLpTokenBalance = await getTokenBalance(account, uniswapLpTokenAddr, 18)
-      if (uniswapLpTokenBalance.balance > 0) {
-        setIsUniswapLpProvider(true)
-      }
 
       setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
       setIsEdinburghEventVisitor(EDINBURGH_VISITORS.includes(account))
@@ -387,24 +363,6 @@ export default function Stats() {
       })
   }
 
-  async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
-    const balance_api = new URL('https://api.etherscan.io/api')
-
-    balance_api.searchParams.append('module', 'account')
-    balance_api.searchParams.append('action', 'tokenbalance')
-    balance_api.searchParams.append('contractaddress', tokenAddr)
-    balance_api.searchParams.append('address', account)
-    balance_api.searchParams.append('tag', 'latest')
-    balance_api.searchParams.append('apikey', ethescanApiKey)
-
-    const balanceReq = await fetch(balance_api.href)
-    const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
-
-    const formattedBalance = balance / 10**tokenDecimals
-    return { balance, formattedBalance }
-  }
-
   async function getEthTransaction() {
     if (!account) return { isMarketingWalletDonor: false }
     const transactions_api = new URL('https://api.etherscan.io/api')
@@ -431,7 +389,7 @@ export default function Stats() {
   }
 
   async function getTransactionHistory() {
-    if (!account) return {
+    if (!account || !pawth) return {
       totalIn: 0, 
       totalOut: 0,
       redistribution: 0,
@@ -441,7 +399,7 @@ export default function Stats() {
 
     transactions_api.searchParams.append('module', 'account')
     transactions_api.searchParams.append('action', 'tokentx')
-    transactions_api.searchParams.append('contractaddress', grumpyContractAddress)
+    transactions_api.searchParams.append('contractaddress', pawth?.address)
     transactions_api.searchParams.append('address', account)
     transactions_api.searchParams.append('page', '1')
     transactions_api.searchParams.append('offset', '10000')
@@ -460,7 +418,10 @@ export default function Stats() {
     const startBlackFurday2021 = 13686521
     const endBlackFurday2021 = 13695284
 
-    const startBlockReflectionsOff = 13643056
+    const startBlockReflectionsOff = 13690729
+    const endBlockReflectionsOff = 13893775
+
+    const startBlockReflectionsOnePercent = endBlockReflectionsOff
 
     for (const item of transaction) {
       if (item.to === account.toLowerCase()) {
@@ -476,26 +437,28 @@ export default function Stats() {
               setIsBlackFurday2021Buyer(true)
         }
 
-      } else if (parseInt(item.blockNumber) > startBlockReflectionsOff) {
+      } else if (parseInt(item.blockNumber) > startBlockReflectionsOff &&
+                 parseInt(item.blockNumber) <= endBlockReflectionsOff) {
         totalOut += parseFloat(item.value)
+      } else if (parseInt(item.blockNumber) >= startBlockReflectionsOnePercent) {
+        totalOut += parseFloat(item.value)
+        totalOut += parseFloat(item.value) * 0.01
       } else {
+        totalOut += parseFloat(item.value)
         totalOut += parseFloat(item.value) * 0.02
         // if you sold during the Nov 18 dip, you did not survive
         if (parseInt(item.blockNumber) >= startBlockOfNov18Slurp &&
             parseInt(item.blockNumber) <= endBlockOfNov18Slurp) {
               setIsRedCandleSurvivor(false)
-            }
+        }
       }
     }
-
-    // 2% of the out transaction goes to reflections, but we don't see that in etherscan
-    // totalOut = totalOut + totalOut * 0.02
 
     // if this person never sold, they are diamond hands
     setIsDiamondHands(totalOut === 0 && totalIn > 0)
 
     let balanceWithoutRedistribution = totalIn - totalOut
-    const redistribution = balance ? balance - balanceWithoutRedistribution : 0
+    let redistribution = pawthBalance ? parseFloat(pawthBalance.toFixed()) - (balanceWithoutRedistribution / 10**pawth?.decimals) : 0
     
     // for paperhands who sold all of their pawth, dont let balance
     // without reflections show a negative balance
@@ -503,16 +466,26 @@ export default function Stats() {
       balanceWithoutRedistribution = 0
     }
 
+    totalIn = totalIn / 10**pawth?.decimals
+    totalOut = totalOut / 10**pawth?.decimals
+    redistribution = redistribution * 10**pawth?.decimals
+    balanceWithoutRedistribution = balanceWithoutRedistribution / 10**pawth?.decimals
+
+    const redistributionBalance: CurrencyAmount | undefined = new TokenAmount(pawth, Math.floor(redistribution).toString())
+    setReflectionBalance(redistributionBalance)
     return { totalIn, totalOut, redistribution, balanceWithoutRedistribution }
   }
 
   async function getCharityWalletTransaction() {
+    if (!pawth) return {
+      oneDayTotal: 0, totalIn: 0, totalOut: 0
+    }
     const transactions_api = new URL('https://api.etherscan.io/api')
     const charityWallet = '0xf4a22c530e8cc64770c4edb5766d26f8926e20bd'
 
     transactions_api.searchParams.append('module', 'account')
     transactions_api.searchParams.append('action', 'tokentx')
-    transactions_api.searchParams.append('contractaddress', grumpyContractAddress)
+    transactions_api.searchParams.append('contractaddress', pawth?.address)
     transactions_api.searchParams.append('address', charityWallet)
     transactions_api.searchParams.append('page', '1')
     transactions_api.searchParams.append('offset', '10000')
@@ -563,7 +536,7 @@ export default function Stats() {
         }
         if (balance !== newBalance && pawth && account) {
           setBalance(newBalance)
-          if (newBalance && newBalance > 0) {
+          if (newBalance && newBalance >= 1) {
             setIsHolder(true)
           }
           if (newBalance && newBalance >= 10000) {
@@ -643,7 +616,7 @@ export default function Stats() {
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal shelters all over the world and has already donated over $400k!
+                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal shelters all over the world and has already donated over $430k!
                 </TYPE.white>
               </RowBetween>
             </AutoColumn>
@@ -668,18 +641,24 @@ export default function Stats() {
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH Balance</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{ balance ? formatPrice(balance) : 0}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">
+                    { (pawthBalance ? parseFloat(pawthBalance.toFixed(0)) : 0).toLocaleString() }
+                  </TYPE.largeHeader>
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH USD Value</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{tokenUsdValue}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">
+                    {'$' + (pawthBalanceUsdValue ? parseFloat(pawthBalanceUsdValue.toFixed(0)) : 0).toLocaleString() }
+                  </TYPE.largeHeader>
                 </AutoColumn>
 
                 <AutoColumn gap="sm">
                   <AutoRow justify="center">
                     <PaddedAutoColumn gap="sm">
                       <TYPE.body textAlign="center">Price</TYPE.body>
-                      <TYPE.largeHeader textAlign="center">{price}</TYPE.largeHeader>
+                      <TYPE.largeHeader textAlign="center">
+                        { '$' + (pawthPrice ? pawthPrice.toFixed() : 0).toLocaleString() }
+                      </TYPE.largeHeader>
                     </PaddedAutoColumn>
 
                     <PaddedAutoColumn gap="sm">
@@ -691,6 +670,22 @@ export default function Stats() {
               </AutoColumn>
             </MainContentWrapper>
           </TopSection>
+
+          {/* <TopSection gap="2px">
+            <WrapSmall>
+              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
+                Your $PAWTH Reflections
+              </TYPE.mediumHeader>
+            </WrapSmall>
+            <MainContentWrapper>
+              <Reflections
+                reflectionBalance={reflectionBalance} 
+                pawthBalance={pawthBalance}
+                totalIn={totalIn}
+                totalOut={totalOut}
+              />
+            </MainContentWrapper>
+          </TopSection> */}
 
           <TopSection gap="2px">
             <WrapSmall>
@@ -1046,48 +1041,6 @@ export default function Stats() {
               </AutoColumn>
             </MainContentWrapper>
           </TopSection>
-
-          {/* REFLECTION TRACKER 
-          <TopSection gap="2px">
-            <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0 }}>
-                Your $PAWTH Activity
-              </TYPE.mediumHeader>
-            </WrapSmall>
-            <MainContentWrapper>
-              <AutoColumn gap="lg">
-                <AutoRow justify="center">
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $PAWTH In</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(totalIn)}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $PAWTH Out</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(totalOut)}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-                </AutoRow>
-
-                <AutoRow justify="center">
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">$PAWTH Reflections Earned</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{formatPrice(redistributedAmount)}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-                  <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">$PAWTH Reflections USD Value</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{redistributedUsdValue}</TYPE.largeHeader>
-                  </PaddedAutoColumn>
-                </AutoRow>
-
-                <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">$PAWTH Balance without Reflections</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">
-                    {formatPrice(grumpyBalanceWithoutRedistribution)}
-                  </TYPE.largeHeader>
-                </AutoColumn>
-              </AutoColumn>
-            </MainContentWrapper>
-          </TopSection> */}
 
           <TopSection gap="2px">
             <WrapSmall>
