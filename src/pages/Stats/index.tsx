@@ -82,6 +82,7 @@ const WrapSmall = styled(RowBetween)`
 const MainContentWrapper = styled.main`
   background-color: ${({ theme }) => theme.bg0};
   padding: 32px;
+  padding-top: 24px;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -629,12 +630,12 @@ export default function Stats() {
       {account ? (
         <TopSection gap="md">
           <TopSection gap="2px">
-            <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
-                Your Wallet
-              </TYPE.mediumHeader>
-            </WrapSmall>
             <MainContentWrapper>
+              <WrapSmall>
+                <TYPE.mediumHeader style={{ margin: '0 0.5rem 1.5rem 0', flexShrink: 0 }}>
+                  Your Wallet
+                </TYPE.mediumHeader>
+              </WrapSmall>
               <AutoColumn gap="lg">
                 <AutoColumn gap="md" justify="center">
                   <img src={logo} alt="Logo" style={{ width: 100, height: 100 }} />
@@ -672,12 +673,12 @@ export default function Stats() {
           </TopSection>
 
           <TopSection gap="2px">
-            <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
-                Your $PAWTH Reflections
-              </TYPE.mediumHeader>
-            </WrapSmall>
             <MainContentWrapper>
+              <WrapSmall>
+                <TYPE.mediumHeader style={{ margin: '0 0.5rem 1.5rem 0', flexShrink: 0 }}>
+                  Your $PAWTH Reflections
+                </TYPE.mediumHeader>
+              </WrapSmall>
               <Reflections
                 reflectionBalance={reflectionBalance} 
                 pawthBalance={pawthBalance}
@@ -688,12 +689,12 @@ export default function Stats() {
           </TopSection>
 
           <TopSection gap="2px">
-            <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
-                Your Rank and Badges
-              </TYPE.mediumHeader>
-            </WrapSmall>
             <MainContentWrapper>
+              <WrapSmall>
+                <TYPE.mediumHeader style={{ margin: '0 0.5rem 1.5rem 0', flexShrink: 0 }}>
+                  Your Rank and Badges
+                </TYPE.mediumHeader>
+              </WrapSmall>
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
@@ -1043,12 +1044,12 @@ export default function Stats() {
           </TopSection>
 
           <TopSection gap="2px">
-            <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
-                Charity Wallet
-              </TYPE.mediumHeader>
-            </WrapSmall>
             <MainContentWrapper>
+              <WrapSmall>
+                <TYPE.mediumHeader style={{ margin: '0 0.5rem 1.5rem 0', flexShrink: 0 }}>
+                  Charity Wallet
+                </TYPE.mediumHeader>
+              </WrapSmall>
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
@@ -1080,10 +1081,10 @@ export default function Stats() {
         </TopSection>
       ) : (
         <TopSection gap="2px">
-          <WrapSmall>
-            <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
-          </WrapSmall>
           <MainContentWrapper>
+            <WrapSmall>
+              <TYPE.mediumHeader style={{ margin: '0 0.5rem 1.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
+            </WrapSmall>
             <AutoColumn gap="lg" justify="center">
               <img src={logo} alt="Logo" style={{ width: 100, height: 100, padding: 20 }} />
             </AutoColumn>
