@@ -23,7 +23,7 @@ import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
 import Rank from '../../components/Rank'
-// import Reflections from '../../components/Reflections'
+import Reflections from '../../components/Reflections'
 import logo from '../../assets/images/pawth-logo-transparent.png'
 import { getFirestore, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
 
@@ -437,12 +437,12 @@ export default function Stats() {
               setIsBlackFurday2021Buyer(true)
         }
 
-      } else if (parseInt(item.blockNumber) > startBlockReflectionsOff &&
-                 parseInt(item.blockNumber) <= endBlockReflectionsOff) {
-        totalOut += parseFloat(item.value)
       } else if (parseInt(item.blockNumber) >= startBlockReflectionsOnePercent) {
         totalOut += parseFloat(item.value)
         totalOut += parseFloat(item.value) * 0.01
+      } else if (parseInt(item.blockNumber) > startBlockReflectionsOff &&
+                 parseInt(item.blockNumber) <= endBlockReflectionsOff) {
+        totalOut += parseFloat(item.value)
       } else {
         totalOut += parseFloat(item.value)
         totalOut += parseFloat(item.value) * 0.02
@@ -671,7 +671,7 @@ export default function Stats() {
             </MainContentWrapper>
           </TopSection>
 
-          {/* <TopSection gap="2px">
+          <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '1rem 0.5rem 0 0', flexShrink: 0, color: 'white' }}>
                 Your $PAWTH Reflections
@@ -685,7 +685,7 @@ export default function Stats() {
                 totalOut={totalOut}
               />
             </MainContentWrapper>
-          </TopSection> */}
+          </TopSection>
 
           <TopSection gap="2px">
             <WrapSmall>
