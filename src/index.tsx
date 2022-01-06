@@ -31,7 +31,6 @@ import {
   browserSessionPersistence,
 } from 'firebase/auth'
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
-import Snowfall from 'react-snowfall'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -104,7 +103,6 @@ onAuthStateChanged(auth, (user) => {
                 <ThemeProvider>
                   <ThemedGlobalStyle />
                   <HashRouter>
-                    <Snowfall color="white" />
                     <App />
                   </HashRouter>
                 </ThemeProvider>

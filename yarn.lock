@@ -16670,7 +16670,7 @@
     "node-dir" "^0.1.10"
     "strip-indent" "^3.0.0"
 
-"react-dom@^0.14.0 || ^15.0.0-0 || ^16.0.0 || ^17.0.0", "react-dom@^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1", "react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^15.3.0 || ^16.0.0-alpha || ^17.0.0", "react-dom@^15.6.1 || ^16.0.0 || ^17.0.0", "react-dom@^16.6.0 || ^17.0.0", "react-dom@^16.8 || 17.x", "react-dom@^16.8.0", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^17.0.1", "react-dom@>= 0.14.0 < 18.0.0", "react-dom@>= 16.3.0", "react-dom@>= 16.8.0", "react-dom@>=16.8.0", "react-dom@15.x || 16.x || 16.4.0-alpha.0911da3":
+"react-dom@^0.14.0 || ^15.0.0-0 || ^16.0.0 || ^17.0.0", "react-dom@^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1", "react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^15.3.0 || ^16.0.0-alpha || ^17.0.0", "react-dom@^15.6.1 || ^16.0.0 || ^17.0.0", "react-dom@^16.6.0 || ^17.0.0", "react-dom@^16.8.0", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^17.0.1", "react-dom@>= 0.14.0 < 18.0.0", "react-dom@>= 16.3.0", "react-dom@>= 16.8.0", "react-dom@>=16.8.0", "react-dom@15.x || 16.x || 16.4.0-alpha.0911da3":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -16949,13 +16949,6 @@
     "shallowequal" "^1.1.0"
     "throttle-debounce" "^3.0.1"
 
-"react-snowfall@^1.1.1":
-  "integrity" "sha512-SREER5iikqVY8Fu0BpaYllzGHB1iKZacXY76E/rW1n1zKUH5ClqVWG1UZS+3fR6OTg9GkeGG459juSnARVoNGQ=="
-  "resolved" "https://registry.npmjs.org/react-snowfall/-/react-snowfall-1.1.1.tgz"
-  "version" "1.1.1"
-  dependencies:
-    "react-fast-compare" "^3.2.0"
-
 "react-spring@^8.0.27":
   "integrity" "sha512-nDpWBe3ZVezukNRandTeLSPcwwTMjNVu1IDq9qA/AMiUqHuRN4BeSWvKr3eIxxg1vtiYiOLy4FqdfCP5IoP77g=="
   "resolved" "https://registry.npmjs.org/react-spring/-/react-spring-8.0.27.tgz"
@@ -17011,7 +17004,7 @@
     "@babel/runtime" "^7.0.0"
     "memoize-one" ">=3.1.1 <6"
 
-"react@^0.14.0 || ^15.0.0 || ^16.0.0", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.0 || ^15.0.0-0 || ^16.0.0 || ^17.0.0", "react@^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1", "react@^15.0.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0-alpha || ^17.0.0", "react@^15.6.1 || ^16.0.0 || ^17.0.0", "react@^15.6.2 || ^16.0", "react@^16.0 || ^17.0", "react@^16.13.1 || ^17.0.0", "react@^16.3.0 || ^17.0.1", "react@^16.6.0 || ^17.0.0", "react@^16.8 || 17.x", "react@^16.8.0", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4 || ^17.0.0", "react@^16.8.6", "react@^16.8.6 || ^17", "react@^17.0.1", "react@>= 0.14.0", "react@>= 0.14.0 < 18.0.0", "react@>= 16", "react@>= 16.3.0", "react@>= 16.8.0", "react@>=15", "react@>=16.12.0", "react@>=16.3.0", "react@>=16.8", "react@>=16.8.0", "react@15.x || 16.x || 16.4.0-alpha.0911da3", "react@17.0.2":
+"react@^0.14.0 || ^15.0.0 || ^16.0.0", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.0 || ^15.0.0-0 || ^16.0.0 || ^17.0.0", "react@^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1", "react@^15.0.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0-alpha || ^17.0.0", "react@^15.6.1 || ^16.0.0 || ^17.0.0", "react@^15.6.2 || ^16.0", "react@^16.0 || ^17.0", "react@^16.13.1 || ^17.0.0", "react@^16.3.0 || ^17.0.1", "react@^16.6.0 || ^17.0.0", "react@^16.8.0", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4 || ^17.0.0", "react@^16.8.6", "react@^16.8.6 || ^17", "react@^17.0.1", "react@>= 0.14.0", "react@>= 0.14.0 < 18.0.0", "react@>= 16", "react@>= 16.3.0", "react@>= 16.8.0", "react@>=15", "react@>=16.12.0", "react@>=16.3.0", "react@>=16.8", "react@>=16.8.0", "react@15.x || 16.x || 16.4.0-alpha.0911da3", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
