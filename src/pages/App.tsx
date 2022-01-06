@@ -31,19 +31,21 @@ import { RedirectDuplicateTokenIdsV2 } from './AddLiquidityV2/redirects'
 import { PositionPage } from './Pool/PositionPage'
 import AddLiquidity from './AddLiquidity'
 import { ThemedBackground } from '../theme'
-import bg from '../assets/images/bg.png'
+import { useDarkModeManager } from '../state/user/hooks'
+import bg from '../assets/images/bg2.png'
+import bgDark from '../assets/images/bgDark.png'
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div<{ bgImg ?: string | undefined }>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  background-image: url(${bg});
+  background-image: url(${({ bgImg }) => bgImg ? bgImg : bg });
   background-size: auto;
   background-repeat: repeat;
   min-height: 100vh;
   overflow-y: visible;
 `
-
+  
 const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -79,11 +81,13 @@ function TopLevelModals() {
 }
 
 export default function App() {
+  const [isDark] = useDarkModeManager()
+
   return (
     <Suspense fallback={null}>
       <Route component={GoogleAnalyticsReporter} />
       <Route component={DarkModeQueryParamReader} />
-      <AppWrapper>
+      <AppWrapper bgImg={isDark ? bgDark : bg}>
         <HeaderWrapper>
           <Header />
         </HeaderWrapper>
