@@ -420,7 +420,7 @@ export default function Stats() {
     const endBlackFurday2021 = 13695284
 
     const startBlockReflectionsOff = 13690729
-    const endBlockReflectionsOff = 13893775
+    const endBlockReflectionsOff = 13953541
 
     const startBlockReflectionsOnePercent = endBlockReflectionsOff
 
