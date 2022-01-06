@@ -126,7 +126,7 @@ export function TransactionSubmittedContent({
             You just saved animals!
           </Text>
           <Text fontWeight={500} fontSize={16} textAlign="center">
-            0.5% of your transaction will be used to help animal charities across the globe!
+            1% of your transaction will be used to help animal charities across the globe!
           </Text>
           <ExternalLink href={'https://twitter.com/intent/tweet?text=' + tweetTemplate}>
             <Text fontWeight={500} fontSize={14} color={theme.primary1} style={{ display: 'flex', alignContent: 'center' }}>
