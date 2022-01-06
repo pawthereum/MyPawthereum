@@ -80,7 +80,7 @@ const WrapSmall = styled(RowBetween)`
 `
 
 const MainContentWrapper = styled.main`
-  background-color: ${({ theme }) => theme.bg0};
+  background-color: ${({ theme }) => theme.bg1};
   padding: 32px;
   padding-top: 24px;
   border-radius: 20px;
