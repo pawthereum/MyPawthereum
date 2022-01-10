@@ -219,7 +219,7 @@ export function useSwapCallback(
                         break
                       case 'cannot estimate gas; transaction may fail or may require manual gas limit':
                         errorMessage =
-                          `Pawthereum requires slippage to be set to at least 4.5% to account for taxes. Please try adjusting your slippage in the settings. If you continue to receive an error, try trading on Uniswap. Reach out to the team in Telegram if you continue to experience issues with swapping.`
+                          `Pawthereum requires slippage to be set to at least 2.5% to account for taxes. Please try adjusting your slippage in the settings. If you continue to receive an error, try trading on Uniswap. Reach out to the team in Telegram if you continue to experience issues with swapping.`
                         break
                       default:
                         return { call }
