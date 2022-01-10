@@ -232,8 +232,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
 export const NetworkContextName = 'NETWORK'
 
 // default allowed slippage, in bips
-export const INITIAL_ALLOWED_SLIPPAGE = new Percent(150, 10_000)
-export const PAWTH_RECOMMENDED_SLIPPAGE = 150 // cannot access "100" in type Percent above
+export const INITIAL_ALLOWED_SLIPPAGE = new Percent(250, 10_000)
+export const PAWTH_RECOMMENDED_SLIPPAGE = 250 // cannot access "100" in type Percent above
 // 20 minutes, denominated in seconds
 export const DEFAULT_DEADLINE_FROM_NOW = 60 * 20
 
