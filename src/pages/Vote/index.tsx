@@ -141,7 +141,7 @@ export default function Vote() {
           )
         })}
       </TopSection>
-      <DisclaimerText style={{ color: 'white', opacity: 0.75 }}>
+      <DisclaimerText style={{ opacity: 0.75 }}>
         You must hold $PAWTH in order to participate in voting
       </DisclaimerText>
     </PageWrapper>
